@@ -495,7 +495,6 @@ async function bzmFetch(path, options={}) {
   const key = JSON.parse(localStorage.getItem('bzm_api_key') || '{}');
   const method = options.method || 'GET';
 
-  // Call our own Netlify function with the path as a query param
   const funcUrl = '/.netlify/functions/blazemeter?path=' + encodeURIComponent(path);
 
   const res = await fetch(funcUrl, {
@@ -510,8 +509,27 @@ async function bzmFetch(path, options={}) {
 
   const data = await res.json();
 
+  // Extract a clean string error message from any response shape
+  function extractError(d) {
+    if (!d) return 'Unknown error';
+    if (typeof d === 'string') return d;
+    if (d.error) {
+      if (typeof d.error === 'string') return d.error;
+      if (d.error.message) return d.error.message;
+      return JSON.stringify(d.error);
+    }
+    if (d.message) return d.message;
+    if (d.result && d.result.message) return d.result.message;
+    return JSON.stringify(d);
+  }
+
   if (!res.ok) {
-    throw new Error(data.error || data.message || 'API error ' + res.status);
+    throw new Error(extractError(data));
+  }
+
+  // BlazeMeter returns errors inside 200 responses too
+  if (data && data.error !== undefined && data.error !== null && data.error !== false) {
+    throw new Error(extractError(data));
   }
 
   return data;
@@ -554,12 +572,14 @@ async function runTest(){
   try{
     // Step 1: Verify API key works first
     addLog('Verifying API key via Netlify serverless function...','info');
-    const verifyData=await bzmFetch('/api/v4/user',{
-      method:'GET',
-      headers:authHeader(key)
-    });
-    if(!verifyData.result) throw new Error('Invalid API key — please check your credentials');
-    addLog('API key verified — user: '+(verifyData.result?.email||'OK'),'success');
+    let verifyData;
+    try {
+      verifyData = await bzmFetch('/api/v4/user', { method:'GET' });
+      addLog('API key verified — user: '+(verifyData?.result?.email || verifyData?.result?.login || 'OK'),'success');
+    } catch(verifyErr) {
+      // If verify fails with auth error, show clear message
+      throw new Error('API key invalid: ' + verifyErr.message + '. Please check your BlazeMeter API Key ID and Secret.');
+    }
 
     // Step 2: Create test
     addLog('Creating test on BlazeMeter...','info');
