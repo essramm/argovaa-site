@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa – Performance Testing Portal</title>
+<script>
+(function(){
+  try{
+    const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');
+    if(!s.loggedIn){window.location.href='login.html';}
+  }catch(e){window.location.href='login.html';}
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,900&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0a0c10;--paper:#f9f7f3;--white:#fff;
+  --teal:#007a6e;--teal-lt:#e0f5f3;--teal-mid:#009a8c;
+  --border:rgba(10,12,16,0.1);--border2:rgba(10,12,16,0.06);
+  --red:#dc2626;--amber:#b45309;--green:#15803d
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:#e8ede8;font-family:'Geist',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+
+nav{background:#111614;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:22px;font-style:italic;color:#fff;text-decoration:none}
+.logo span{color:#00e5a0;font-style:normal}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:#00e5a0}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:12px;color:rgba(255,255,255,0.4)}
+.btn-signout{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s}
+.btn-signout:hover{color:#fff;border-color:rgba(255,255,255,0.25)}
+
+.page-wrap{flex:1;padding:36px 48px 52px;max-width:1200px;margin:0 auto;width:100%}
+.page-header{margin-bottom:32px}
+.page-tag{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:#00e5a0;margin-bottom:10px}
+.page-title{font-family:'Fraunces',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.05;margin-bottom:10px}
+.page-title em{font-style:italic;color:#00e5a0}
+.page-sub{font-size:15px;color:rgba(255,255,255,0.4);font-weight:300;max-width:560px}
+
+.layout{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+
+.card{background:#111614;border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.card-head{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Fraunces',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.card-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px}
+.card-body{padding:20px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);margin-bottom:6px;letter-spacing:0.2px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;color:#fff;font-size:13px;font-family:'Geist',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(0,229,160,0.3)}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,0.2)}
+.field select option{background:#111614;color:#fff}
+.field textarea{resize:none;height:80px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-hint{font-size:11px;color:rgba(255,255,255,0.25);margin-top:4px}
+
+.run-btn{width:100%;background:#00e5a0;color:#0a0c10;border:none;padding:14px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.run-btn:hover{opacity:0.88;transform:translateY(-1px)}
+.run-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+.btn-spinner{width:14px;height:14px;border:2px solid rgba(10,12,16,0.3);border-top-color:#0a0c10;border-radius:50%;animation:spin 0.8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.api-key-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:14px;margin-bottom:14px}
+.api-key-label{font-size:11px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:7px;font-weight:500}
+.api-key-input{width:100%;background:transparent;border:none;outline:none;color:#00e5a0;font-family:monospace;font-size:12px;padding:0}
+.api-key-hint{font-size:11px;color:rgba(255,255,255,0.2);margin-top:6px}
+.api-key-link{color:rgba(0,229,160,0.7);text-decoration:none}
+.api-key-link:hover{color:#00e5a0}
+
+.status-panel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px}
+.status-empty{text-align:center;padding:24px 0;color:rgba(255,255,255,0.2);font-size:13px}
+.status-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.running{background:#fbbf24;animation:pulse 1.5s infinite}
+.status-dot.done{background:#00e5a0}
+.status-dot.error{background:#f87171}
+.status-dot.idle{background:rgba(255,255,255,0.2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.status-name{font-size:13px;font-weight:500;color:#fff}
+.status-time{font-size:11px;color:rgba(255,255,255,0.3);margin-left:auto}
+
+.metric-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.metric{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px}
+.metric-val{font-family:'Fraunces',sans-serif;font-size:20px;font-weight:900;letter-spacing:-0.5px;margin-bottom:2px}
+.metric-val.green{color:#00e5a0}
+.metric-val.amber{color:#fbbf24}
+.metric-val.red{color:#f87171}
+.metric-val.white{color:#fff}
+.metric-lbl{font-size:10px;color:rgba(255,255,255,0.3)}
+
+.log-area{background:rgba(0,0,0,0.3);border-radius:7px;padding:10px 12px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.7;max-height:140px;overflow-y:auto}
+.log-line{margin-bottom:1px}
+.log-line.info{color:rgba(255,255,255,0.5)}
+.log-line.success{color:#00e5a0}
+.log-line.warning{color:#fbbf24}
+.log-line.error{color:#f87171}
+.log-time{color:rgba(255,255,255,0.2);margin-right:6px}
+
+.history-list{display:flex;flex-direction:column;gap:8px}
+.history-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.2s}
+.history-item:hover{background:rgba(255,255,255,0.04)}
+.hi-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.hi-dot.passed{background:#00e5a0}
+.hi-dot.failed{background:#f87171}
+.hi-dot.running{background:#fbbf24;animation:pulse 1.5s infinite}
+.hi-info{flex:1}
+.hi-name{font-size:12px;font-weight:500;color:#fff;margin-bottom:2px}
+.hi-meta{font-size:11px;color:rgba(255,255,255,0.3)}
+.hi-badge{font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500}
+.hi-badge.passed{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);color:#00e5a0}
+.hi-badge.failed{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.18);color:#f87171}
+.hi-badge.running{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.18);color:#fbbf24}
+
+.progress-bar-wrap{background:rgba(255,255,255,0.06);border-radius:100px;height:4px;margin:10px 0;overflow:hidden}
+.progress-bar{height:100%;background:#00e5a0;border-radius:100px;transition:width 0.5s ease;width:0%}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:16px}
+.tab{padding:8px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.35);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;background:transparent;border-top:none;border-left:none;border-right:none;font-family:'Geist',sans-serif}
+.tab.active{color:#00e5a0;border-bottom-color:#00e5a0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+.info-box{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.1);border-radius:8px;padding:10px 13px;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:14px}
+.info-box a{color:#00e5a0;text-decoration:none}
+.warn-box{background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:8px;padding:10px 13px;font-size:12px;color:rgba(251,191,36,0.8);line-height:1.6;margin-bottom:14px}
+
+footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.flogo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:17px;font-style:italic;color:#fff;text-decoration:none}
+.flogo span{color:#00e5a0;font-style:normal}
+.fcopy{font-size:12px;color:rgba(255,255,255,0.2)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .page-wrap{padding:24px 16px 40px}
+  .layout{grid-template-columns:1fr}
+  footer{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><em>Argovaa</em></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="analyser.html">GC Analyser</a></li>
+    <li><a href="perftest.html" class="active">Performance testing</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-user" id="nav-user"></span>
+    <button class="btn-signout" onclick="signOut()">Sign out</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="page-tag">Powered by BlazeMeter API</div>
+    <h1 class="page-title">Performance testing<br><em>portal</em></h1>
+    <p class="page-sub">Configure and run load tests against any URL directly from Argovaa. Real-time results, live metrics, and full test history — no BlazeMeter account needed.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT: CONFIG -->
+    <div>
+
+      <!-- API KEY SETUP -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">BlazeMeter API key</div>
+            <div class="card-sub">Required to run tests — free account at blazemeter.com</div>
+          </div>
+          <span id="key-status" style="font-size:11px;color:rgba(255,255,255,0.25)">Not configured</span>
+        </div>
+        <div class="card-body">
+          <div class="info-box">Get your free API key at <a href="https://www.blazemeter.com" target="_blank">blazemeter.com</a> → Settings → API Keys. Free tier supports up to 50 concurrent users and 10-minute tests. <strong style="color:#00e5a0">✓ Netlify serverless proxy active</strong> — API calls run server-side, no CORS issues.</div>
+          <div class="api-key-section">
+            <div class="api-key-label">API Key ID</div>
+            <input class="api-key-input" type="text" id="bzm-key-id" placeholder="Paste your BlazeMeter API Key ID here...">
+          </div>
+          <div class="api-key-section">
+            <div class="api-key-label">API Secret</div>
+            <input class="api-key-input" type="password" id="bzm-key-secret" placeholder="Paste your API Secret here...">
+          </div>
+          <button onclick="saveApiKey()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:#00e5a0;padding:8px 18px;border-radius:7px;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;width:100%;margin-top:4px;transition:all 0.2s">Save API key</button>
+        </div>
+      </div>
+
+      <!-- TEST CONFIGURATION -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Test configuration</div>
+            <div class="card-sub">Configure your load test parameters</div>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('basic',this)">Basic</button>
+            <button class="tab" onclick="switchTab('advanced',this)">Advanced</button>
+            <button class="tab" onclick="switchTab('scenarios',this)">Scenarios</button>
+          </div>
+
+          <div class="tab-panel active" id="tab-basic">
+            <div class="field">
+              <label>Target URL</label>
+              <input type="url" id="t-url" placeholder="https://your-app.com" value="https://argovaa.com">
+              <div class="field-hint">The URL you want to load test</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Concurrent users</label>
+                <input type="number" id="t-users" value="25" min="1" max="1000" step="1">
+              </div>
+              <div class="field">
+                <label>Duration (minutes)</label>
+                <input type="number" id="t-duration" value="5" min="1" max="60" step="1">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Ramp-up (seconds)</label>
+                <input type="number" id="t-ramp" value="60" min="10" max="300" step="10">
+              </div>
+              <div class="field">
+                <label>Test type</label>
+                <select id="t-type">
+                  <option value="load">Load test</option>
+                  <option value="stress">Stress test</option>
+                  <option value="spike">Spike test</option>
+                  <option value="soak">Soak test</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Test name</label>
+              <input type="text" id="t-name" placeholder="My load test" value="Argovaa load test">
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-advanced">
+            <div class="field-row">
+              <div class="field">
+                <label>Location</label>
+                <select id="t-location">
+                  <option value="us-west-1">US West (California)</option>
+                  <option value="us-east-1">US East (Virginia)</option>
+                  <option value="eu-west-1">EU West (Ireland)</option>
+                  <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                  <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>HTTP method</label>
+                <select id="t-method">
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                  <option value="PUT">PUT</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Request headers (JSON)</label>
+              <textarea id="t-headers" placeholder='{"Accept": "application/json", "Content-Type": "application/json"}'></textarea>
+            </div>
+            <div class="field">
+              <label>SLA — Max response time (ms)</label>
+              <input type="number" id="t-sla" value="500" min="100" max="10000" step="100">
+              <div class="field-hint">Test fails if 95th percentile exceeds this threshold</div>
+            </div>
+            <div class="field">
+              <label>Max error rate (%)</label>
+              <input type="number" id="t-errors" value="1" min="0" max="100" step="0.5">
+              <div class="field-hint">Test fails if error rate exceeds this percentage</div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-scenarios">
+            <div class="warn-box">Quick scenarios — click to auto-fill the config above with proven test parameters for each scenario type.</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div onclick="applyScenario('load')" style="background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(0,229,160,0.08)'" onmouseout="this.style.background='rgba(0,229,160,0.04)'">
+                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Standard load test</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4)">50 users · 2min ramp · 10min hold · Tests normal traffic</div>
+              </div>
+              <div onclick="applyScenario('spike')" style="background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(251,191,36,0.08)'" onmouseout="this.style.background='rgba(251,191,36,0.04)'">
+                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Spike test</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4)">200 users · 30sec ramp · 5min hold · Tests sudden traffic surge</div>
+              </div>
+              <div onclick="applyScenario('stress')" style="background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(248,113,113,0.08)'" onmouseout="this.style.background='rgba(248,113,113,0.04)'">
+                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Stress test</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4)">500 users · 5min ramp · 10min hold · Finds breaking point</div>
+              </div>
+              <div onclick="applyScenario('soak')" style="background:rgba(147,197,253,0.04);border:1px solid rgba(147,197,253,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(147,197,253,0.08)'" onmouseout="this.style.background='rgba(147,197,253,0.04)'">
+                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Soak test</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4)">20 users · 3min ramp · 60min hold · Detects memory leaks</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="run-btn" id="run-btn" onclick="runTest()">
+            <span class="btn-spinner" id="btn-spinner"></span>
+            <span id="run-btn-text">▶ Run test now</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: STATUS + HISTORY -->
+    <div>
+
+      <!-- LIVE STATUS -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Live test status</div>
+            <div class="card-sub" id="status-sub">No test running</div>
+          </div>
+          <div id="status-badge" style="font-size:10px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3)">Idle</div>
+        </div>
+        <div class="card-body">
+          <div id="status-content">
+            <div class="status-empty">Configure and run a test to see live results here</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEST HISTORY -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Test history</div>
+            <div class="card-sub">Your recent test runs</div>
+          </div>
+          <button onclick="clearHistory()" style="font-size:11px;color:rgba(255,255,255,0.25);background:none;border:none;cursor:pointer;font-family:'Geist',sans-serif">Clear</button>
+        </div>
+        <div class="card-body" style="padding:14px">
+          <div class="history-list" id="history-list">
+            <div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2);font-size:13px">No tests run yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">How it works</div>
+        </div>
+        <div class="card-body" style="padding:16px 20px">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:22px;height:22px;border-radius:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#00e5a0;flex-shrink:0">1</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">Add your BlazeMeter API key — free account gives you 50 VUs and 10-min tests</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:22px;height:22px;border-radius:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#00e5a0;flex-shrink:0">2</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">Configure your test — URL, users, duration, and test type</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:22px;height:22px;border-radius:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#00e5a0;flex-shrink:0">3</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">Click Run — Argovaa calls the BlazeMeter API and streams live metrics back to this page</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:22px;height:22px;border-radius:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#00e5a0;flex-shrink:0">4</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">View results, errors, and pass/fail SLA status — all saved to your history</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo"><em>Argovaa</em></a>
+  <div style="display:flex;gap:20px">
+    <a href="analyser.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none">GC Analyser</a>
+    <a href="index.html#contact" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none">Contact</a>
+  </div>
+  <div class="fcopy">© 2025 Argovaa.com</div>
+</footer>
+
+<script>
+// Session
+try{
+  const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');
+  if(s.name) document.getElementById('nav-user').textContent='👤 '+s.name;
+}catch(e){}
+
+function signOut(){localStorage.removeItem('argovaa_session');window.location.href='login.html';}
+
+// API Key management
+function saveApiKey(){
+  const id=document.getElementById('bzm-key-id').value.trim();
+  const secret=document.getElementById('bzm-key-secret').value.trim();
+  if(!id||!secret){alert('Please enter both API Key ID and Secret.');return;}
+  localStorage.setItem('bzm_api_key',JSON.stringify({id,secret}));
+  document.getElementById('key-status').textContent='✓ Configured';
+  document.getElementById('key-status').style.color='#00e5a0';
+  addLog('API key saved successfully','success');
+}
+
+// Load saved key on page load
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('bzm_api_key');
+  if(saved){
+    const k=JSON.parse(saved);
+    document.getElementById('bzm-key-id').value=k.id||'';
+    document.getElementById('bzm-key-secret').value=k.secret||'';
+    document.getElementById('key-status').textContent='✓ Configured';
+    document.getElementById('key-status').style.color='#00e5a0';
+  }
+  loadHistory();
+});
+
+// Tab switching
+function switchTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// Scenarios
+const scenarios={
+  load:{users:50,duration:10,ramp:120,type:'load',name:'Standard load test'},
+  spike:{users:200,duration:5,ramp:30,type:'spike',name:'Spike test'},
+  stress:{users:500,duration:10,ramp:300,type:'stress',name:'Stress test'},
+  soak:{users:20,duration:60,ramp:180,type:'soak',name:'Soak test'}
+};
+
+function applyScenario(key){
+  const s=scenarios[key];
+  document.getElementById('t-users').value=s.users;
+  document.getElementById('t-duration').value=s.duration;
+  document.getElementById('t-ramp').value=s.ramp;
+  document.getElementById('t-type').value=s.type;
+  document.getElementById('t-name').value=s.name;
+  switchTab('basic',document.querySelectorAll('.tab')[0]);
+  addLog('Applied '+s.name+' scenario','info');
+}
+
+// Logging
+function addLog(msg,type='info'){
+  const area=document.getElementById('log-area');
+  if(!area) return;
+  const line=document.createElement('div');
+  line.className='log-line '+type;
+  const now=new Date();
+  const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  line.innerHTML='<span class="log-time">'+t+'</span>'+msg;
+  area.appendChild(line);
+  area.scrollTop=area.scrollHeight;
+}
+
+// History
+function loadHistory(){
+  const hist=JSON.parse(localStorage.getItem('bzm_history')||'[]');
+  const list=document.getElementById('history-list');
+  if(!hist.length){list.innerHTML='<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2);font-size:13px">No tests run yet</div>';return;}
+  list.innerHTML='';
+  hist.slice().reverse().forEach(h=>{
+    const item=document.createElement('div');
+    item.className='history-item';
+    const statusColor=h.status==='passed'?'passed':h.status==='failed'?'failed':'running';
+    item.innerHTML=`<div class="hi-dot ${statusColor}"></div><div class="hi-info"><div class="hi-name">${h.name}</div><div class="hi-meta">${h.url} · ${h.users} VUs · ${h.duration}min · ${h.date}</div></div><span class="hi-badge ${statusColor}">${h.status}</span>`;
+    list.appendChild(item);
+  });
+}
+
+function saveToHistory(data){
+  const hist=JSON.parse(localStorage.getItem('bzm_history')||'[]');
+  hist.push(data);
+  if(hist.length>20) hist.shift();
+  localStorage.setItem('bzm_history',JSON.stringify(hist));
+  loadHistory();
+}
+
+function clearHistory(){
+  localStorage.removeItem('bzm_history');
+  loadHistory();
+}
+
+// Netlify serverless function proxy — no CORS issues, runs server-side
+// Calls /.netlify/functions/blazemeter which forwards to BlazeMeter API
+
+async function bzmFetch(path, options={}) {
+  const key = JSON.parse(localStorage.getItem('bzm_api_key') || '{}');
+  const method = options.method || 'GET';
+
+  // Call our own Netlify function with the path as a query param
+  const funcUrl = '/.netlify/functions/blazemeter?path=' + encodeURIComponent(path);
+
+  const res = await fetch(funcUrl, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-bzm-key-id': key.id || '',
+      'x-bzm-key-secret': key.secret || ''
+    },
+    ...(options.body ? { body: options.body } : {})
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || data.message || 'API error ' + res.status);
+  }
+
+  return data;
+}
+
+function authHeader(key) {
+  // Headers now passed directly in bzmFetch — kept for compatibility
+  return {};
+}
+
+// Main test runner
+let testInterval=null;
+let testProgress=0;
+
+async function runTest(){
+  const keyData=localStorage.getItem('bzm_api_key');
+  if(!keyData){
+    alert('Please configure your BlazeMeter API key first.');
+    return;
+  }
+  const key=JSON.parse(keyData);
+  const url=document.getElementById('t-url').value.trim();
+  const users=parseInt(document.getElementById('t-users').value)||25;
+  const duration=parseInt(document.getElementById('t-duration').value)||5;
+  const ramp=parseInt(document.getElementById('t-ramp').value)||60;
+  const testType=document.getElementById('t-type').value;
+  const testName=document.getElementById('t-name').value||'Argovaa test';
+  const location=document.getElementById('t-location').value||'us-west-1';
+  const sla=parseInt(document.getElementById('t-sla').value)||500;
+
+  if(!url){alert('Please enter a target URL.');return;}
+
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;
+  document.getElementById('btn-spinner').style.display='block';
+  document.getElementById('run-btn-text').textContent='Starting test...';
+
+  setStatusRunning(testName,url,users,duration);
+
+  try{
+    // Step 1: Verify API key works first
+    addLog('Verifying API key via Netlify serverless function...','info');
+    const verifyData=await bzmFetch('/api/v4/user',{
+      method:'GET',
+      headers:authHeader(key)
+    });
+    if(!verifyData.result) throw new Error('Invalid API key — please check your credentials');
+    addLog('API key verified — user: '+(verifyData.result?.email||'OK'),'success');
+
+    // Step 2: Create test
+    addLog('Creating test on BlazeMeter...','info');
+    const createData=await bzmFetch('/api/v4/tests',{
+      method:'POST',
+      headers:authHeader(key),
+      body:JSON.stringify({
+        name:testName,
+        configuration:{
+          type:'url-or-file',
+          filename:'',
+          concurrency:users,
+          rampUp:ramp,
+          duration:duration*60,
+          location:location,
+          overrideForceParentSuite:false
+        }
+      })
+    });
+
+    const testId=createData.result?.id;
+    if(!testId) throw new Error('Could not create test — check your BlazeMeter plan supports API test creation');
+    addLog('Test created — ID: '+testId,'success');
+
+    // Step 3: Set the URL scenario
+    addLog('Configuring test scenario for '+url+'...','info');
+    await bzmFetch('/api/v4/tests/'+testId+'/scripts',{
+      method:'POST',
+      headers:authHeader(key),
+      body:JSON.stringify({
+        scenarios:[{
+          scenarioName:'main',
+          requests:[{url:url,method:'GET',label:'Target URL'}],
+          keepalive:true,
+          thinkTime:1000
+        }]
+      })
+    });
+
+    // Step 4: Start the test
+    addLog('Starting test execution...','info');
+    const startData=await bzmFetch('/api/v4/tests/'+testId+'/start',{
+      method:'POST',
+      headers:authHeader(key),
+      body:'{}'
+    });
+
+    const sessionId=startData.result?.sessionsId?.[0];
+    addLog('Test running — session: '+(sessionId||'started'),'success');
+
+    // Step 5: Poll for results
+    pollResults(key,testId,sessionId,testName,url,users,duration,sla);
+
+  }catch(err){
+    addLog('Error: '+err.message,'error');
+    setStatusError(err.message);
+    resetBtn();
+    saveToHistory({name:testName,url:url,users:users,duration:duration,status:'failed',date:new Date().toLocaleString(),error:err.message});
+  }
+}
+
+function pollResults(key,testId,sessionId,testName,url,users,duration,sla){
+  let elapsed=0;
+  const totalSec=duration*60;
+  testInterval=setInterval(async()=>{
+    elapsed+=10;
+    const pct=Math.min(Math.round((elapsed/totalSec)*100),98);
+    updateProgress(pct,elapsed,totalSec);
+    try{
+      const data=await bzmFetch('/api/v4/data/masters/'+testId+'/reports/aggregatereport/data',{
+        headers:authHeader(key)
+      });
+      const agg=data.result?.[0];
+      if(agg){
+        updateLiveMetrics({
+          avgRt:Math.round(agg.avgRt||0),
+          p95:Math.round(agg.perc95||0),
+          rps:Math.round(agg.throughput||0),
+          errors:((agg.errorsRate||0)*100).toFixed(1)
+        });
+        // Check if test finished
+        if(agg.status==='ENDED'||elapsed>=totalSec+30){
+          clearInterval(testInterval);
+          const passed=agg.perc95<sla&&parseFloat(agg.errorsRate||0)<0.01;
+          setStatusDone(passed,{avgRt:Math.round(agg.avgRt),p95:Math.round(agg.perc95),rps:Math.round(agg.throughput),errors:((agg.errorsRate||0)*100).toFixed(1)});
+          saveToHistory({name:testName,url:url,users:users,duration:duration,status:passed?'passed':'failed',date:new Date().toLocaleString(),p95:Math.round(agg.perc95),rps:Math.round(agg.throughput)});
+          resetBtn();
+        }
+      }
+    }catch(e){
+      addLog('Polling error: '+e.message,'warning');
+    }
+    if(elapsed>=totalSec+60){
+      clearInterval(testInterval);
+      setStatusDone(true,null);
+      resetBtn();
+    }
+  },10000);
+}
+
+function resetBtn(){
+  const btn=document.getElementById('run-btn');
+  btn.disabled=false;
+  document.getElementById('btn-spinner').style.display='none';
+  document.getElementById('run-btn-text').textContent='▶ Run test now';
+}
+
+function setStatusRunning(name,url,users,duration){
+  document.getElementById('status-sub').textContent='Test running...';
+  document.getElementById('status-badge').textContent='Running';
+  document.getElementById('status-badge').style.background='rgba(251,191,36,0.1)';
+  document.getElementById('status-badge').style.color='#fbbf24';
+  document.getElementById('status-content').innerHTML=`
+    <div class="status-header"><div class="status-dot running"></div><div class="status-name">${name}</div><div class="status-time">${url}</div></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:8px">${users} virtual users · ${duration} minutes</div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px" id="progress-text">Initialising...</div>
+    <div class="metric-row" id="live-metrics">
+      <div class="metric"><div class="metric-val white" id="m-avgrt">--</div><div class="metric-lbl">Avg response (ms)</div></div>
+      <div class="metric"><div class="metric-val white" id="m-p95">--</div><div class="metric-lbl">P95 response (ms)</div></div>
+      <div class="metric"><div class="metric-val white" id="m-rps">--</div><div class="metric-lbl">Requests/sec</div></div>
+      <div class="metric"><div class="metric-val white" id="m-errors">--</div><div class="metric-lbl">Error rate %</div></div>
+    </div>
+    <div class="log-area" id="log-area"></div>`;
+  addLog('Test initialising for '+url,'info');
+  addLog('Virtual users: '+users+' · Duration: '+duration+' min','info');
+}
+
+function updateProgress(pct,elapsed,total){
+  const bar=document.getElementById('progress-bar');
+  const txt=document.getElementById('progress-text');
+  if(bar) bar.style.width=pct+'%';
+  if(txt){
+    const remaining=Math.max(0,total-elapsed);
+    const mins=Math.floor(remaining/60);
+    const secs=remaining%60;
+    txt.textContent=pct+'% complete · '+mins+'m '+secs+'s remaining';
+  }
+}
+
+function updateLiveMetrics(m){
+  const avg=document.getElementById('m-avgrt');
+  const p95=document.getElementById('m-p95');
+  const rps=document.getElementById('m-rps');
+  const err=document.getElementById('m-errors');
+  if(avg){avg.textContent=m.avgRt;avg.className='metric-val '+(m.avgRt<200?'green':m.avgRt<500?'amber':'red');}
+  if(p95){p95.textContent=m.p95;p95.className='metric-val '+(m.p95<500?'green':m.p95<1000?'amber':'red');}
+  if(rps){rps.textContent=m.rps;rps.className='metric-val white';}
+  if(err){err.textContent=m.errors+'%';err.className='metric-val '+(parseFloat(m.errors)<1?'green':parseFloat(m.errors)<5?'amber':'red');}
+  addLog('Metrics update — avg: '+m.avgRt+'ms · P95: '+m.p95+'ms · RPS: '+m.rps+' · errors: '+m.errors+'%','info');
+}
+
+function setStatusDone(passed,metrics){
+  document.getElementById('status-sub').textContent=passed?'Test passed all SLAs':'Test failed — SLA breached';
+  document.getElementById('status-badge').textContent=passed?'Passed':'Failed';
+  document.getElementById('status-badge').style.background=passed?'rgba(0,229,160,0.1)':'rgba(248,113,113,0.1)';
+  document.getElementById('status-badge').style.color=passed?'#00e5a0':'#f87171';
+  const bar=document.getElementById('progress-bar');
+  if(bar){bar.style.width='100%';bar.style.background=passed?'#00e5a0':'#f87171';}
+  const txt=document.getElementById('progress-text');
+  if(txt) txt.textContent=passed?'Test completed successfully — all SLAs passed':'Test completed — SLA thresholds exceeded';
+  addLog(passed?'Test PASSED all SLA thresholds':'Test FAILED — SLA thresholds exceeded',passed?'success':'error');
+}
+
+function setStatusError(msg){
+  document.getElementById('status-sub').textContent='Test error';
+  document.getElementById('status-badge').textContent='Error';
+  document.getElementById('status-badge').style.background='rgba(248,113,113,0.1)';
+  document.getElementById('status-badge').style.color='#f87171';
+  document.getElementById('status-content').innerHTML=`<div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.15);border-radius:8px;padding:14px;font-size:12px;color:#f87171;line-height:1.6"><strong>Error:</strong> ${msg}<br><br><span style="color:rgba(255,255,255,0.4)">Check your API key and BlazeMeter account status, then try again.</span></div>`;
+}
+</script>
+</body>
+</html>

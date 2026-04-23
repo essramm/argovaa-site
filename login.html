@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa – Sign in</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('uZrVC69lm2juMThZD');</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,900&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--teal:#007a6e;--teal-lt:#e0f5f3;--teal-mid:#009a8c}
+html,body{height:100%}
+body{background:#0a0c10;color:#e8ede8;font-family:'Geist',sans-serif;font-size:15px;display:flex;flex-direction:column;min-height:100vh}
+nav{background:#111614;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:22px;font-style:italic;color:#fff;text-decoration:none}
+.logo span{color:#00e5a0;font-style:normal}
+.nav-back{font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:#00e5a0}
+
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{background:#111614;border:1px solid rgba(255,255,255,0.08);border-radius:16px;width:100%;max-width:440px;overflow:hidden}
+.card-header{padding:32px 36px 0}
+.card-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.card-logo-mark{width:36px;height:36px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.card-logo-name{font-family:'Fraunces',sans-serif;font-size:18px;font-weight:900;font-style:italic;color:#fff}
+.card-logo-name span{color:#00e5a0;font-style:normal}
+.card-title{font-family:'Fraunces',sans-serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:6px}
+.card-sub{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:28px}
+
+.tab-row{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);margin:0 36px}
+.tab-btn{flex:1;padding:10px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.35);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;background:transparent;border-top:none;border-left:none;border-right:none;font-family:'Geist',sans-serif}
+.tab-btn.active{color:#00e5a0;border-bottom-color:#00e5a0}
+.tab-btn:hover{color:rgba(255,255,255,0.6)}
+
+.form-wrap{padding:28px 36px 36px;display:none}
+.form-wrap.active{display:block}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);margin-bottom:7px;letter-spacing:0.2px}
+.field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:11px 14px;color:#fff;font-size:14px;font-family:'Geist',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus{border-color:rgba(0,229,160,0.35)}
+.field input::placeholder{color:rgba(255,255,255,0.2)}
+.field input.error{border-color:rgba(239,68,68,0.5)}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.submit-btn{width:100%;background:#00e5a0;color:#0a0c10;border:none;padding:13px;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Geist',sans-serif;transition:opacity 0.2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:hover{opacity:0.88}
+.submit-btn:disabled{opacity:0.4;cursor:not-allowed}
+.spinner{width:14px;height:14px;border:2px solid rgba(10,12,16,0.3);border-top-color:#0a0c10;border-radius:50%;animation:spin 0.8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;font-size:12px;color:rgba(255,255,255,0.2)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08)}
+
+.error-msg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.18);border-radius:8px;padding:10px 14px;font-size:12px;color:#f87171;margin-bottom:14px;display:none}
+.success-msg{background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);border-radius:8px;padding:10px 14px;font-size:12px;color:#00e5a0;margin-bottom:14px;display:none}
+
+.terms{font-size:11px;color:rgba(255,255,255,0.25);text-align:center;margin-top:16px;line-height:1.6}
+.terms a{color:rgba(255,255,255,0.4);text-decoration:none}
+.terms a:hover{color:#00e5a0}
+
+footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:20px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.flogo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:16px;font-style:italic;color:#fff;text-decoration:none}
+.flogo span{color:#00e5a0;font-style:normal}
+.fcopy{font-size:12px;color:rgba(255,255,255,0.2)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><em>Argovaa</em></a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="main">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-logo">
+        <div class="card-logo-mark">🤖</div>
+        <div class="card-logo-name"><em>Argovaa</em> <span>AI</span></div>
+      </div>
+      <div class="card-title" id="card-title">Welcome back</div>
+      <div class="card-sub" id="card-sub">Sign in to access the GC & thread dump analyser</div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('signin')">Sign in</button>
+      <button class="tab-btn" onclick="switchTab('register')">Create account</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <div class="form-wrap active" id="form-signin">
+      <div class="error-msg" id="signin-error"></div>
+      <div class="success-msg" id="signin-success"></div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="signin-email" placeholder="you@company.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signin-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="submit-btn" id="signin-btn" onclick="doSignIn()">
+        <span class="spinner" id="signin-spinner"></span>
+        <span id="signin-btn-text">Sign in →</span>
+      </button>
+      <div class="terms">
+        Don't have an account? <a href="#" onclick="switchTab('register')">Create one free</a>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="form-wrap" id="form-register">
+      <div class="error-msg" id="register-error"></div>
+      <div class="success-msg" id="register-success"></div>
+      <div class="field-row">
+        <div class="field">
+          <label>First name</label>
+          <input type="text" id="reg-first" placeholder="John" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label>Last name</label>
+          <input type="text" id="reg-last" placeholder="Smith" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="field">
+        <label>Work email</label>
+        <input type="email" id="reg-email" placeholder="you@company.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Company</label>
+        <input type="text" id="reg-company" placeholder="Acme Corp" autocomplete="organization">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="reg-password" placeholder="Min. 8 characters" autocomplete="new-password">
+      </div>
+      <button class="submit-btn" id="register-btn" onclick="doRegister()">
+        <span class="spinner" id="register-spinner"></span>
+        <span id="register-btn-text">Create free account →</span>
+      </button>
+      <div class="terms">
+        By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo"><em>Argovaa</em></a>
+  <div class="fcopy">© 2025 Argovaa.com</div>
+</footer>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.form-wrap').forEach(f => f.classList.remove('active'));
+  if (tab === 'signin') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('form-signin').classList.add('active');
+    document.getElementById('card-title').textContent = 'Welcome back';
+    document.getElementById('card-sub').textContent = 'Sign in to access the GC & thread dump analyser';
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('form-register').classList.add('active');
+    document.getElementById('card-title').textContent = 'Get started free';
+    document.getElementById('card-sub').textContent = 'Create your account to access the AI analyser';
+  }
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+function showSuccess(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function setLoading(btnId, spinnerId, textId, loading, text) {
+  document.getElementById(btnId).disabled = loading;
+  document.getElementById(spinnerId).style.display = loading ? 'block' : 'none';
+  document.getElementById(textId).textContent = text;
+}
+
+// Store users in localStorage
+function getUsers() {
+  return JSON.parse(localStorage.getItem('argovaa_users') || '[]');
+}
+function saveUsers(users) {
+  localStorage.setItem('argovaa_users', JSON.stringify(users));
+}
+function setSession(user) {
+  localStorage.setItem('argovaa_session', JSON.stringify({ email: user.email, name: user.firstName + ' ' + user.lastName, company: user.company, loggedIn: true, ts: Date.now() }));
+}
+
+async function sendNotification(type, userData) {
+  const subject = type === 'register'
+    ? `New Argovaa registration: ${userData.firstName} ${userData.lastName}`
+    : `Argovaa sign-in: ${userData.email}`;
+  const name = type === 'register'
+    ? `${userData.firstName} ${userData.lastName} (${userData.email}) — ${userData.company}`
+    : `${userData.name || userData.email}`;
+  const message = type === 'register'
+    ? `New user registered:\nName: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nCompany: ${userData.company}`
+    : `User signed in:\nEmail: ${userData.email}\nName: ${userData.name || 'Unknown'}`;
+  const time = new Date().toLocaleString();
+  try {
+    await emailjs.send('service_f0vuu16', 'template_sklh51u', {
+      subject: subject,
+      name: name,
+      message: message,
+      time: time
+    });
+    console.log('✅ Notification sent:', subject);
+  } catch(e) {
+    console.log('⚠️ Notification error:', e);
+  }
+}
+
+async function doRegister() {
+  const first = document.getElementById('reg-first').value.trim();
+  const last = document.getElementById('reg-last').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const company = document.getElementById('reg-company').value.trim();
+  const password = document.getElementById('reg-password').value;
+
+  if (!first || !last) return showError('register-error', 'Please enter your first and last name.');
+  if (!email || !email.includes('@')) return showError('register-error', 'Please enter a valid email address.');
+  if (!company) return showError('register-error', 'Please enter your company name.');
+  if (password.length < 8) return showError('register-error', 'Password must be at least 8 characters.');
+
+  const users = getUsers();
+  if (users.find(u => u.email === email)) {
+    return showError('register-error', 'An account with this email already exists. Please sign in.');
+  }
+
+  setLoading('register-btn', 'register-spinner', 'register-btn-text', true, 'Creating account...');
+
+  const newUser = { firstName: first, lastName: last, email, company, password, createdAt: new Date().toISOString() };
+  users.push(newUser);
+  saveUsers(users);
+  setSession(newUser);
+
+  await sendNotification('register', newUser);
+
+  setLoading('register-btn', 'register-spinner', 'register-btn-text', false, 'Create free account →');
+  showSuccess('register-success', '✓ Account created! Redirecting to analyser...');
+
+  setTimeout(() => { window.location.href = 'analyser.html'; }, 1500);
+}
+
+async function doSignIn() {
+  const email = document.getElementById('signin-email').value.trim().toLowerCase();
+  const password = document.getElementById('signin-password').value;
+
+  if (!email) return showError('signin-error', 'Please enter your email address.');
+  if (!password) return showError('signin-error', 'Please enter your password.');
+
+  setLoading('signin-btn', 'signin-spinner', 'signin-btn-text', true, 'Signing in...');
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (!user) {
+    setLoading('signin-btn', 'signin-spinner', 'signin-btn-text', false, 'Sign in →');
+    return showError('signin-error', 'Incorrect email or password. Please try again.');
+  }
+
+  setSession(user);
+  await sendNotification('signin', { email: user.email, name: user.firstName + ' ' + user.lastName });
+
+  setLoading('signin-btn', 'signin-spinner', 'signin-btn-text', false, 'Sign in →');
+  showSuccess('signin-success', '✓ Signed in! Redirecting to analyser...');
+
+  setTimeout(() => { window.location.href = 'analyser.html'; }, 1500);
+}
+
+// Auto-fill if coming from a redirect
+const params = new URLSearchParams(window.location.search);
+if (params.get('tab') === 'register') switchTab('register');
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('form-signin').classList.contains('active')) doSignIn();
+    else doRegister();
+  }
+});
+</script>
+</body>
+</html>
