@@ -159,9 +159,46 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
 
 <div class="page-wrap">
   <div class="page-header">
-    <div class="page-tag">Powered by BlazeMeter API</div>
+    <div class="page-tag">Performance benchmarking tools</div>
     <h1 class="page-title">Performance testing<br><em>portal</em></h1>
-    <p class="page-sub">Configure and run load tests against any URL directly from Argovaa. Real-time results, live metrics, and full test history — no BlazeMeter account needed.</p>
+    <p class="page-sub">Choose your performance testing tool, configure your test, and run load tests directly from Argovaa with real-time results and live metrics.</p>
+  </div>
+
+  <!-- TOOL SELECTOR -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+    <div id="tool-bzm" onclick="selectTool('bzm')" style="background:#111614;border:2px solid #00e5a0;border-radius:14px;padding:20px 24px;cursor:pointer;transition:all 0.2s">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:9px;background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.25);display:flex;align-items:center;justify-content:center;font-size:18px">⚡</div>
+        <div>
+          <div style="font-family:'Fraunces',sans-serif;font-size:16px;font-weight:700;color:#fff">BlazeMeter</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px">Enterprise load testing</div>
+        </div>
+        <div id="bzm-check" style="margin-left:auto;width:20px;height:20px;border-radius:50%;background:#00e5a0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#0a0c10;font-weight:700">✓</div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Industry-standard load testing platform. Requires paid account for API test creation. Free tier limited to manual tests.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 8px;background:rgba(147,51,234,0.1);border:1px solid rgba(147,51,234,0.2);color:#c084fc;border-radius:100px">JMeter compatible</span>
+        <span style="font-size:10px;padding:2px 8px;background:rgba(147,51,234,0.1);border:1px solid rgba(147,51,234,0.2);color:#c084fc;border-radius:100px">500+ locations</span>
+        <span style="font-size:10px;padding:2px 8px;background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.2);color:#f87171;border-radius:100px">Paid API access</span>
+      </div>
+    </div>
+
+    <div id="tool-k6" onclick="selectTool('k6')" style="background:#111614;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px 24px;cursor:pointer;transition:all 0.2s">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:9px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);display:flex;align-items:center;justify-content:center;font-size:18px">🚀</div>
+        <div>
+          <div style="font-family:'Fraunces',sans-serif;font-size:16px;font-weight:700;color:#fff">k6 Cloud</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px">by Grafana Labs</div>
+        </div>
+        <div id="k6-check" style="margin-left:auto;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.3);font-weight:700"></div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Modern developer-friendly load testing. Free tier includes 50 VUs and full API access. No restrictions on test creation.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:2px 8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;border-radius:100px">Free API access</span>
+        <span style="font-size:10px;padding:2px 8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;border-radius:100px">50 VUs free</span>
+        <span style="font-size:10px;padding:2px 8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;border-radius:100px">29.9k ⭐ GitHub</span>
+      </div>
+    </div>
   </div>
 
   <div class="layout">
@@ -173,22 +210,40 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="card-title">BlazeMeter API key</div>
-            <div class="card-sub">Required to run tests — free account at blazemeter.com</div>
+            <div class="card-title" id="key-card-title">BlazeMeter API key</div>
+            <div class="card-sub" id="key-card-sub">Required to run tests — account at blazemeter.com</div>
           </div>
           <span id="key-status" style="font-size:11px;color:rgba(255,255,255,0.25)">Not configured</span>
         </div>
         <div class="card-body">
-          <div class="info-box">Get your free API key at <a href="https://www.blazemeter.com" target="_blank">blazemeter.com</a> → Settings → API Keys. Free tier supports up to 50 concurrent users and 10-minute tests. <strong style="color:#00e5a0">✓ Netlify serverless proxy active</strong> — API calls run server-side, no CORS issues.</div>
-          <div class="api-key-section">
-            <div class="api-key-label">API Key ID</div>
-            <input class="api-key-input" type="text" id="bzm-key-id" placeholder="Paste your BlazeMeter API Key ID here...">
+
+          <!-- BlazeMeter key fields -->
+          <div id="bzm-key-fields">
+            <div class="info-box">Get your API key at <a href="https://www.blazemeter.com" target="_blank">blazemeter.com</a> → Settings → API Keys. <strong style="color:#f87171">Note:</strong> Free tier requires a paid plan for API test creation. <strong style="color:#00e5a0">✓ Netlify serverless proxy active</strong></div>
+            <div class="api-key-section">
+              <div class="api-key-label">API Key ID</div>
+              <input class="api-key-input" type="text" id="bzm-key-id" placeholder="Paste your BlazeMeter API Key ID...">
+            </div>
+            <div class="api-key-section">
+              <div class="api-key-label">API Secret</div>
+              <input class="api-key-input" type="password" id="bzm-key-secret" placeholder="Paste your API Secret...">
+            </div>
           </div>
-          <div class="api-key-section">
-            <div class="api-key-label">API Secret</div>
-            <input class="api-key-input" type="password" id="bzm-key-secret" placeholder="Paste your API Secret here...">
+
+          <!-- k6 key fields -->
+          <div id="k6-key-fields" style="display:none">
+            <div class="info-box">Get your free API token at <a href="https://app.k6.io" target="_blank">app.k6.io</a> → Profile → API Token. Also get your <strong style="color:#00e5a0">Project ID</strong> from Projects page URL. Free tier: 50 VUs, full API access. <strong style="color:#00e5a0">✓ Netlify serverless proxy active</strong></div>
+            <div class="api-key-section">
+              <div class="api-key-label">k6 API Token</div>
+              <input class="api-key-input" type="text" id="k6-token" placeholder="Paste your k6 API token...">
+            </div>
+            <div class="api-key-section">
+              <div class="api-key-label">Project ID</div>
+              <input class="api-key-input" type="text" id="k6-project" placeholder="e.g. 3701234">
+            </div>
           </div>
-          <button onclick="saveApiKey()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:#00e5a0;padding:8px 18px;border-radius:7px;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;width:100%;margin-top:4px;transition:all 0.2s">Save API key</button>
+
+          <button onclick="saveApiKey()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:#00e5a0;padding:8px 18px;border-radius:7px;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;width:100%;margin-top:4px;transition:all 0.2s">Save credentials</button>
         </div>
       </div>
 
@@ -388,6 +443,71 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
 </footer>
 
 <script>
+// Tool selection
+let activeTool = 'bzm';
+
+function selectTool(tool) {
+  activeTool = tool;
+  const bzmCard = document.getElementById('tool-bzm');
+  const k6Card = document.getElementById('tool-k6');
+  const bzmCheck = document.getElementById('bzm-check');
+  const k6Check = document.getElementById('k6-check');
+  const bzmFields = document.getElementById('bzm-key-fields');
+  const k6Fields = document.getElementById('k6-key-fields');
+  const keyTitle = document.getElementById('key-card-title');
+  const keySub = document.getElementById('key-card-sub');
+
+  if (tool === 'bzm') {
+    bzmCard.style.border = '2px solid #00e5a0';
+    k6Card.style.border = '1px solid rgba(255,255,255,0.08)';
+    bzmCheck.style.background = '#00e5a0';
+    bzmCheck.style.color = '#0a0c10';
+    bzmCheck.textContent = '✓';
+    k6Check.style.background = 'rgba(255,255,255,0.08)';
+    k6Check.textContent = '';
+    bzmFields.style.display = 'block';
+    k6Fields.style.display = 'none';
+    keyTitle.textContent = 'BlazeMeter API key';
+    keySub.textContent = 'Required to run tests — account at blazemeter.com';
+  } else {
+    k6Card.style.border = '2px solid #00e5a0';
+    bzmCard.style.border = '1px solid rgba(255,255,255,0.08)';
+    k6Check.style.background = '#00e5a0';
+    k6Check.style.color = '#0a0c10';
+    k6Check.textContent = '✓';
+    bzmCheck.style.background = 'rgba(255,255,255,0.08)';
+    bzmCheck.textContent = '';
+    bzmFields.style.display = 'none';
+    k6Fields.style.display = 'block';
+    keyTitle.textContent = 'k6 Cloud API token';
+    keySub.textContent = 'Free account at app.k6.io — 50 VUs included';
+  }
+  // Load saved credentials for selected tool
+  loadSavedKey(tool);
+}
+
+function loadSavedKey(tool) {
+  if (tool === 'bzm') {
+    const saved = localStorage.getItem('bzm_api_key');
+    if (saved) {
+      const k = JSON.parse(saved);
+      document.getElementById('bzm-key-id').value = k.id || '';
+      document.getElementById('bzm-key-secret').value = k.secret || '';
+      document.getElementById('key-status').textContent = '✓ Configured';
+      document.getElementById('key-status').style.color = '#00e5a0';
+    }
+  } else {
+    const saved = localStorage.getItem('k6_api_key');
+    if (saved) {
+      const k = JSON.parse(saved);
+      document.getElementById('k6-token').value = k.token || '';
+      document.getElementById('k6-project').value = k.projectId || '';
+      document.getElementById('key-status').textContent = '✓ Configured';
+      document.getElementById('key-status').style.color = '#00e5a0';
+    }
+  }
+}
+
 // Session
 try{
   const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');
@@ -398,25 +518,26 @@ function signOut(){localStorage.removeItem('argovaa_session');window.location.hr
 
 // API Key management
 function saveApiKey(){
-  const id=document.getElementById('bzm-key-id').value.trim();
-  const secret=document.getElementById('bzm-key-secret').value.trim();
-  if(!id||!secret){alert('Please enter both API Key ID and Secret.');return;}
-  localStorage.setItem('bzm_api_key',JSON.stringify({id,secret}));
+  if (activeTool === 'bzm') {
+    const id=document.getElementById('bzm-key-id').value.trim();
+    const secret=document.getElementById('bzm-key-secret').value.trim();
+    if(!id||!secret){alert('Please enter both API Key ID and Secret.');return;}
+    localStorage.setItem('bzm_api_key',JSON.stringify({id,secret}));
+  } else {
+    const token=document.getElementById('k6-token').value.trim();
+    const projectId=document.getElementById('k6-project').value.trim();
+    if(!token){alert('Please enter your k6 API token.');return;}
+    if(!projectId){alert('Please enter your k6 Project ID.');return;}
+    localStorage.setItem('k6_api_key',JSON.stringify({token,projectId}));
+  }
   document.getElementById('key-status').textContent='✓ Configured';
   document.getElementById('key-status').style.color='#00e5a0';
-  addLog('API key saved successfully','success');
+  addLog((activeTool==='bzm'?'BlazeMeter':'k6 Cloud')+' credentials saved','success');
 }
 
 // Load saved key on page load
 window.addEventListener('DOMContentLoaded',()=>{
-  const saved=localStorage.getItem('bzm_api_key');
-  if(saved){
-    const k=JSON.parse(saved);
-    document.getElementById('bzm-key-id').value=k.id||'';
-    document.getElementById('bzm-key-secret').value=k.secret||'';
-    document.getElementById('key-status').textContent='✓ Configured';
-    document.getElementById('key-status').style.color='#00e5a0';
-  }
+  loadSavedKey('bzm');
   loadHistory();
 });
 
@@ -488,15 +609,13 @@ function clearHistory(){
   loadHistory();
 }
 
-// Netlify serverless function proxy — no CORS issues, runs server-side
-// Calls /.netlify/functions/blazemeter which forwards to BlazeMeter API
+// k6 Cloud API — free tier, no account restrictions
+// Docs: https://grafana.com/docs/grafana-cloud/testing/k6/
 
 async function bzmFetch(path, options={}) {
   const key = JSON.parse(localStorage.getItem('bzm_api_key') || '{}');
   const method = options.method || 'GET';
-
   const funcUrl = '/.netlify/functions/blazemeter?path=' + encodeURIComponent(path);
-
   const res = await fetch(funcUrl, {
     method: method,
     headers: {
@@ -506,10 +625,7 @@ async function bzmFetch(path, options={}) {
     },
     ...(options.body ? { body: options.body } : {})
   });
-
   const data = await res.json();
-
-  // Extract a clean string error message from any response shape
   function extractError(d) {
     if (!d) return 'Unknown error';
     if (typeof d === 'string') return d;
@@ -522,42 +638,57 @@ async function bzmFetch(path, options={}) {
     if (d.result && d.result.message) return d.result.message;
     return JSON.stringify(d);
   }
-
-  if (!res.ok) {
-    throw new Error(extractError(data));
-  }
-
-  // BlazeMeter returns errors inside 200 responses too
+  if (!res.ok) throw new Error(extractError(data));
   if (data && data.error !== undefined && data.error !== null && data.error !== false) {
     throw new Error(extractError(data));
   }
-
   return data;
 }
 
-function authHeader(key) {
-  // Headers now passed directly in bzmFetch — kept for compatibility
-  return {};
+// k6 Cloud direct API call (uses token auth, no proxy needed for GET)
+async function k6Fetch(path, options={}) {
+  const key = JSON.parse(localStorage.getItem('k6_api_key') || '{}');
+  const token = key.token;
+  const method = options.method || 'GET';
+  const k6Path = 'https://api.k6.io' + path;
+  const funcUrl = '/.netlify/functions/blazemeter?path=' + encodeURIComponent(k6Path);
+  const res = await fetch(funcUrl, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-bzm-key-id': 'token',
+      'x-bzm-key-secret': token || ''
+    },
+    ...(options.body ? { body: options.body } : {})
+  });
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error('Invalid response: ' + text.substring(0, 100)); }
 }
+
+function authHeader(key) { return {}; }
 
 // Main test runner
 let testInterval=null;
 let testProgress=0;
 
 async function runTest(){
+  if(activeTool==='k6'){ await runK6Test(); return; }
+  await runBzmTest();
+}
+
+async function runBzmTest(){
   const keyData=localStorage.getItem('bzm_api_key');
-  if(!keyData){
-    alert('Please configure your BlazeMeter API key first.');
-    return;
-  }
+  if(!keyData){alert('Please configure your BlazeMeter API key first.');return;}
   const key=JSON.parse(keyData);
+  if(!key.id||!key.secret){alert('Please enter both API Key ID and Secret.');return;}
+
   const url=document.getElementById('t-url').value.trim();
   const users=parseInt(document.getElementById('t-users').value)||25;
   const duration=parseInt(document.getElementById('t-duration').value)||5;
   const ramp=parseInt(document.getElementById('t-ramp').value)||60;
-  const testType=document.getElementById('t-type').value;
   const testName=document.getElementById('t-name').value||'Argovaa test';
-  const location=document.getElementById('t-location').value||'us-west-1';
+  const location=document.getElementById('t-location')?.value||'us-west-1';
   const sla=parseInt(document.getElementById('t-sla').value)||500;
 
   if(!url){alert('Please enter a target URL.');return;}
@@ -566,72 +697,50 @@ async function runTest(){
   btn.disabled=true;
   document.getElementById('btn-spinner').style.display='block';
   document.getElementById('run-btn-text').textContent='Starting test...';
-
   setStatusRunning(testName,url,users,duration);
 
   try{
-    // Step 1: Verify API key works first
-    addLog('Verifying API key via Netlify serverless function...','info');
+    addLog('Verifying BlazeMeter API key...','info');
     let verifyData;
-    try {
-      verifyData = await bzmFetch('/api/v4/user', { method:'GET' });
-      addLog('API key verified — user: '+(verifyData?.result?.email || verifyData?.result?.login || 'OK'),'success');
-    } catch(verifyErr) {
-      // If verify fails with auth error, show clear message
-      throw new Error('API key invalid: ' + verifyErr.message + '. Please check your BlazeMeter API Key ID and Secret.');
+    try{
+      verifyData=await bzmFetch('/api/v4/user',{method:'GET'});
+      addLog('API key verified — user: '+(verifyData?.result?.email||'OK'),'success');
+    }catch(verifyErr){
+      throw new Error('API key invalid: '+verifyErr.message);
     }
 
-    // Step 2: Create test
     addLog('Creating test on BlazeMeter...','info');
     const createData=await bzmFetch('/api/v4/tests',{
       method:'POST',
-      headers:authHeader(key),
       body:JSON.stringify({
         name:testName,
+        projectId:0,
         configuration:{
-          type:'url-or-file',
-          filename:'',
-          concurrency:users,
-          rampUp:ramp,
-          duration:duration*60,
-          location:location,
-          overrideForceParentSuite:false
+          type:'taurus',scriptType:'url',
+          concurrency:[{clusterType:'ms',sessions:users}],
+          serversCount:1,duration:duration*60,rampUp:ramp,location:location
         }
       })
     });
 
     const testId=createData.result?.id;
-    if(!testId) throw new Error('Could not create test — check your BlazeMeter plan supports API test creation');
+    if(!testId) throw new Error('Could not create test — your BlazeMeter plan may require an upgrade for API test creation');
     addLog('Test created — ID: '+testId,'success');
 
-    // Step 3: Set the URL scenario
     addLog('Configuring test scenario for '+url+'...','info');
     await bzmFetch('/api/v4/tests/'+testId+'/scripts',{
       method:'POST',
-      headers:authHeader(key),
       body:JSON.stringify({
-        scenarios:[{
-          scenarioName:'main',
-          requests:[{url:url,method:'GET',label:'Target URL'}],
-          keepalive:true,
-          thinkTime:1000
-        }]
+        content:'execution:\n- concurrency: '+users+'\n  hold-for: '+duration+'m\n  ramp-up: '+Math.round(ramp/60)+'m\n  scenario: url-scenario\nscenarios:\n  url-scenario:\n    requests:\n    - url: '+url+'\n      label: Target\n      method: GET\n',
+        fileName:'test.yml',type:'taurus'
       })
     });
 
-    // Step 4: Start the test
     addLog('Starting test execution...','info');
-    const startData=await bzmFetch('/api/v4/tests/'+testId+'/start',{
-      method:'POST',
-      headers:authHeader(key),
-      body:'{}'
-    });
-
+    const startData=await bzmFetch('/api/v4/tests/'+testId+'/start',{method:'POST',body:'{}'});
     const sessionId=startData.result?.sessionsId?.[0];
     addLog('Test running — session: '+(sessionId||'started'),'success');
-
-    // Step 5: Poll for results
-    pollResults(key,testId,sessionId,testName,url,users,duration,sla);
+    pollBzmResults(key,testId,sessionId,testName,url,users,duration,sla);
 
   }catch(err){
     addLog('Error: '+err.message,'error');
@@ -641,42 +750,121 @@ async function runTest(){
   }
 }
 
-function pollResults(key,testId,sessionId,testName,url,users,duration,sla){
+function pollBzmResults(key,testId,sessionId,testName,url,users,duration,sla){
   let elapsed=0;
   const totalSec=duration*60;
   testInterval=setInterval(async()=>{
     elapsed+=10;
-    const pct=Math.min(Math.round((elapsed/totalSec)*100),98);
-    updateProgress(pct,elapsed,totalSec);
+    updateProgress(Math.min(Math.round((elapsed/totalSec)*100),98),elapsed,totalSec);
     try{
-      const data=await bzmFetch('/api/v4/data/masters/'+testId+'/reports/aggregatereport/data',{
-        headers:authHeader(key)
-      });
+      const data=await bzmFetch('/api/v4/data/masters/'+testId+'/reports/aggregatereport/data');
       const agg=data.result?.[0];
       if(agg){
-        updateLiveMetrics({
-          avgRt:Math.round(agg.avgRt||0),
-          p95:Math.round(agg.perc95||0),
-          rps:Math.round(agg.throughput||0),
-          errors:((agg.errorsRate||0)*100).toFixed(1)
-        });
-        // Check if test finished
+        updateLiveMetrics({avgRt:Math.round(agg.avgRt||0),p95:Math.round(agg.perc95||0),rps:Math.round(agg.throughput||0),errors:((agg.errorsRate||0)*100).toFixed(1)});
         if(agg.status==='ENDED'||elapsed>=totalSec+30){
           clearInterval(testInterval);
           const passed=agg.perc95<sla&&parseFloat(agg.errorsRate||0)<0.01;
-          setStatusDone(passed,{avgRt:Math.round(agg.avgRt),p95:Math.round(agg.perc95),rps:Math.round(agg.throughput),errors:((agg.errorsRate||0)*100).toFixed(1)});
-          saveToHistory({name:testName,url:url,users:users,duration:duration,status:passed?'passed':'failed',date:new Date().toLocaleString(),p95:Math.round(agg.perc95),rps:Math.round(agg.throughput)});
+          setStatusDone(passed,null);
+          saveToHistory({name:testName,url:url,users:users,duration:duration,status:passed?'passed':'failed',date:new Date().toLocaleString()});
           resetBtn();
         }
       }
-    }catch(e){
-      addLog('Polling error: '+e.message,'warning');
+    }catch(e){addLog('Polling error: '+e.message,'warning');}
+    if(elapsed>=totalSec+60){clearInterval(testInterval);setStatusDone(true,null);resetBtn();}
+  },10000);
+}
+
+async function runK6Test(){
+  const keyData=localStorage.getItem('k6_api_key');
+  if(!keyData){alert('Please configure your k6 API token first.');return;}
+  const key=JSON.parse(keyData);
+  if(!key.token){alert('Please enter your k6 API token.');return;}
+
+  const url=document.getElementById('t-url').value.trim();
+  const users=parseInt(document.getElementById('t-users').value)||25;
+  const duration=parseInt(document.getElementById('t-duration').value)||5;
+  const ramp=parseInt(document.getElementById('t-ramp').value)||60;
+  const testName=document.getElementById('t-name').value||'Argovaa k6 test';
+  const sla=parseInt(document.getElementById('t-sla').value)||500;
+  const projectId=parseInt(key.projectId)||0;
+
+  if(!url){alert('Please enter a target URL.');return;}
+
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;
+  document.getElementById('btn-spinner').style.display='block';
+  document.getElementById('run-btn-text').textContent='Starting test...';
+  setStatusRunning(testName,url,users,duration);
+
+  try{
+    // Step 1: Verify token
+    addLog('Verifying k6 API token...','info');
+    const meData = await k6Fetch('/v3/account/me');
+    if(!meData?.result?.id && !meData?.k6_account_id) {
+      throw new Error('Invalid k6 token — please check your API token');
     }
-    if(elapsed>=totalSec+60){
-      clearInterval(testInterval);
-      setStatusDone(true,null);
-      resetBtn();
-    }
+    addLog('Token verified ✓','success');
+
+    // Get project/org ID
+    const orgId = meData?.result?.organizations?.[0]?.id || meData?.organization_id || 1;
+
+    // Step 2: Create k6 test script
+    addLog('Creating k6 test script for '+url+'...','info');
+    const k6Script = `import http from 'k6/http';
+import { sleep, check } from 'k6';
+export const options = {
+  stages: [
+    { duration: '${Math.round(ramp/60)}m', target: ${users} },
+    { duration: '${duration}m', target: ${users} },
+    { duration: '1m', target: 0 },
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<${sla}'],
+    http_req_failed: ['rate<0.01'],
+  },
+};
+export default function () {
+  const res = http.get('${url}');
+  check(res, { 'status 200': r => r.status === 200 });
+  sleep(1.5);
+}`;
+
+    // Step 3: Create test in k6 Cloud
+    const createData = await k6Fetch('/v3/tests', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: testName,
+        project_id: projectId,
+        script: k6Script
+      })
+    });
+
+    const testId = createData?.result?.id || createData?.id;
+    if(!testId) throw new Error('Could not create test: ' + JSON.stringify(createData));
+    addLog('Test created — ID: '+testId,'success');
+
+    // Step 4: Start the test
+    addLog('Starting test execution...','info');
+    const startData = await k6Fetch('/v3/tests/'+testId+'/start', {
+      method: 'POST',
+      body: '{}'
+    });
+
+    const runId = startData?.result?.id || startData?.id;
+    addLog('Test running — run ID: '+(runId||'started'),'success');
+
+    // Step 5: Poll for results
+    pollK6Results(key,testId,runId,testName,url,users,duration,sla);
+
+  }catch(err){
+    addLog('Error: '+err.message,'error');
+    setStatusError(err.message);
+    resetBtn();
+    saveToHistory({name:testName,url:url,users:users,duration:duration,status:'failed',date:new Date().toLocaleString(),error:err.message});
+  }
+}
+
+function pollK6Results(key,testId,runId,testName,url,users,duration,sla){
   },10000);
 }
 
