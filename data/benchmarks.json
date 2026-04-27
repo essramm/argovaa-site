@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-04-27T04:10:00.884882Z",
+  "updated_at": "2026-04-27T08:35:43.721334Z",
   "version": "1.0",
   "summary": {
-    "total_models": 358,
+    "total_models": 360,
     "total_providers": 56,
     "total_gpus": 5,
     "mlperf_round": "v4.1"
@@ -59,11 +59,13 @@
       "key": "qwen",
       "label": "Qwen",
       "color": "#888888",
-      "model_count": 50,
+      "model_count": 52,
       "avg_input_cost": 0,
       "min_context": 0,
       "max_context": 1000000,
       "models": [
+        "Qwen: Qwen3.5 Plus 2026-04-20",
+        "Qwen: Qwen3.6 Flash",
         "Qwen: Qwen3.6 35B A3B",
         "Qwen: Qwen3.6 Max Preview",
         "Qwen: Qwen3.6 27B",
@@ -178,17 +180,17 @@
         "OpenAI: GPT-4o (2024-08-06)",
         "OpenAI: GPT-4o-mini (2024-07-18)",
         "OpenAI: GPT-4o-mini",
-        "OpenAI: GPT-4o",
         "OpenAI: GPT-4o (2024-05-13)",
+        "OpenAI: GPT-4o",
         "OpenAI: GPT-4 Turbo",
-        "OpenAI: GPT-3.5 Turbo (older v0613)",
         "OpenAI: GPT-4 Turbo Preview",
+        "OpenAI: GPT-3.5 Turbo (older v0613)",
         "OpenAI: GPT-4 Turbo (older v1106)",
         "OpenAI: GPT-3.5 Turbo Instruct",
         "OpenAI: GPT-3.5 Turbo 16k",
         "OpenAI: GPT-4 (older v0314)",
-        "OpenAI: GPT-3.5 Turbo",
-        "OpenAI: GPT-4"
+        "OpenAI: GPT-4",
+        "OpenAI: GPT-3.5 Turbo"
       ]
     },
     {
@@ -892,8 +894,8 @@
         "Meta: Llama 3.3 70B Instruct",
         "Meta: Llama 3.2 3B Instruct (free)",
         "Meta: Llama 3.2 3B Instruct",
-        "Meta: Llama 3.2 11B Vision Instruct",
         "Meta: Llama 3.2 1B Instruct",
+        "Meta: Llama 3.2 11B Vision Instruct",
         "Meta: Llama 3.1 8B Instruct",
         "Meta: Llama 3.1 70B Instruct",
         "Meta: Llama 3 8B Instruct",
@@ -923,8 +925,8 @@
       "models": [
         "Cohere: Command A",
         "Cohere: Command R7B (12-2024)",
-        "Cohere: Command R (08-2024)",
-        "Cohere: Command R+ (08-2024)"
+        "Cohere: Command R+ (08-2024)",
+        "Cohere: Command R (08-2024)"
       ]
     },
     {
@@ -977,8 +979,8 @@
       "min_context": 0,
       "max_context": 8000,
       "models": [
-        "Inflection: Inflection 3 Pi",
-        "Inflection: Inflection 3 Productivity"
+        "Inflection: Inflection 3 Productivity",
+        "Inflection: Inflection 3 Pi"
       ]
     },
     {
@@ -1031,6 +1033,30 @@
     }
   ],
   "models": [
+    {
+      "id": "qwen/qwen3.5-plus-20260420",
+      "name": "Qwen: Qwen3.5 Plus 2026-04-20",
+      "provider_key": "qwen",
+      "provider_label": "Qwen",
+      "provider_color": "#888888",
+      "context_length": 1000000,
+      "input_cost_per_1m": 0.4,
+      "output_cost_per_1m": 2.4,
+      "description": "Qwen3.5 Plus (April 2026) is a large-scale multimodal language model from Alibaba. It accepts text, image, and video input and produces text output, with a 1M token context window. This...",
+      "source": "openrouter"
+    },
+    {
+      "id": "qwen/qwen3.6-flash",
+      "name": "Qwen: Qwen3.6 Flash",
+      "provider_key": "qwen",
+      "provider_label": "Qwen",
+      "provider_color": "#888888",
+      "context_length": 1000000,
+      "input_cost_per_1m": 0.25,
+      "output_cost_per_1m": 1.5,
+      "description": "Qwen3.6 Flash is a fast, efficient language model from Alibaba's Qwen 3.6 series. It supports text, image, and video input with a 1M token context window. Tiered pricing kicks in...",
+      "source": "openrouter"
+    },
     {
       "id": "qwen/qwen3.6-35b-a3b",
       "name": "Qwen: Qwen3.6 35B A3B",
@@ -4301,7 +4327,7 @@
       "provider_key": "google",
       "provider_label": "Google",
       "provider_color": "#4285f4",
-      "context_length": 1000000,
+      "context_length": 1048576,
       "input_cost_per_1m": 0.1,
       "output_cost_per_1m": 0.4,
       "description": "Gemini Flash 2.0 offers a significantly faster time to first token (TTFT) compared to [Gemini Flash 1.5](/google/gemini-flash-1.5), while maintaining quality on par with larger models like [Gemini Pro 1.5](/google/gemini-pro-1.5). It...",
@@ -4752,18 +4778,6 @@
       "source": "openrouter"
     },
     {
-      "id": "inflection/inflection-3-pi",
-      "name": "Inflection: Inflection 3 Pi",
-      "provider_key": "inflection",
-      "provider_label": "Inflection",
-      "provider_color": "#888888",
-      "context_length": 8000,
-      "input_cost_per_1m": 2.5,
-      "output_cost_per_1m": 10.0,
-      "description": "Inflection 3 Pi powers Inflection's [Pi](https://pi.ai) chatbot, including backstory, emotional intelligence, productivity, and safety. It has access to recent news, and excels in scenarios like customer support and roleplay. Pi...",
-      "source": "openrouter"
-    },
-    {
       "id": "inflection/inflection-3-productivity",
       "name": "Inflection: Inflection 3 Productivity",
       "provider_key": "inflection",
@@ -4773,6 +4787,18 @@
       "input_cost_per_1m": 2.5,
       "output_cost_per_1m": 10.0,
       "description": "Inflection 3 Productivity is optimized for following instructions. It is better for tasks requiring JSON output or precise adherence to provided guidelines. It has access to recent news. For emotional...",
+      "source": "openrouter"
+    },
+    {
+      "id": "inflection/inflection-3-pi",
+      "name": "Inflection: Inflection 3 Pi",
+      "provider_key": "inflection",
+      "provider_label": "Inflection",
+      "provider_color": "#888888",
+      "context_length": 8000,
+      "input_cost_per_1m": 2.5,
+      "output_cost_per_1m": 10.0,
+      "description": "Inflection 3 Pi powers Inflection's [Pi](https://pi.ai) chatbot, including backstory, emotional intelligence, productivity, and safety. It has access to recent news, and excels in scenarios like customer support and roleplay. Pi...",
       "source": "openrouter"
     },
     {
@@ -4812,18 +4838,6 @@
       "source": "openrouter"
     },
     {
-      "id": "meta-llama/llama-3.2-11b-vision-instruct",
-      "name": "Meta: Llama 3.2 11B Vision Instruct",
-      "provider_key": "meta-llama",
-      "provider_label": "Open source",
-      "provider_color": "#7c3aed",
-      "context_length": 131072,
-      "input_cost_per_1m": 0.245,
-      "output_cost_per_1m": 0.245,
-      "description": "Llama 3.2 11B Vision is a multimodal model with 11 billion parameters, designed to handle tasks combining visual and textual data. It excels in tasks such as image captioning and...",
-      "source": "openrouter"
-    },
-    {
       "id": "meta-llama/llama-3.2-1b-instruct",
       "name": "Meta: Llama 3.2 1B Instruct",
       "provider_key": "meta-llama",
@@ -4833,6 +4847,18 @@
       "input_cost_per_1m": 0.027,
       "output_cost_per_1m": 0.2,
       "description": "Llama 3.2 1B is a 1-billion-parameter language model focused on efficiently performing natural language tasks, such as summarization, dialogue, and multilingual text analysis. Its smaller size allows it to operate...",
+      "source": "openrouter"
+    },
+    {
+      "id": "meta-llama/llama-3.2-11b-vision-instruct",
+      "name": "Meta: Llama 3.2 11B Vision Instruct",
+      "provider_key": "meta-llama",
+      "provider_label": "Open source",
+      "provider_color": "#7c3aed",
+      "context_length": 131072,
+      "input_cost_per_1m": 0.245,
+      "output_cost_per_1m": 0.245,
+      "description": "Llama 3.2 11B Vision is a multimodal model with 11 billion parameters, designed to handle tasks combining visual and textual data. It excels in tasks such as image captioning and...",
       "source": "openrouter"
     },
     {
@@ -4848,18 +4874,6 @@
       "source": "openrouter"
     },
     {
-      "id": "cohere/command-r-08-2024",
-      "name": "Cohere: Command R (08-2024)",
-      "provider_key": "cohere",
-      "provider_label": "Cohere",
-      "provider_color": "#39594e",
-      "context_length": 128000,
-      "input_cost_per_1m": 0.15,
-      "output_cost_per_1m": 0.6,
-      "description": "command-r-08-2024 is an update of the [Command R](/models/cohere/command-r) with improved performance for multilingual retrieval-augmented generation (RAG) and tool use. More broadly, it is better at math, code and reasoning and...",
-      "source": "openrouter"
-    },
-    {
       "id": "cohere/command-r-plus-08-2024",
       "name": "Cohere: Command R+ (08-2024)",
       "provider_key": "cohere",
@@ -4869,6 +4883,18 @@
       "input_cost_per_1m": 2.5,
       "output_cost_per_1m": 10.0,
       "description": "command-r-plus-08-2024 is an update of the [Command R+](/models/cohere/command-r-plus) with roughly 50% higher throughput and 25% lower latencies as compared to the previous Command R+ version, while keeping the hardware footprint...",
+      "source": "openrouter"
+    },
+    {
+      "id": "cohere/command-r-08-2024",
+      "name": "Cohere: Command R (08-2024)",
+      "provider_key": "cohere",
+      "provider_label": "Cohere",
+      "provider_color": "#39594e",
+      "context_length": 128000,
+      "input_cost_per_1m": 0.15,
+      "output_cost_per_1m": 0.6,
+      "description": "command-r-08-2024 is an update of the [Command R](/models/cohere/command-r) with improved performance for multilingual retrieval-augmented generation (RAG) and tool use. More broadly, it is better at math, code and reasoning and...",
       "source": "openrouter"
     },
     {
@@ -4974,8 +5000,8 @@
       "provider_label": "Open source",
       "provider_color": "#7c3aed",
       "context_length": 131072,
-      "input_cost_per_1m": 0.01,
-      "output_cost_per_1m": 0.03,
+      "input_cost_per_1m": 0.02,
+      "output_cost_per_1m": 0.04,
       "description": "A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA. The model is multilingual, supporting English, French, German, Spanish, Italian, Portuguese, Chinese, Japanese,...",
       "source": "openrouter"
     },
@@ -5040,18 +5066,6 @@
       "source": "openrouter"
     },
     {
-      "id": "openai/gpt-4o",
-      "name": "OpenAI: GPT-4o",
-      "provider_key": "openai",
-      "provider_label": "OpenAI",
-      "provider_color": "#10a37f",
-      "context_length": 128000,
-      "input_cost_per_1m": 2.5,
-      "output_cost_per_1m": 10.0,
-      "description": "GPT-4o (\"o\" for \"omni\") is OpenAI's latest AI model, supporting both text and image inputs with text outputs. It maintains the intelligence level of [GPT-4 Turbo](/models/openai/gpt-4-turbo) while being twice as...",
-      "source": "openrouter"
-    },
-    {
       "id": "openai/gpt-4o-2024-05-13",
       "name": "OpenAI: GPT-4o (2024-05-13)",
       "provider_key": "openai",
@@ -5060,6 +5074,18 @@
       "context_length": 128000,
       "input_cost_per_1m": 5.0,
       "output_cost_per_1m": 15.0,
+      "description": "GPT-4o (\"o\" for \"omni\") is OpenAI's latest AI model, supporting both text and image inputs with text outputs. It maintains the intelligence level of [GPT-4 Turbo](/models/openai/gpt-4-turbo) while being twice as...",
+      "source": "openrouter"
+    },
+    {
+      "id": "openai/gpt-4o",
+      "name": "OpenAI: GPT-4o",
+      "provider_key": "openai",
+      "provider_label": "OpenAI",
+      "provider_color": "#10a37f",
+      "context_length": 128000,
+      "input_cost_per_1m": 2.5,
+      "output_cost_per_1m": 10.0,
       "description": "GPT-4o (\"o\" for \"omni\") is OpenAI's latest AI model, supporting both text and image inputs with text outputs. It maintains the intelligence level of [GPT-4 Turbo](/models/openai/gpt-4-turbo) while being twice as...",
       "source": "openrouter"
     },
@@ -5148,18 +5174,6 @@
       "source": "openrouter"
     },
     {
-      "id": "openai/gpt-3.5-turbo-0613",
-      "name": "OpenAI: GPT-3.5 Turbo (older v0613)",
-      "provider_key": "openai",
-      "provider_label": "OpenAI",
-      "provider_color": "#10a37f",
-      "context_length": 4095,
-      "input_cost_per_1m": 1.0,
-      "output_cost_per_1m": 2.0,
-      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
-      "source": "openrouter"
-    },
-    {
       "id": "openai/gpt-4-turbo-preview",
       "name": "OpenAI: GPT-4 Turbo Preview",
       "provider_key": "openai",
@@ -5169,6 +5183,18 @@
       "input_cost_per_1m": 10.0,
       "output_cost_per_1m": 30.0,
       "description": "The preview GPT-4 model with improved instruction following, JSON mode, reproducible outputs, parallel function calling, and more. Training data: up to Dec 2023. **Note:** heavily rate limited by OpenAI while...",
+      "source": "openrouter"
+    },
+    {
+      "id": "openai/gpt-3.5-turbo-0613",
+      "name": "OpenAI: GPT-3.5 Turbo (older v0613)",
+      "provider_key": "openai",
+      "provider_label": "OpenAI",
+      "provider_color": "#10a37f",
+      "context_length": 4095,
+      "input_cost_per_1m": 1.0,
+      "output_cost_per_1m": 2.0,
+      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
       "source": "openrouter"
     },
     {
@@ -5304,18 +5330,6 @@
       "source": "openrouter"
     },
     {
-      "id": "openai/gpt-3.5-turbo",
-      "name": "OpenAI: GPT-3.5 Turbo",
-      "provider_key": "openai",
-      "provider_label": "OpenAI",
-      "provider_color": "#10a37f",
-      "context_length": 16385,
-      "input_cost_per_1m": 0.5,
-      "output_cost_per_1m": 1.5,
-      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
-      "source": "openrouter"
-    },
-    {
       "id": "openai/gpt-4",
       "name": "OpenAI: GPT-4",
       "provider_key": "openai",
@@ -5325,6 +5339,18 @@
       "input_cost_per_1m": 30.0,
       "output_cost_per_1m": 60.0,
       "description": "OpenAI's flagship model, GPT-4 is a large-scale multimodal language model capable of solving difficult problems with greater accuracy than previous models due to its broader general knowledge and advanced reasoning...",
+      "source": "openrouter"
+    },
+    {
+      "id": "openai/gpt-3.5-turbo",
+      "name": "OpenAI: GPT-3.5 Turbo",
+      "provider_key": "openai",
+      "provider_label": "OpenAI",
+      "provider_color": "#10a37f",
+      "context_length": 16385,
+      "input_cost_per_1m": 0.5,
+      "output_cost_per_1m": 1.5,
+      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
       "source": "openrouter"
     }
   ],
