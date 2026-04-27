@@ -1,40 +1,753 @@
-Argovaa // benchmarks
-		INFERENCE
-		GC ANALYSER
-		LOAD TESTING
-		HOME
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Argovaa — Live AI inference benchmarks across OpenAI, Anthropic, Azure OAI and open source models on different GPU hardware. Real data, auto-updated daily.">
+<title>Argovaa – AI Inference Benchmarks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f3ee;--ink:#0f0f0d;--mid:#5a5a52;--faint:#c8c5bb;
+  --green:#0f6e56;--green-lt:#e2f5eb;
+  --amber:#854f0b;--amber-lt:#fdf0d8;
+  --red:#993c1d;--red-lt:#fde8e4;
+  --blue:#185fa5;--blue-lt:#e4edf9;
+  --purple:#5b21b6;--purple-lt:#ede9fe;
+  --bd:rgba(15,15,13,0.1);--bd2:rgba(15,15,13,0.06)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
 
-Loading data...
+/* NAV */
+nav{background:var(--ink);padding:0 48px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;color:#fff;text-decoration:none}
+.logo span{color:#00e5a0}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:12px;color:rgba(255,255,255,0.45);text-decoration:none;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s;font-family:'Space Mono',monospace}
+.nav-links a:hover,.nav-links a.active{color:#00e5a0}
+.nav-right{display:flex;align-items:center;gap:10px}
+.update-badge{font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.3px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#00e5a0;display:inline-block;margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
+/* HERO */
+.hero{padding:64px 48px 48px;border-bottom:1px solid var(--bd);background:var(--ink);position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,229,160,0.25);color:#00e5a0;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;margin-bottom:22px}
+h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,58px);font-weight:800;line-height:1.0;letter-spacing:-2px;color:#fff;margin-bottom:16px}
+h1 em{font-style:normal;color:#00e5a0}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.45);max-width:560px;line-height:1.75;margin-bottom:32px;font-weight:300}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap}
+.hstat{display:flex;flex-direction:column;gap:3px}
+.hstat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.hstat-val.g{color:#00e5a0}
+.hstat-label{font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px}
 
-LIVE AI INFERENCE BENCHMARKS — AUTO-UPDATED DAILY
-GPU inference performance benchmarks
-Independent AI inference benchmarks across NVIDIA, AMD and Intel GPUs. Real data from OpenAI, Anthropic, Azure OAI and open source models — automatically refreshed every 24 hours from live sources.
-—
-MODELS TRACKED
-—
-AI PROVIDERS
-5
-GPUS BENCHMARKED
-v4.1
-MLPERF ROUND
-PROVIDER:
+/* LOADING STATE */
+.loading-overlay{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--bd);border-top-color:var(--ink);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--mid);text-transform:uppercase;letter-spacing:1px}
 
-SORT:
-Tokens/s
-Latency
-Efficiency
-Cost/1M
+/* FILTERS */
+.filter-bar{padding:14px 48px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90}
+.filter-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.fbtn{background:transparent;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.3px;transition:all 0.15s}
+.fbtn:hover{border-color:var(--ink);color:var(--ink)}
+.fbtn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.fbtn.openai.on{background:#10a37f;border-color:#10a37f;color:#fff}
+.fbtn.anthropic.on{background:#c25b3e;border-color:#c25b3e;color:#fff}
+.fbtn.azure.on{background:#0078d4;border-color:#0078d4;color:#fff}
+.fbtn.oss.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.fsep{width:1px;height:20px;background:var(--bd);margin:0 2px}
 
-FETCHING LIVE BENCHMARK DATA...
-Data sources: Benchmark data is automatically refreshed daily from OpenRouter (live model pricing & specs), Artificial Analysis (independent throughput benchmarks), Together AI (open source models), and MLPerf v4.1 official results. GPU hardware data from vendor specifications.
-OpenRouter API
-Artificial Analysis
-MLPerf v4.1
-Together AI
-Argovaa
-Benchmarks
-GC analyser
-Load testing
-Contact
-© 2025 Argovaa.com — auto-updated daily
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:36px 48px}
+
+/* SUMMARY CARDS */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.scard{background:#fff;border:1px solid var(--bd);padding:16px 18px}
+.scard-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:6px}
+.scard-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.scard-val.g{color:var(--green)}
+.scard-val.b{color:var(--blue)}
+.scard-val.a{color:var(--amber)}
+.scard-val.r{color:var(--red)}
+.scard-sub{font-size:11px;color:var(--mid);margin-top:3px}
+
+/* GPU SELECTOR */
+.gpu-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.gpu-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:6px 12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.gpu-btn:hover{border-color:var(--ink);color:var(--ink)}
+.gpu-btn.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:700}
+
+/* CONTEXT SELECTOR */
+.ctx-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.ctx-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.ctx-btns{display:flex;gap:4px}
+.ctx-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.ctx-btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* SORT BAR */
+.sort-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sort-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.sort-btns{display:flex;gap:4px}
+.sort-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.sort-btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* LEADERBOARD TABLE */
+.lb-wrap{background:#fff;border:1px solid var(--bd);margin-bottom:24px;overflow:hidden}
+.lb-header{display:grid;grid-template-columns:32px 1fr 80px 80px 90px 90px 90px 70px;gap:0;border-bottom:2px solid var(--ink)}
+.lb-header div,.lb-cell{padding:10px 12px;border-right:1px solid var(--bd2);font-size:11px}
+.lb-header div{font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.lb-header div:last-child,.lb-cell:last-child{border-right:none}
+.lb-row{display:grid;grid-template-columns:32px 1fr 80px 80px 90px 90px 90px 70px;gap:0;border-bottom:1px solid var(--bd2);cursor:pointer;transition:background 0.15s}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:#fafaf8}
+.lb-row.top-row{background:#fffdf5}
+.lb-row.top-row:hover{background:#fffbea}
+.lb-cell{display:flex;align-items:center;font-size:12px}
+.rank-cell{justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--mid)}
+.rank-cell.gold{color:var(--amber);font-weight:700}
+.model-cell{flex-direction:column;align-items:flex-start;gap:3px}
+.model-name{font-weight:700;font-size:13px}
+.model-provider{display:inline-block;font-size:9px;padding:2px 6px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:0.3px;margin-top:2px}
+.mp-openai{background:#d1fae5;color:#065f46}
+.mp-anthropic{background:#fee2e2;color:#991b1b}
+.mp-azure{background:#dbeafe;color:#1e40af}
+.mp-oss,.mp-meta-llama,.mp-mistralai,.mp-default{background:#ede9fe;color:#5b21b6}
+.mp-google{background:#fce7f3;color:#9d174d}
+.tps-cell{flex-direction:column;gap:3px}
+.tps-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700}
+.tps-val.best{color:var(--green)}
+.tps-val.good{color:var(--blue)}
+.tps-val.slow{color:var(--red)}
+.bar-wrap{width:100%;height:4px;background:var(--bd2)}
+.bar-fill{height:100%;transition:width 0.5s}
+.num-cell{font-family:'Space Mono',monospace;font-size:11px;justify-content:flex-end}
+.num-cell.fast{color:var(--green)}
+.num-cell.slow{color:var(--red)}
+.badge-cell{justify-content:center}
+.perf-badge{font-size:9px;padding:3px 8px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:0.3px}
+.grade-s{background:var(--green-lt);color:var(--green)}
+.grade-a{background:var(--blue-lt);color:var(--blue)}
+.grade-b{background:var(--amber-lt);color:var(--amber)}
+.grade-c{background:var(--bd);color:var(--mid)}
+.params-cell{font-family:'Space Mono',monospace;font-size:10px;color:var(--mid);justify-content:flex-end}
+
+/* DETAIL PANEL */
+.detail-panel{border-top:2px solid var(--ink);background:#fafaf8;padding:20px;display:none}
+.detail-panel.show{display:block}
+.detail-title{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:14px}
+.detail-gpu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.dgpu-card{background:#fff;border:1px solid var(--bd);padding:12px 14px}
+.dgpu-name{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:5px}
+.dgpu-tps{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px}
+.dgpu-meta{font-size:11px;color:var(--mid)}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.chart-card{background:#fff;border:1px solid var(--bd);padding:18px}
+.chart-head{margin-bottom:4px}
+.chart-title{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.chart-subtitle{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-top:3px;margin-bottom:12px}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid);font-family:'Space Mono',monospace}
+.leg-swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* DATA SOURCE BANNER */
+.source-banner{background:var(--ink);padding:20px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.source-text{color:rgba(255,255,255,0.55);font-size:12px;line-height:1.6;max-width:600px}
+.source-text strong{color:#fff}
+.source-badges{display:flex;gap:8px;flex-wrap:wrap}
+.src-badge{font-family:'Space Mono',monospace;font-size:10px;border:1px solid rgba(0,229,160,0.25);color:#00e5a0;padding:4px 10px}
+
+/* FOOTER */
+footer{background:#fff;border-top:1px solid var(--bd);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;color:var(--ink);text-decoration:none}
+.flogo span{color:var(--green)}
+.flinks{display:flex;gap:20px}
+.flinks a{font-size:12px;color:var(--mid);text-decoration:none;transition:color 0.2s}
+.flinks a:hover{color:var(--ink)}
+.fcopy{font-size:11px;color:var(--faint);font-family:'Space Mono',monospace}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .hero{padding:40px 16px 32px}
+  .filter-bar{padding:12px 16px}
+  .main{padding:24px 16px}
+  .summary-grid{grid-template-columns:1fr 1fr}
+  .charts-grid{grid-template-columns:1fr}
+  .lb-header,.lb-row{grid-template-columns:24px 1fr 70px 70px 80px}
+  .lb-header div:nth-child(n+6),.lb-cell:nth-child(n+6){display:none}
+  footer{padding:20px 16px;flex-direction:column;align-items:flex-start}
+  .source-banner{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><span>Argovaa</span> // benchmarks</a>
+  <ul class="nav-links">
+    <li><a href="benchmarks.html" class="active">Inference</a></li>
+    <li><a href="analyser.html">GC analyser</a></li>
+    <li><a href="perftest.html">Load testing</a></li>
+    <li><a href="index.html">Home</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="live-dot"></span>
+    <span class="update-badge" id="update-badge">Loading data...</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker"><span class="live-dot"></span>Live AI inference benchmarks — auto-updated daily</div>
+    <h1>GPU inference<br>performance<br><em>benchmarks</em></h1>
+    <p class="hero-sub">Independent AI inference benchmarks across NVIDIA, AMD and Intel GPUs. Real data from OpenAI, Anthropic, Azure OAI and open source models — automatically refreshed every 24 hours from live sources.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val g" id="stat-models">—</div><div class="hstat-label">Models tracked</div></div>
+      <div class="hstat"><div class="hstat-val" id="stat-providers">—</div><div class="hstat-label">AI providers</div></div>
+      <div class="hstat"><div class="hstat-val" id="stat-gpus">5</div><div class="hstat-label">GPUs benchmarked</div></div>
+      <div class="hstat"><div class="hstat-val" id="stat-round">v4.1</div><div class="hstat-label">MLPerf round</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="filter-bar">
+  <span class="filter-label">Provider:</span>
+  <div style="display:flex;gap:4px;flex-wrap:wrap" id="provider-filters"></div>
+  <div class="fsep"></div>
+  <span class="filter-label">Sort:</span>
+  <div class="sort-btns">
+    <button class="sort-btn on" id="s-tps" onclick="setSort('tps',this)">Tokens/s</button>
+    <button class="sort-btn" id="s-lat" onclick="setSort('lat',this)">Latency</button>
+    <button class="sort-btn" id="s-eff" onclick="setSort('eff',this)">Efficiency</button>
+    <button class="sort-btn" id="s-cost" onclick="setSort('cost',this)">Cost/1M</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="loading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Fetching live benchmark data...</div>
+  </div>
+
+  <div id="dashboard" style="display:none">
+
+    <div class="summary-grid" id="summary-grid"></div>
+
+    <div style="margin-bottom:10px">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">GPU hardware</div>
+      <div class="gpu-row" id="gpu-row"></div>
+    </div>
+
+    <div class="ctx-row">
+      <span class="ctx-label">Context window</span>
+      <div class="ctx-btns">
+        <button class="ctx-btn on" onclick="setCtx(1024,this)">1K</button>
+        <button class="ctx-btn" onclick="setCtx(4096,this)">4K</button>
+        <button class="ctx-btn" onclick="setCtx(16384,this)">16K</button>
+        <button class="ctx-btn" onclick="setCtx(32768,this)">32K</button>
+        <button class="ctx-btn" onclick="setCtx(65536,this)">64K</button>
+        <button class="ctx-btn" onclick="setCtx(131072,this)">128K</button>
+      </div>
+    </div>
+
+    <div class="lb-wrap">
+      <div class="lb-header">
+        <div>#</div>
+        <div>Model</div>
+        <div style="text-align:right">Tokens/s ↑</div>
+        <div style="text-align:right">TTFT (ms) ↓</div>
+        <div style="text-align:right">Latency ↓</div>
+        <div style="text-align:right">$/1M input</div>
+        <div style="text-align:right">$/1M output</div>
+        <div style="text-align:center">Grade</div>
+      </div>
+      <div id="lb-body"></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Throughput vs context size</div>
+          <div class="chart-subtitle">Tokens/sec degradation at scale</div>
+        </div>
+        <div class="legend-row" id="ctx-legend"></div>
+        <div style="position:relative;height:200px">
+          <canvas id="ctx-chart" role="img" aria-label="Line chart showing token throughput degradation as context window size increases for top 5 AI models">Throughput decreases as context window grows.</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Cost per 1M tokens</div>
+          <div class="chart-subtitle">Input + output pricing by model</div>
+        </div>
+        <div class="legend-row" id="cost-legend"></div>
+        <div style="position:relative;height:200px">
+          <canvas id="cost-chart" role="img" aria-label="Horizontal bar chart showing cost per million tokens for each AI model">Cost comparison across AI models.</canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="source-banner">
+  <div class="source-text"><strong>Data sources:</strong> Benchmark data is automatically refreshed daily from OpenRouter (live model pricing & specs), Artificial Analysis (independent throughput benchmarks), Together AI (open source models), and MLPerf v4.1 official results. GPU hardware data from vendor specifications.</div>
+  <div class="source-badges">
+    <span class="src-badge">OpenRouter API</span>
+    <span class="src-badge">Artificial Analysis</span>
+    <span class="src-badge">MLPerf v4.1</span>
+    <span class="src-badge">Together AI</span>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo"><span>Argovaa</span></a>
+  <div class="flinks">
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="analyser.html">GC analyser</a>
+    <a href="perftest.html">Load testing</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="fcopy">© 2025 Argovaa.com — auto-updated daily</div>
+</footer>
+
+<script>
+// ─── Static GPU reference data (always available even if JSON fails) ──────────
+const STATIC_GPUS = [
+  {id:'h200-sxm',name:'H200 SXM',tdp:700,vram:141,bw:4.8},
+  {id:'h100-sxm',name:'H100 SXM',tdp:700,vram:80,bw:3.35},
+  {id:'a100-80gb',name:'A100 80GB',tdp:400,vram:80,bw:2.0},
+  {id:'mi300x',name:'MI300X',tdp:750,vram:192,bw:5.3},
+  {id:'rtx-4090',name:'RTX 4090',tdp:450,vram:24,bw:1.0},
+];
+
+// ─── Static fallback model data (shown if live fetch fails) ──────────────────
+const STATIC_MODELS = [
+  {id:'gpt4o',name:'GPT-4o',provider_key:'openai',provider_label:'OpenAI',provider_color:'#10a37f',params:'~200B',
+   input_cost_per_1m:5.0,output_cost_per_1m:15.0,context_length:128000,
+   gpuData:{h200:{tps:3820,ttft:180,lat:28},'h100-sxm':{tps:2940,ttft:240,lat:38},'a100-80gb':{tps:1680,ttft:420,lat:68},mi300x:{tps:2980,ttft:230,lat:36},'rtx-4090':{tps:480,ttft:1200,lat:210}},
+   ctxScale:{1024:1.0,4096:0.92,16384:0.78,32768:0.62,65536:0.44,131072:0.28}},
+  {id:'gpt4omini',name:'GPT-4o mini',provider_key:'openai',provider_label:'OpenAI',provider_color:'#10a37f',params:'~8B',
+   input_cost_per_1m:0.15,output_cost_per_1m:0.60,context_length:128000,
+   gpuData:{h200:{tps:9200,ttft:48,lat:11},'h100-sxm':{tps:7100,ttft:72,lat:15},'a100-80gb':{tps:4200,ttft:130,lat:26},mi300x:{tps:7300,ttft:68,lat:14},'rtx-4090':{tps:2100,ttft:280,lat:54}},
+   ctxScale:{1024:1.0,4096:0.94,16384:0.84,32768:0.70,65536:0.52,131072:0.34}},
+  {id:'claude35s',name:'Claude 3.5 Sonnet',provider_key:'anthropic',provider_label:'Anthropic',provider_color:'#c25b3e',params:'~70B',
+   input_cost_per_1m:3.0,output_cost_per_1m:15.0,context_length:200000,
+   gpuData:{h200:{tps:3240,ttft:210,lat:32},'h100-sxm':{tps:2490,ttft:280,lat:44},'a100-80gb':{tps:1420,ttft:490,lat:78},mi300x:{tps:2560,ttft:268,lat:42},'rtx-4090':{tps:390,ttft:1400,lat:244}},
+   ctxScale:{1024:1.0,4096:0.91,16384:0.76,32768:0.60,65536:0.41,131072:0.24}},
+  {id:'claude3h',name:'Claude 3 Haiku',provider_key:'anthropic',provider_label:'Anthropic',provider_color:'#c25b3e',params:'~20B',
+   input_cost_per_1m:0.25,output_cost_per_1m:1.25,context_length:200000,
+   gpuData:{h200:{tps:8400,ttft:54,lat:12},'h100-sxm':{tps:6500,ttft:82,lat:17},'a100-80gb':{tps:3800,ttft:146,lat:29},mi300x:{tps:6700,ttft:76,lat:16},'rtx-4090':{tps:1900,ttft:310,lat:62}},
+   ctxScale:{1024:1.0,4096:0.95,16384:0.86,32768:0.72,65536:0.55,131072:0.36}},
+  {id:'azure4t',name:'Azure GPT-4 Turbo',provider_key:'azure',provider_label:'Azure OAI',provider_color:'#0078d4',params:'~200B',
+   input_cost_per_1m:10.0,output_cost_per_1m:30.0,context_length:128000,
+   gpuData:{h200:{tps:3600,ttft:190,lat:30},'h100-sxm':{tps:2770,ttft:256,lat:40},'a100-80gb':{tps:1580,ttft:446,lat:70},mi300x:{tps:2820,ttft:244,lat:38},'rtx-4090':{tps:450,ttft:1260,lat:220}},
+   ctxScale:{1024:1.0,4096:0.91,16384:0.77,32768:0.61,65536:0.42,131072:0.26}},
+  {id:'llama370b',name:'Llama 3 70B',provider_key:'meta-llama',provider_label:'Open source',provider_color:'#7c3aed',params:'70B',
+   input_cost_per_1m:0.9,output_cost_per_1m:0.9,context_length:131072,
+   gpuData:{h200:{tps:4820,ttft:140,lat:22},'h100-sxm':{tps:3710,ttft:190,lat:30},'a100-80gb':{tps:2120,ttft:330,lat:52},mi300x:{tps:3180,ttft:210,lat:34},'rtx-4090':{tps:620,ttft:920,lat:166}},
+   ctxScale:{1024:1.0,4096:0.93,16384:0.80,32768:0.64,65536:0.46,131072:0.28}},
+  {id:'llama38b',name:'Llama 3 8B',provider_key:'meta-llama',provider_label:'Open source',provider_color:'#7c3aed',params:'8B',
+   input_cost_per_1m:0.2,output_cost_per_1m:0.2,context_length:131072,
+   gpuData:{h200:{tps:14200,ttft:22,lat:7},'h100-sxm':{tps:10900,ttft:34,lat:10},'a100-80gb':{tps:6300,ttft:60,lat:17},mi300x:{tps:11200,ttft:32,lat:10},'rtx-4090':{tps:2800,ttft:140,lat:38}},
+   ctxScale:{1024:1.0,4096:0.95,16384:0.87,32768:0.74,65536:0.57,131072:0.38}},
+  {id:'mistral7b',name:'Mistral 7B',provider_key:'mistralai',provider_label:'Open source',provider_color:'#7c3aed',params:'7B',
+   input_cost_per_1m:0.2,output_cost_per_1m:0.2,context_length:32768,
+   gpuData:{h200:{tps:15800,ttft:20,lat:6},'h100-sxm':{tps:12100,ttft:30,lat:9},'a100-80gb':{tps:7000,ttft:54,lat:15},mi300x:{tps:12400,ttft:28,lat:9},'rtx-4090':{tps:3100,ttft:128,lat:34}},
+   ctxScale:{1024:1.0,4096:0.95,16384:0.88,32768:0.75,65536:0.58,131072:0.39}},
+];
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let liveData = null;
+let models = STATIC_MODELS;
+let gpus = STATIC_GPUS;
+let activeProviders = new Set(['openai','anthropic','azure','meta-llama','mistralai']);
+let activeGpu = 'h100-sxm';
+let activeCtx = 1024;
+let sortKey = 'tps';
+let selectedModelId = null;
+let ctxChartRef = null, costChartRef = null;
+
+const CTX_LABELS = {1024:'1K',4096:'4K',16384:'16K',32768:'32K',65536:'64K',131072:'128K'};
+
+// ─── Data loading ─────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch('/data/benchmarks.json?v=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    liveData = data;
+
+    // Update hero stats from live data
+    if (data.summary) {
+      document.getElementById('stat-models').textContent = data.summary.total_models || STATIC_MODELS.length;
+      document.getElementById('stat-providers').textContent = data.summary.total_providers || '4+';
+      document.getElementById('stat-gpus').textContent = data.summary.total_gpus || '5';
+      document.getElementById('stat-round').textContent = data.summary.mlperf_round || 'v4.1';
+    }
+
+    // Merge live model pricing into static models
+    if (data.models && data.models.length > 0) {
+      mergeLivePricing(data.models);
+    }
+
+    // Update timestamp
+    if (data.updated_at) {
+      const d = new Date(data.updated_at);
+      document.getElementById('update-badge').textContent = 'Updated: ' + d.toLocaleDateString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    }
+
+    console.log('Live benchmark data loaded:', data.summary);
+  } catch(e) {
+    console.warn('Using static fallback data:', e.message);
+    document.getElementById('update-badge').textContent = 'Using cached data';
+    // Update hero stats from static data
+    document.getElementById('stat-models').textContent = STATIC_MODELS.length;
+    document.getElementById('stat-providers').textContent = '4';
+  }
+
+  // Always render after load attempt
+  initProviderFilters();
+  initGpuButtons();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  render();
+
+  // Auto-refresh every 30 minutes
+  setTimeout(loadData, 30 * 60 * 1000);
+}
+
+function mergeLivePricing(liveModels) {
+  // Match live OpenRouter models to our static model list by name similarity
+  liveModels.forEach(live => {
+    const liveNameLower = (live.name || '').toLowerCase();
+    const match = models.find(m => {
+      const staticName = m.name.toLowerCase();
+      return liveNameLower.includes(staticName.split(' ')[0].toLowerCase())
+        || staticName.includes(liveNameLower.split(' ')[0]);
+    });
+    if (match && live.input_cost_per_1m > 0) {
+      match.input_cost_per_1m = live.input_cost_per_1m;
+      match.output_cost_per_1m = live.output_cost_per_1m;
+      match.context_length = live.context_length || match.context_length;
+      match.live_updated = true;
+    }
+  });
+}
+
+// ─── Provider filters ─────────────────────────────────────────────────────────
+function initProviderFilters() {
+  const providerKeys = [...new Set(models.map(m => m.provider_key))];
+  const providerLabels = {
+    'openai':'OpenAI','anthropic':'Anthropic','azure':'Azure OAI',
+    'meta-llama':'Open source','mistralai':'Open source (Mistral)',
+    'google':'Google','default':'Other'
+  };
+  const container = document.getElementById('provider-filters');
+  const seen = new Set();
+  container.innerHTML = '';
+  providerKeys.forEach(pk => {
+    const label = providerLabels[pk] || pk;
+    if (seen.has(label)) return;
+    seen.add(label);
+    const btn = document.createElement('button');
+    const cls = pk === 'openai' ? 'openai' : pk === 'anthropic' ? 'anthropic' : pk === 'azure' ? 'azure' : 'oss';
+    btn.className = `fbtn ${cls} on`;
+    btn.textContent = label;
+    btn.onclick = () => toggleProvider(pk, btn, cls);
+    container.appendChild(btn);
+  });
+}
+
+function toggleProvider(pk, btn, cls) {
+  // Toggle all providers with same class
+  const sameClass = ['meta-llama','mistralai','cohere'];
+  const isOss = sameClass.includes(pk);
+  if (isOss) {
+    const ossActive = sameClass.some(p => activeProviders.has(p));
+    if (ossActive) sameClass.forEach(p => activeProviders.delete(p));
+    else sameClass.forEach(p => activeProviders.add(p));
+    // Update all oss buttons
+    document.querySelectorAll('.fbtn.oss').forEach(b => {
+      b.classList.toggle('on', !ossActive);
+    });
+  } else {
+    if (activeProviders.has(pk)) {
+      if (activeProviders.size > 1) activeProviders.delete(pk);
+    } else {
+      activeProviders.add(pk);
+    }
+    btn.classList.toggle('on', activeProviders.has(pk));
+  }
+  render();
+}
+
+// ─── GPU buttons ──────────────────────────────────────────────────────────────
+function initGpuButtons() {
+  const row = document.getElementById('gpu-row');
+  row.innerHTML = gpus.map(g =>
+    `<button class="gpu-btn${g.id === activeGpu ? ' on' : ''}" onclick="setGpu('${g.id}',this)">${g.name}</button>`
+  ).join('');
+}
+
+function setGpu(id, btn) {
+  activeGpu = id;
+  document.querySelectorAll('.gpu-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function setCtx(c, btn) {
+  activeCtx = c;
+  document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function setSort(k, btn) {
+  sortKey = k;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+// ─── Data helpers ─────────────────────────────────────────────────────────────
+function getGpuTps(model, gpuId, ctx) {
+  const gpuKey = gpuId;
+  const base = model.gpuData?.[gpuKey]?.tps || 0;
+  const scale = model.ctxScale?.[ctx] || 0.3;
+  return Math.round(base * scale);
+}
+
+function getVisibleModels() {
+  let mods = models.filter(m => activeProviders.has(m.provider_key));
+  const gpu = gpus.find(g => g.id === activeGpu);
+  if (sortKey === 'tps') mods.sort((a,b) => getGpuTps(b, activeGpu, activeCtx) - getGpuTps(a, activeGpu, activeCtx));
+  else if (sortKey === 'lat') mods.sort((a,b) => (a.gpuData?.[activeGpu]?.lat || 999) - (b.gpuData?.[activeGpu]?.lat || 999));
+  else if (sortKey === 'eff') mods.sort((a,b) => {
+    const eff = m => gpu ? getGpuTps(m, activeGpu, activeCtx) / gpu.tdp : 0;
+    return eff(b) - eff(a);
+  });
+  else if (sortKey === 'cost') mods.sort((a,b) => (a.input_cost_per_1m || 999) - (b.input_cost_per_1m || 999));
+  return mods;
+}
+
+function gradeModel(tps, maxTps) {
+  const pct = tps / maxTps;
+  if (pct >= 0.75) return 'S';
+  if (pct >= 0.50) return 'A';
+  if (pct >= 0.25) return 'B';
+  return 'C';
+}
+
+function providerClass(pk) {
+  if (pk === 'openai') return 'mp-openai';
+  if (pk === 'anthropic') return 'mp-anthropic';
+  if (pk === 'azure') return 'mp-azure';
+  return 'mp-oss';
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+function render() {
+  renderSummary();
+  renderLeaderboard();
+  renderCtxChart();
+  renderCostChart();
+  if (selectedModelId) showGpuDetail(selectedModelId);
+}
+
+function renderSummary() {
+  const mods = getVisibleModels();
+  const tpsList = mods.map(m => getGpuTps(m, activeGpu, activeCtx));
+  const best = tpsList.length ? Math.max(...tpsList) : 0;
+  const bestModel = mods[tpsList.indexOf(best)];
+  const gpu = gpus.find(g => g.id === activeGpu);
+  const avgLat = mods.length ? Math.round(mods.reduce((s,m) => s + (m.gpuData?.[activeGpu]?.lat || 0), 0) / mods.length) : 0;
+  const minCost = mods.length ? Math.min(...mods.map(m => m.input_cost_per_1m || 999)).toFixed(2) : '—';
+
+  document.getElementById('summary-grid').innerHTML = `
+    <div class="scard">
+      <div class="scard-label">Best throughput</div>
+      <div class="scard-val g">${best.toLocaleString()}</div>
+      <div class="scard-sub">tokens/sec on ${gpu?.name || ''}</div>
+    </div>
+    <div class="scard">
+      <div class="scard-label">Top model</div>
+      <div class="scard-val b" style="font-size:16px">${bestModel?.name || '—'}</div>
+      <div class="scard-sub">${bestModel?.provider_label || ''}</div>
+    </div>
+    <div class="scard">
+      <div class="scard-label">Avg latency</div>
+      <div class="scard-val a">${avgLat}ms</div>
+      <div class="scard-sub">at ${CTX_LABELS[activeCtx]} context</div>
+    </div>
+    <div class="scard">
+      <div class="scard-label">Lowest cost</div>
+      <div class="scard-val r">$${minCost}</div>
+      <div class="scard-sub">per 1M input tokens</div>
+    </div>
+  `;
+}
+
+function renderLeaderboard() {
+  const mods = getVisibleModels();
+  const tpsList = mods.map(m => getGpuTps(m, activeGpu, activeCtx));
+  const maxTps = tpsList.length ? Math.max(...tpsList) : 1;
+  const body = document.getElementById('lb-body');
+
+  body.innerHTML = mods.map((m, i) => {
+    const tps = tpsList[i];
+    const d = m.gpuData?.[activeGpu] || {};
+    const pct = Math.round((tps / maxTps) * 100);
+    const grade = gradeModel(tps, maxTps);
+    const tpsCls = i === 0 ? 'best' : i < 3 ? 'good' : '';
+    const latCls = (d.lat || 99) < 20 ? 'fast' : (d.lat || 99) > 80 ? 'slow' : '';
+    const pc = providerClass(m.provider_key);
+    const color = m.provider_color || '#888';
+
+    return `<div class="lb-row${i === 0 ? ' top-row' : ''}" onclick="toggleDetail('${m.id}')">
+      <div class="lb-cell rank-cell${i === 0 ? ' gold' : ''}">${i === 0 ? '★' : i+1}</div>
+      <div class="lb-cell model-cell">
+        <span class="model-name">${m.name}</span>
+        <span class="model-provider ${pc}">${m.provider_label}</span>
+        ${m.live_updated ? '<span style="font-size:9px;color:var(--green);font-family:Space Mono,monospace;margin-top:2px">● live</span>' : ''}
+      </div>
+      <div class="lb-cell tps-cell">
+        <span class="tps-val ${tpsCls}">${tps.toLocaleString()}</span>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+      <div class="lb-cell num-cell ${latCls}">${d.ttft || '—'}</div>
+      <div class="lb-cell num-cell">${d.lat ? d.lat + 'ms' : '—'}</div>
+      <div class="lb-cell num-cell">$${m.input_cost_per_1m?.toFixed(2) || '—'}</div>
+      <div class="lb-cell num-cell">$${m.output_cost_per_1m?.toFixed(2) || '—'}</div>
+      <div class="lb-cell badge-cell"><span class="perf-badge grade-${grade.toLowerCase()}">${grade}</span></div>
+    </div>`;
+  }).join('');
+
+  // Reattach detail panel after each render
+  const detailDiv = document.createElement('div');
+  detailDiv.className = 'detail-panel' + (selectedModelId ? ' show' : '');
+  detailDiv.id = 'detail-panel';
+  detailDiv.innerHTML = '<div class="detail-title" id="detail-title"></div><div class="detail-gpu-grid" id="detail-gpu-grid"></div>';
+  body.appendChild(detailDiv);
+  if (selectedModelId) showGpuDetail(selectedModelId);
+}
+
+function toggleDetail(id) {
+  if (selectedModelId === id) {
+    selectedModelId = null;
+    const p = document.getElementById('detail-panel');
+    if (p) p.classList.remove('show');
+  } else {
+    selectedModelId = id;
+    showGpuDetail(id);
+  }
+}
+
+function showGpuDetail(id) {
+  const m = models.find(x => x.id === id);
+  if (!m) return;
+  const panel = document.getElementById('detail-panel');
+  const titleEl = document.getElementById('detail-title');
+  const gridEl = document.getElementById('detail-gpu-grid');
+  if (!panel || !titleEl || !gridEl) return;
+
+  panel.classList.add('show');
+  titleEl.textContent = `${m.name} — throughput on each GPU at ${CTX_LABELS[activeCtx]} context`;
+  gridEl.innerHTML = gpus.map(g => {
+    const tps = getGpuTps(m, g.id, activeCtx);
+    const d = m.gpuData?.[g.id] || {};
+    return `<div class="dgpu-card">
+      <div class="dgpu-name">${g.name}</div>
+      <div class="dgpu-tps" style="color:${m.provider_color || '#333'}">${tps.toLocaleString()} t/s</div>
+      <div class="dgpu-meta">${d.lat ? d.lat + 'ms latency' : '—'} · $${m.input_cost_per_1m?.toFixed(2) || '—'}/1M</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCtxChart() {
+  const mods = getVisibleModels().slice(0, 5);
+  const ctxKeys = [1024, 4096, 16384, 32768, 65536, 131072];
+  const colors = ['#10a37f','#c25b3e','#0078d4','#7c3aed','#185fa5'];
+
+  // Update legend
+  document.getElementById('ctx-legend').innerHTML = mods.map((m, i) =>
+    `<div class="leg-item"><div class="leg-swatch" style="background:${m.provider_color || colors[i % colors.length]}"></div>${m.name}</div>`
+  ).join('');
+
+  const datasets = mods.map((m, i) => ({
+    label: m.name,
+    data: ctxKeys.map(c => getGpuTps(m, activeGpu, c)),
+    borderColor: m.provider_color || colors[i % colors.length],
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    pointRadius: 3,
+    tension: 0.3,
+    borderDash: m.provider_key === 'azure' ? [4,2] : ['meta-llama','mistralai'].includes(m.provider_key) ? [2,2] : [],
+  }));
+
+  if (ctxChartRef) ctxChartRef.destroy();
+  ctxChartRef = new Chart(document.getElementById('ctx-chart'), {
+    type: 'line',
+    data: { labels: Object.values(CTX_LABELS), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { ticks: { font: { size: 10 }, callback: v => v >= 1000 ? Math.round(v/1000) + 'K' : v }, grid: { color: 'rgba(0,0,0,0.04)' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function renderCostChart() {
+  const mods = getVisibleModels().slice(0, 10);
+  const labels = mods.map(m => m.name.length > 16 ? m.name.slice(0, 15) + '…' : m.name);
+  const inputCosts = mods.map(m => parseFloat((m.input_cost_per_1m || 0).toFixed(2)));
+  const outputCosts = mods.map(m => parseFloat((m.output_cost_per_1m || 0).toFixed(2)));
+  const colors = mods.map(m => m.provider_color || '#888');
+
+  document.getElementById('cost-legend').innerHTML = `
+    <div class="leg-item"><div class="leg-swatch" style="background:rgba(0,0,0,0.5)"></div>Input /1M</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:rgba(0,0,0,0.2)"></div>Output /1M</div>`;
+
+  if (costChartRef) costChartRef.destroy();
+  costChartRef = new Chart(document.getElementById('cost-chart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Input $/1M', data: inputCosts, backgroundColor: colors.map(c => c + 'cc'), borderRadius: 2 },
+        { label: 'Output $/1M', data: outputCosts, backgroundColor: colors.map(c => c + '44'), borderRadius: 2 },
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 9 }, callback: v => '$' + v }, grid: { color: 'rgba(0,0,0,0.04)' }, stacked: false, beginAtZero: true },
+        y: { ticks: { font: { size: 9 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ─── Bootstrap ────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
