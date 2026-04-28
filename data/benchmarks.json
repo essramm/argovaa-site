@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-04-27T08:35:43.721334Z",
+  "updated_at": "2026-04-28T08:34:08.193164Z",
   "version": "1.0",
   "summary": {
-    "total_models": 360,
-    "total_providers": 56,
+    "total_models": 367,
+    "total_providers": 59,
     "total_gpus": 5,
     "mlperf_round": "v4.1"
   },
@@ -55,6 +55,58 @@
     }
   },
   "providers": [
+    {
+      "key": "~anthropic",
+      "label": "~Anthropic",
+      "color": "#888888",
+      "model_count": 3,
+      "avg_input_cost": 0,
+      "min_context": 0,
+      "max_context": 1000000,
+      "models": [
+        "Anthropic Claude Haiku Latest",
+        "Anthropic Claude Sonnet Latest",
+        "Anthropic: Claude Opus Latest"
+      ]
+    },
+    {
+      "key": "~openai",
+      "label": "~Openai",
+      "color": "#888888",
+      "model_count": 2,
+      "avg_input_cost": 0,
+      "min_context": 0,
+      "max_context": 1050000,
+      "models": [
+        "OpenAI GPT Mini Latest",
+        "OpenAI GPT Latest"
+      ]
+    },
+    {
+      "key": "~google",
+      "label": "~Google",
+      "color": "#888888",
+      "model_count": 2,
+      "avg_input_cost": 0,
+      "min_context": 0,
+      "max_context": 1048576,
+      "models": [
+        "Google Gemini Pro Latest",
+        "Google Gemini Flash Latest"
+      ]
+    },
+    {
+      "key": "~moonshotai",
+      "label": "~Moonshotai",
+      "color": "#888888",
+      "model_count": 1,
+      "avg_input_cost": 0,
+      "min_context": 0,
+      "max_context": 256000,
+      "models": [
+        "MoonshotAI Kimi Latest"
+      ]
+    },
     {
       "key": "qwen",
       "label": "Qwen",
@@ -188,8 +240,8 @@
         "OpenAI: GPT-4 Turbo (older v1106)",
         "OpenAI: GPT-3.5 Turbo Instruct",
         "OpenAI: GPT-3.5 Turbo 16k",
-        "OpenAI: GPT-4 (older v0314)",
         "OpenAI: GPT-4",
+        "OpenAI: GPT-4 (older v0314)",
         "OpenAI: GPT-3.5 Turbo"
       ]
     },
@@ -257,18 +309,6 @@
         "Xiaomi: MiMo-V2-Omni",
         "Xiaomi: MiMo-V2-Pro",
         "Xiaomi: MiMo-V2-Flash"
-      ]
-    },
-    {
-      "key": "~anthropic",
-      "label": "~Anthropic",
-      "color": "#888888",
-      "model_count": 1,
-      "avg_input_cost": 0,
-      "min_context": 0,
-      "max_context": 1000000,
-      "models": [
-        "Anthropic: Claude Opus Latest"
       ]
     },
     {
@@ -896,8 +936,8 @@
         "Meta: Llama 3.2 3B Instruct",
         "Meta: Llama 3.2 1B Instruct",
         "Meta: Llama 3.2 11B Vision Instruct",
-        "Meta: Llama 3.1 8B Instruct",
         "Meta: Llama 3.1 70B Instruct",
+        "Meta: Llama 3.1 8B Instruct",
         "Meta: Llama 3 8B Instruct",
         "Meta: Llama 3 70B Instruct"
       ]
@@ -1034,6 +1074,90 @@
   ],
   "models": [
     {
+      "id": "~anthropic/claude-haiku-latest",
+      "name": "Anthropic Claude Haiku Latest",
+      "provider_key": "~anthropic",
+      "provider_label": "~Anthropic",
+      "provider_color": "#888888",
+      "context_length": 200000,
+      "input_cost_per_1m": 1.0,
+      "output_cost_per_1m": 5.0,
+      "description": "This model always redirects to the latest model in the Anthropic Claude Haiku family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~openai/gpt-mini-latest",
+      "name": "OpenAI GPT Mini Latest",
+      "provider_key": "~openai",
+      "provider_label": "~Openai",
+      "provider_color": "#888888",
+      "context_length": 400000,
+      "input_cost_per_1m": 0.75,
+      "output_cost_per_1m": 4.5,
+      "description": "This model always redirects to the latest model in the OpenAI GPT Mini family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~google/gemini-pro-latest",
+      "name": "Google Gemini Pro Latest",
+      "provider_key": "~google",
+      "provider_label": "~Google",
+      "provider_color": "#888888",
+      "context_length": 1048576,
+      "input_cost_per_1m": 2.0,
+      "output_cost_per_1m": 12.0,
+      "description": "This model always redirects to the latest model in the Google Gemini Pro family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~moonshotai/kimi-latest",
+      "name": "MoonshotAI Kimi Latest",
+      "provider_key": "~moonshotai",
+      "provider_label": "~Moonshotai",
+      "provider_color": "#888888",
+      "context_length": 256000,
+      "input_cost_per_1m": 0.7448,
+      "output_cost_per_1m": 4.655,
+      "description": "This model always redirects to the latest model in the MoonshotAI Kimi family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~google/gemini-flash-latest",
+      "name": "Google Gemini Flash Latest",
+      "provider_key": "~google",
+      "provider_label": "~Google",
+      "provider_color": "#888888",
+      "context_length": 1048576,
+      "input_cost_per_1m": 0.5,
+      "output_cost_per_1m": 3.0,
+      "description": "This model always redirects to the latest model in the Google Gemini Flash family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~anthropic/claude-sonnet-latest",
+      "name": "Anthropic Claude Sonnet Latest",
+      "provider_key": "~anthropic",
+      "provider_label": "~Anthropic",
+      "provider_color": "#888888",
+      "context_length": 1000000,
+      "input_cost_per_1m": 3.0,
+      "output_cost_per_1m": 15.0,
+      "description": "This model always redirects to the latest model in the Anthropic Claude Sonnet family.",
+      "source": "openrouter"
+    },
+    {
+      "id": "~openai/gpt-latest",
+      "name": "OpenAI GPT Latest",
+      "provider_key": "~openai",
+      "provider_label": "~Openai",
+      "provider_color": "#888888",
+      "context_length": 1050000,
+      "input_cost_per_1m": 5.0,
+      "output_cost_per_1m": 30.0,
+      "description": "This model always redirects to the latest model in the OpenAI GPT family.",
+      "source": "openrouter"
+    },
+    {
       "id": "qwen/qwen3.5-plus-20260420",
       "name": "Qwen: Qwen3.5 Plus 2026-04-20",
       "provider_key": "qwen",
@@ -1076,8 +1200,8 @@
       "provider_label": "Qwen",
       "provider_color": "#888888",
       "context_length": 262144,
-      "input_cost_per_1m": 1.3,
-      "output_cost_per_1m": 7.8,
+      "input_cost_per_1m": 1.04,
+      "output_cost_per_1m": 6.24,
       "description": "Qwen3.6-Max-Preview is a proprietary frontier model from Alibaba Cloud built on a sparse mixture-of-experts architecture with approximately 1 trillion total parameters. It is optimized for agentic coding, tool use, and...",
       "source": "openrouter"
     },
@@ -1087,9 +1211,9 @@
       "provider_key": "qwen",
       "provider_label": "Qwen",
       "provider_color": "#888888",
-      "context_length": 262144,
-      "input_cost_per_1m": 0.195,
-      "output_cost_per_1m": 1.56,
+      "context_length": 256000,
+      "input_cost_per_1m": 0.325,
+      "output_cost_per_1m": 3.25,
       "description": "Qwen3.6 27B is a dense 27-billion-parameter language model from the Qwen Team at Alibaba, released in April 2026. It features hybrid multimodal capabilities \u2014 accepting text, image, and video inputs...",
       "source": "openrouter"
     },
@@ -4970,18 +5094,6 @@
       "source": "openrouter"
     },
     {
-      "id": "meta-llama/llama-3.1-8b-instruct",
-      "name": "Meta: Llama 3.1 8B Instruct",
-      "provider_key": "meta-llama",
-      "provider_label": "Open source",
-      "provider_color": "#7c3aed",
-      "context_length": 16384,
-      "input_cost_per_1m": 0.02,
-      "output_cost_per_1m": 0.05,
-      "description": "Meta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 8B instruct-tuned version is fast and efficient. It has demonstrated strong performance compared to...",
-      "source": "openrouter"
-    },
-    {
       "id": "meta-llama/llama-3.1-70b-instruct",
       "name": "Meta: Llama 3.1 70B Instruct",
       "provider_key": "meta-llama",
@@ -4991,6 +5103,18 @@
       "input_cost_per_1m": 0.4,
       "output_cost_per_1m": 0.4,
       "description": "Meta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 70B instruct-tuned version is optimized for high quality dialogue usecases. It has demonstrated strong...",
+      "source": "openrouter"
+    },
+    {
+      "id": "meta-llama/llama-3.1-8b-instruct",
+      "name": "Meta: Llama 3.1 8B Instruct",
+      "provider_key": "meta-llama",
+      "provider_label": "Open source",
+      "provider_color": "#7c3aed",
+      "context_length": 16384,
+      "input_cost_per_1m": 0.02,
+      "output_cost_per_1m": 0.05,
+      "description": "Meta's latest class of model (Llama 3.1) launched with a variety of sizes & flavors. This 8B instruct-tuned version is fast and efficient. It has demonstrated strong performance compared to...",
       "source": "openrouter"
     },
     {
@@ -5246,18 +5370,6 @@
       "source": "openrouter"
     },
     {
-      "id": "openai/gpt-3.5-turbo-instruct",
-      "name": "OpenAI: GPT-3.5 Turbo Instruct",
-      "provider_key": "openai",
-      "provider_label": "OpenAI",
-      "provider_color": "#10a37f",
-      "context_length": 4095,
-      "input_cost_per_1m": 1.5,
-      "output_cost_per_1m": 2.0,
-      "description": "This model is a variant of GPT-3.5 Turbo tuned for instructional prompts and omitting chat-related optimizations. Training data: up to Sep 2021.",
-      "source": "openrouter"
-    },
-    {
       "id": "mistralai/mistral-7b-instruct-v0.1",
       "name": "Mistral: Mistral 7B Instruct v0.1",
       "provider_key": "mistralai",
@@ -5267,6 +5379,18 @@
       "input_cost_per_1m": 0.11,
       "output_cost_per_1m": 0.19,
       "description": "A 7.3B parameter model that outperforms Llama 2 13B on all benchmarks, with optimizations for speed and context length.",
+      "source": "openrouter"
+    },
+    {
+      "id": "openai/gpt-3.5-turbo-instruct",
+      "name": "OpenAI: GPT-3.5 Turbo Instruct",
+      "provider_key": "openai",
+      "provider_label": "OpenAI",
+      "provider_color": "#10a37f",
+      "context_length": 4095,
+      "input_cost_per_1m": 1.5,
+      "output_cost_per_1m": 2.0,
+      "description": "This model is a variant of GPT-3.5 Turbo tuned for instructional prompts and omitting chat-related optimizations. Training data: up to Sep 2021.",
       "source": "openrouter"
     },
     {
@@ -5318,18 +5442,6 @@
       "source": "openrouter"
     },
     {
-      "id": "openai/gpt-4-0314",
-      "name": "OpenAI: GPT-4 (older v0314)",
-      "provider_key": "openai",
-      "provider_label": "OpenAI",
-      "provider_color": "#10a37f",
-      "context_length": 8191,
-      "input_cost_per_1m": 30.0,
-      "output_cost_per_1m": 60.0,
-      "description": "GPT-4-0314 is the first version of GPT-4 released, with a context length of 8,192 tokens, and was supported until June 14. Training data: up to Sep 2021.",
-      "source": "openrouter"
-    },
-    {
       "id": "openai/gpt-4",
       "name": "OpenAI: GPT-4",
       "provider_key": "openai",
@@ -5339,6 +5451,18 @@
       "input_cost_per_1m": 30.0,
       "output_cost_per_1m": 60.0,
       "description": "OpenAI's flagship model, GPT-4 is a large-scale multimodal language model capable of solving difficult problems with greater accuracy than previous models due to its broader general knowledge and advanced reasoning...",
+      "source": "openrouter"
+    },
+    {
+      "id": "openai/gpt-4-0314",
+      "name": "OpenAI: GPT-4 (older v0314)",
+      "provider_key": "openai",
+      "provider_label": "OpenAI",
+      "provider_color": "#10a37f",
+      "context_length": 8191,
+      "input_cost_per_1m": 30.0,
+      "output_cost_per_1m": 60.0,
+      "description": "GPT-4-0314 is the first version of GPT-4 released, with a context length of 8,192 tokens, and was supported until June 14. Training data: up to Sep 2021.",
       "source": "openrouter"
     },
     {
