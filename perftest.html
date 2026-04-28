@@ -615,7 +615,7 @@ function clearHistory(){
 async function bzmFetch(path, options={}) {
   const key = JSON.parse(localStorage.getItem('bzm_api_key') || '{}');
   const method = options.method || 'GET';
-  const funcUrl = '/.netlify/functions/blazemeter?path=' + encodeURIComponent(path);
+  const funcUrl = '/api/blazemeter?path=' + encodeURIComponent(path);
   const res = await fetch(funcUrl, {
     method: method,
     headers: {
