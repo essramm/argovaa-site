@@ -3,702 +3,595 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Argovaa – AI-Native Reliability Engineering. Stop firefighting. Start preventing. AI-powered JVM observability, thread analysis, GC intelligence and autonomous incident resolution.">
-<title>Argovaa – AI-Native Reliability Engineering</title>
+<title>Argovaa — AI Infrastructure Intelligence</title>
+<meta name="description" content="Argovaa — Live AI inference benchmarks, JVM reliability engineering, and cloud cost intelligence. Stop firefighting. Start preventing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700;1,900&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{
-    --ink:#0a0c10;--paper:#f9f7f3;--white:#ffffff;
-    --teal:#007a6e;--teal-lt:#e0f5f3;--teal-mid:#009a8c;
-    --gold:#b8860b;--gold-lt:#fdf6e3;
-    --slate:#1e2d3d;--slate-lt:#eef2f7;
-    --text:#0a0c10;--text-mid:#4a5568;--text-muted:#8896a8;
-    --border:rgba(10,12,16,0.1);--border2:rgba(10,12,16,0.06)
-  }
-  html{scroll-behavior:smooth}
-  body{background:var(--paper);color:var(--text);font-family:'Geist',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f9fb;--surface:#ffffff;--surface2:#f1f3f7;--surface3:#e8eaef;
+  --ink:#0f1117;--mid:#5a6170;--faint:#c8ccd6;
+  --accent:#1d4ed8;--accent-bright:#2563eb;--accent-dim:rgba(29,78,216,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;
+  --bd:rgba(15,17,23,0.1);--bd2:rgba(15,17,23,0.06)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
 
-  /* NAV */
-  nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-  .logo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:26px;letter-spacing:-0.5px;color:var(--ink);font-style:italic;text-decoration:none}
-  .logo span{color:var(--teal);font-style:normal}
-  .nav-links{display:flex;gap:32px;list-style:none}
-  .nav-links a{color:var(--text-mid);text-decoration:none;font-size:14px;font-weight:400;transition:color 0.2s}
-  .nav-links a:hover,.nav-links a.active{color:var(--teal)}
-  .nav-right{display:flex;gap:10px}
-  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);padding:9px 20px;border-radius:7px;font-size:14px;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s}
-  .btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
-  .btn-solid{background:var(--ink);border:none;color:var(--white);padding:9px 20px;border-radius:7px;font-size:14px;cursor:pointer;font-family:'Geist',sans-serif;transition:opacity 0.2s}
-  .btn-solid:hover{opacity:0.82}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--bd);background:rgba(248,249,251,0.96);backdrop-filter:blur(24px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
+.logo-dot{color:var(--accent)}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:12px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.act{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.live-badge{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:0.5px;border:1px solid var(--bd);padding:4px 10px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:glow 2s infinite}
+@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{opacity:0.5;box-shadow:0 0 0 5px transparent}}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;transition:background 0.2s;text-decoration:none;display:inline-block}
+.btn-nav:hover{background:var(--accent-bright)}
 
-  /* HERO */
-  .hero{padding:96px 48px 80px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;max-width:1200px;margin:0 auto}
-  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--teal-lt);border:1px solid rgba(0,122,110,0.2);color:var(--teal);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;letter-spacing:0.3px;margin-bottom:28px}
-  .pdot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
-  h1{font-family:'Fraunces',sans-serif;font-size:clamp(44px,5.5vw,74px);font-weight:900;line-height:0.97;letter-spacing:-2.5px;color:var(--ink);margin-bottom:24px}
-  h1 em{font-style:italic;color:var(--teal)}
-  h1 .dim{color:var(--text-muted)}
-  .hero-sub{font-size:18px;color:var(--text-mid);line-height:1.8;margin-bottom:40px;font-weight:300;max-width:460px}
-  .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
-  .btn-primary{background:var(--teal);color:var(--white);padding:14px 28px;border-radius:8px;font-size:15px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
-  .btn-primary:hover{background:var(--teal-mid);transform:translateY(-1px)}
-  .btn-secondary{background:transparent;color:var(--ink);padding:14px 28px;border-radius:8px;font-size:15px;border:1px solid var(--border);cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
-  .btn-secondary:hover{border-color:var(--teal);color:var(--teal)}
-  .hero-proof{display:flex;gap:24px;flex-wrap:wrap}
-  .proof-item{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
-  .proof-tick{color:var(--teal);font-weight:700}
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 80px;position:relative;overflow:hidden;background:var(--bg)}
+.hero-noise{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;opacity:0.5}
+.hero-lines{position:absolute;inset:0;background-image:linear-gradient(var(--bd2) 1px,transparent 1px),linear-gradient(90deg,var(--bd2) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
+.hero-accent{position:absolute;top:0;left:48px;right:48px;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.7}
+.hero-inner{max-width:1100px;width:100%;position:relative;z-index:1}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.eyebrow-line{width:32px;height:2px;background:var(--accent)}
+.eyebrow-text{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,12vw,160px);line-height:0.88;letter-spacing:2px;color:var(--ink);margin-bottom:36px}
+h1 .acc{color:var(--accent)}
+h1 .ghost{-webkit-text-stroke:2px var(--faint);color:transparent}
+.hero-sub{font-size:17px;color:var(--mid);max-width:540px;line-height:1.75;font-weight:300;margin-bottom:48px}
+.hero-actions{display:flex;gap:10px;margin-bottom:80px}
+.btn-primary{background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block;letter-spacing:0.2px}
+.btn-primary:hover{background:var(--accent-bright);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--mid);padding:13px 28px;font-size:14px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:640px;border:1px solid var(--bd);background:var(--surface)}
+.hstat{padding:18px 20px;border-right:1px solid var(--bd)}
+.hstat:last-child{border-right:none}
+.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--ink)}
+.hstat-val.a{color:var(--accent)}
+.hstat-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 
-  /* HERO RIGHT */
-  .hero-right{display:flex;flex-direction:column;gap:12px}
-  .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  .stat-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 14px;text-align:center}
-  .stat-val{font-family:'Fraunces',sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px}
-  .stat-val.t{color:var(--teal)}
-  .stat-val.g{color:var(--gold)}
-  .stat-val.s{color:var(--slate)}
-  .stat-lbl{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.4}
-  .agent-preview{background:var(--ink);border-radius:14px;padding:22px}
-  .ap-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-  .ap-dot{width:7px;height:7px;border-radius:50%;background:#00e5a0;animation:blink 2s infinite}
-  .ap-label{font-size:12px;color:rgba(255,255,255,0.45)}
-  .ap-badge{margin-left:auto;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;font-size:10px;padding:3px 9px;border-radius:100px}
-  .ap-tool{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:8px 12px;font-size:12px;color:rgba(255,255,255,0.5);display:flex;gap:6px;margin-bottom:10px}
-  .ap-msg{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;border-left:2px solid #00e5a0;padding-left:10px}
-  .ap-msg code{background:rgba(0,229,160,0.12);color:#00e5a0;padding:1px 5px;border-radius:3px;font-size:11px}
-  .feature-strip{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-  .fs-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
-  .fs-dot{width:5px;height:5px;border-radius:50%;background:var(--teal)}
+/* SHARED */
+.max{max-width:1100px;margin:0 auto;width:100%}
+.sec-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-label::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,68px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:16px}
+.sec-title .acc{color:var(--accent)}
+.sec-sub{font-size:15px;color:var(--mid);max-width:480px;line-height:1.75;font-weight:300;margin-bottom:52px}
 
-  /* MARQUEE */
-  .marquee-outer{border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);background:var(--white);padding:20px 0;overflow:hidden;white-space:nowrap}
-  .marquee-inner{display:inline-flex;gap:40px;animation:marquee 32s linear infinite}
-  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-  .m-item{font-size:12px;color:var(--text-muted);letter-spacing:0.8px;text-transform:uppercase;font-weight:500;flex-shrink:0}
-  .m-sep{color:var(--teal);margin-right:40px}
+/* BENCHMARK SECTION */
+#benchmarks{padding:96px 48px;background:var(--bg);border-top:1px solid var(--bd)}
+.bench-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.bench-updated{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);display:flex;align-items:center;gap:6px}
+.bench-updated-val{color:var(--accent)}
 
-  /* SECTIONS */
-  .sec{padding:96px 48px;max-width:1200px;margin:0 auto}
-  .sec-alt{padding:96px 48px;background:var(--white);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)}
-  .sec-alt-inner{max-width:1200px;margin:0 auto}
-  .stag{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
-  .stitle{font-family:'Fraunces',sans-serif;font-size:clamp(30px,4vw,50px);font-weight:900;line-height:1.05;letter-spacing:-1.5px;color:var(--ink);margin-bottom:18px}
-  .stitle em{font-style:italic;color:var(--teal)}
-  .ssub{font-size:17px;color:var(--text-mid);max-width:480px;line-height:1.8;margin-bottom:52px;font-weight:300}
+.ctrl-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:20px}
+.ctrl-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.cbtn{background:transparent;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:5px 11px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.3px;transition:all 0.15s}
+.cbtn:hover{border-color:var(--ink);color:var(--ink)}
+.cbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.csep{width:1px;height:16px;background:var(--bd);margin:0 2px}
 
-  /* PRODUCTS */
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border2);border-radius:14px;overflow:hidden}
-  .pcard{background:var(--white);padding:32px 28px;transition:background 0.2s;position:relative;overflow:hidden}
-  .pcard:hover{background:var(--paper)}
-  .pcard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity 0.3s}
-  .pcard:hover::after{opacity:1}
-  .p-icon{width:42px;height:42px;border-radius:10px;background:var(--teal-lt);border:1px solid rgba(0,122,110,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px}
-  .p-name{font-family:'Fraunces',sans-serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-0.3px}
-  .p-desc{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:16px}
-  .p-tag{display:inline-block;font-size:10px;padding:3px 10px;border-radius:100px;font-weight:500;letter-spacing:0.2px}
-  .p-tag.core{background:var(--teal-lt);color:var(--teal)}
-  .p-tag.newt{background:var(--slate-lt);color:var(--slate)}
-  .p-tag.ai{background:var(--gold-lt);color:var(--gold)}
+.gpu-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.gpubtn{background:var(--surface);border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:6px 12px;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
+.gpubtn:hover{border-color:var(--accent);color:var(--accent)}
+.gpubtn.on{background:rgba(29,78,216,0.08);border-color:var(--accent);color:var(--accent);font-weight:500}
 
-  /* AI SECTION */
-  .ai-layout{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
-  .ai-pts{display:flex;flex-direction:column;gap:24px;margin-top:8px}
-  .ai-pt{display:flex;gap:14px}
-  .ai-pt-ic{width:36px;height:36px;border-radius:9px;background:var(--teal-lt);border:1px solid rgba(0,122,110,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
-  .ai-pt-title{font-family:'Fraunces',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
-  .ai-pt-desc{font-size:13px;color:var(--text-mid);line-height:1.7}
+.ctx-strip{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.ctx-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.ctx-strip-btns{display:flex;gap:4px}
+.ctxbtn{background:var(--surface);border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 10px;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
+.ctxbtn.on{background:rgba(29,78,216,0.08);border-color:var(--accent);color:var(--accent)}
 
-  /* DEMO */
-  .demo-wrap{background:var(--ink);border-radius:16px;overflow:hidden}
-  .demo-bar{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px}
-  .demo-dots{display:flex;gap:5px}
-  .dd{width:10px;height:10px;border-radius:50%}
-  .demo-lbl{font-size:12px;color:rgba(255,255,255,0.35);margin-left:4px}
-  .demo-bdg{margin-left:auto;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;font-size:10px;padding:3px 9px;border-radius:100px}
-  .chat-area{padding:20px;display:flex;flex-direction:column;gap:12px;min-height:280px}
-  .cmsg{display:flex;gap:10px;align-items:flex-start}
-  .cav{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Fraunces',sans-serif}
-  .cav.ai{background:rgba(0,229,160,0.12);color:#00e5a0}
-  .cav.u{background:rgba(30,45,61,0.5);color:rgba(255,255,255,0.6)}
-  .cbub{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6}
-  .cbub.ai-b{border-color:rgba(0,229,160,0.1)}
-  .cbub code{background:rgba(0,229,160,0.1);color:#00e5a0;padding:1px 5px;border-radius:3px;font-size:11px;font-family:monospace}
-  .ctool{background:rgba(30,45,61,0.5);border:1px solid rgba(30,45,61,0.8);border-radius:6px;padding:7px 10px;font-size:11px;color:rgba(148,180,220,0.8);display:flex;gap:6px;align-items:center;margin-top:5px}
-  .cchips{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 14px}
-  .cchip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.42);font-size:12px;padding:6px 12px;border-radius:100px;cursor:pointer;transition:all 0.2s;font-family:'Geist',sans-serif}
-  .cchip:hover{border-color:rgba(0,229,160,0.3);color:#00e5a0}
-  .cinput-row{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px}
-  .cinput{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:8px;padding:9px 14px;color:rgba(255,255,255,0.75);font-size:13px;font-family:'Geist',sans-serif;outline:none;transition:border-color 0.2s}
-  .cinput:focus{border-color:rgba(0,229,160,0.3)}
-  .csend{background:#00e5a0;color:var(--ink);border:none;border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity 0.2s}
-  .csend:hover{opacity:0.82}
+.bench-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px}
+.bcard{background:var(--surface);padding:16px 18px}
+.bcard-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:6px}
+.bcard-val{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;line-height:1;color:var(--ink)}
+.bcard-val.b{color:var(--accent)}
+.bcard-val.w{color:var(--ink)}
+.bcard-val.a{color:var(--amber)}
+.bcard-val.r{color:var(--red)}
+.bcard-sub{font-size:11px;color:var(--mid);margin-top:3px}
 
-  /* HOW */
-  .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:28px;margin-top:52px}
-  .how-step{padding-left:50px;position:relative}
-  .how-num{position:absolute;left:0;top:0;width:34px;height:34px;border-radius:8px;background:var(--teal-lt);border:1px solid rgba(0,122,110,0.18);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',sans-serif;font-size:14px;font-weight:900;color:var(--teal)}
-  .how-title{font-family:'Fraunces',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px}
-  .how-desc{font-size:13px;color:var(--text-mid);line-height:1.7}
+.lb{width:100%;border-collapse:collapse}
+.lb th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);padding:10px 12px;border-bottom:2px solid var(--ink);text-align:left;background:var(--surface);white-space:nowrap}
+.lb th:not(:first-child){text-align:right}
+.lb td{padding:11px 12px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
+.lb tr:hover td{background:var(--surface2);cursor:pointer}
+.lb tr.tr-top td{background:rgba(29,78,216,0.04)}
+.lb tr.tr-top:hover td{background:rgba(29,78,216,0.08)}
+.tr-rank{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);text-align:center!important}
+.tr-rank.gold{color:var(--amber)}
+.tr-model{display:flex;flex-direction:column;gap:2px}
+.tr-mname{font-weight:500;color:var(--ink)}
+.tr-pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;letter-spacing:0.3px;margin-top:2px}
+.pl-openai{background:rgba(5,150,105,0.1);color:#059669;border:1px solid rgba(5,150,105,0.2)}
+.pl-anthropic{background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.2)}
+.pl-azure{background:rgba(29,78,216,0.08);color:var(--accent);border:1px solid rgba(29,78,216,0.2)}
+.pl-oss{background:rgba(124,58,237,0.08);color:#7c3aed;border:1px solid rgba(124,58,237,0.2)}
+.tr-tps-cell{text-align:right!important}
+.tps-inner{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.tps-num{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink)}
+.tps-num.best{color:var(--accent)}
+.tps-num.mid{color:var(--ink)}
+.tps-num.low{color:var(--mid)}
+.mbar{width:56px;height:3px;background:var(--surface3)}
+.mbar-fill{height:100%}
+.tr-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);text-align:right!important}
+.tr-num.fast{color:var(--emerald)}
+.tr-num.slow2{color:var(--red)}
+.tr-grade{text-align:center!important}
+.grade-badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 7px;letter-spacing:0.3px}
+.gs{background:rgba(29,78,216,0.1);color:var(--accent);border:1px solid rgba(29,78,216,0.25)}
+.ga{background:rgba(5,150,105,0.08);color:#059669;border:1px solid rgba(5,150,105,0.2)}
+.gb{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.gc{background:var(--surface2);color:var(--mid);border:1px solid var(--bd)}
+.live-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:0.3px}
 
-  /* INTEGRATIONS */
-  .int-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:48px}
-  .int-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px 14px;text-align:center;transition:border-color 0.2s}
-  .int-card:hover{border-color:rgba(0,122,110,0.3)}
-  .int-icon{font-size:22px;margin-bottom:8px}
-  .int-name{font-size:11px;color:var(--text-muted);font-weight:500}
+.detail-panel{display:none;background:var(--surface2);border-top:2px solid var(--accent);padding:20px;margin-top:0;margin-bottom:16px}
+.detail-panel.show{display:block}
+.dp-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:14px}
+.dp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.dp-gpu{background:var(--surface);border:1px solid var(--bd);padding:12px 14px}
+.dp-gpu-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:5px}
+.dp-gpu-tps{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.dp-gpu-meta{font-size:11px;color:var(--mid)}
 
-  /* CTA BAND */
-  .cta-band{background:var(--ink);padding:88px 48px;text-align:center}
-  .cta-band h2{font-family:'Fraunces',sans-serif;font-size:clamp(30px,5vw,60px);font-weight:900;color:var(--white);letter-spacing:-2px;line-height:1.0;margin-bottom:18px}
-  .cta-band h2 em{font-style:italic;color:#00e5a0}
-  .cta-band p{font-size:17px;color:rgba(255,255,255,0.45);margin-bottom:36px;font-weight:300}
-  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .cta-b1{background:#00e5a0;color:var(--ink);padding:15px 34px;border-radius:9px;font-size:15px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;transition:opacity 0.2s;text-decoration:none;display:inline-block}
-  .cta-b1:hover{opacity:0.88}
-  .cta-b2{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.75);padding:15px 34px;border-radius:9px;font-size:15px;border:1px solid rgba(255,255,255,0.12);cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
-  .cta-b2:hover{background:rgba(255,255,255,0.1)}
+.bench-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.bc{background:var(--surface);border:1px solid var(--bd);padding:18px 20px}
+.bc-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:2px}
+.bc-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:10px}
+.chart-leg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.cl{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid);font-family:'DM Mono',monospace}
+.cl-sq{width:8px;height:8px;flex-shrink:0}
 
-  /* FOOTER */
-  footer{background:var(--white);border-top:1px solid var(--border);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-  .flogo{font-family:'Fraunces',sans-serif;font-weight:900;font-size:22px;color:var(--ink);font-style:italic;text-decoration:none}
-  .flogo span{color:var(--teal);font-style:normal}
-  .flinks{display:flex;gap:24px;flex-wrap:wrap}
-  .flinks a{font-size:13px;color:var(--text-muted);text-decoration:none;transition:color 0.2s}
-  .flinks a:hover{color:var(--teal)}
-  .fcopy{font-size:12px;color:var(--text-muted)}
+/* PRODUCTS */
+#products{padding:96px 48px;background:var(--surface);border-top:1px solid var(--bd)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:0}
+.pc{background:var(--surface);padding:32px 28px;position:relative;overflow:hidden;transition:background 0.2s}
+.pc:hover{background:var(--surface2)}
+.pc::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s}
+.pc:hover::after{transform:scaleY(1)}
+.pc-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-bottom:20px;letter-spacing:0.5px}
+.pc-icon{font-size:18px;margin-bottom:14px;opacity:0.4}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--ink);margin-bottom:8px}
+.pc-desc{font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:16px}
+.pc-tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border:1px solid var(--bd);color:var(--mid)}
+.pc-tag.new{border-color:rgba(29,78,216,0.3);color:var(--accent);background:rgba(29,78,216,0.06)}
 
-  /* TYPING */
-  .typing{display:inline-flex;gap:4px;align-items:center;padding:2px 0}
-  .typing span{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.3);animation:td 1.2s infinite}
-  .typing span:nth-child(2){animation-delay:0.2s}
-  .typing span:nth-child(3){animation-delay:0.4s}
-  @keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+/* HOW */
+#how{padding:96px 48px;background:var(--bg);border-top:1px solid var(--bd)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:52px}
+.step{padding-left:50px;position:relative}
+.step-n{position:absolute;left:0;top:0;font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:var(--accent);line-height:1}
+.step-title{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:7px}
+.step-desc{font-size:13px;color:var(--mid);line-height:1.65}
 
-  .fade-in{animation:fi 0.4s ease forwards}
-  @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+/* INTEGRATIONS */
+#integrations{padding:96px 48px;background:var(--surface);border-top:1px solid var(--bd)}
+.intgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:52px}
+.intitem{background:var(--surface);padding:18px 14px;text-align:center;transition:background 0.2s}
+.intitem:hover{background:var(--surface2)}
+.intitem-icon{font-size:18px;margin-bottom:7px;opacity:0.3}
+.intitem-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid)}
 
-  /* RESPONSIVE */
-  @media(max-width:768px){
-    nav{padding:0 20px}
-    .nav-links{display:none}
-    .hero{grid-template-columns:1fr;padding:60px 20px 48px;gap:40px}
-    .hero-right{display:none}
-    .sec{padding:60px 20px}
-    .sec-alt{padding:60px 20px}
-    .ai-layout{grid-template-columns:1fr;gap:36px}
-    .cta-band{padding:60px 20px}
-    footer{padding:32px 20px;flex-direction:column;align-items:flex-start}
-  }
+/* CTA */
+.cta{background:var(--accent);padding:88px 48px;text-align:center;position:relative;overflow:hidden;border-top:1px solid rgba(29,78,216,0.3)}
+.cta::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 63px,rgba(255,255,255,0.04) 64px),repeating-linear-gradient(0deg,transparent,transparent 63px,rgba(255,255,255,0.04) 64px);pointer-events:none}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,100px);letter-spacing:2px;color:#fff;line-height:0.9;margin-bottom:20px;position:relative}
+.cta p{font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:36px;font-weight:300;position:relative}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.cta-b1{background:#fff;color:var(--accent);padding:14px 32px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s;text-decoration:none;display:inline-block}
+.cta-b1:hover{opacity:0.92}
+.cta-b2{background:transparent;color:rgba(255,255,255,0.85);padding:14px 32px;font-size:14px;border:1px solid rgba(255,255,255,0.4);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.cta-b2:hover{background:rgba(255,255,255,0.12)}
+
+/* FOOTER */
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flinks{display:flex;gap:22px}
+.flinks a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.3px}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .hero{padding:80px 16px 60px}
+  h1{font-size:72px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  #benchmarks,#products,#how,#integrations,.cta{padding:60px 16px}
+  .bench-charts-row{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .intgrid{grid-template-columns:repeat(3,1fr)}
+  .bench-cards{grid-template-columns:1fr 1fr}
+  footer{padding:24px 16px;flex-direction:column;align-items:flex-start}
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="#" class="logo"><em>Argovaa</em></a>
+  <a href="#" class="logo">ARGOVAA<span class="logo-dot">.</span></a>
   <ul class="nav-links">
+    <li><a href="#benchmarks" class="act">Benchmarks</a></li>
     <li><a href="#products">Products</a></li>
-    <li><a href="#ai-agent">AI agent</a></li>
-    <li><a href="login.html">Free analyser</a></li>
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="analyser.html">GC Analyser</a></li>
+    <li><a href="perftest.html">Load Testing</a></li>
   </ul>
   <div class="nav-right">
-    <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Sign in</button>
-    <button class="btn-solid" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get started →</button>
+    <div class="live-badge"><span class="live-dot"></span><span id="nav-ts">LIVE DATA</span></div>
+    <a href="login.html" class="btn-nav">Get started</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section style="background:var(--paper)">
-  <div class="hero">
-    <div>
-      <div class="pill"><span class="pdot"></span>Agentic AI — autonomous JVM reliability</div>
-      <h1>Stop<br>firefighting.<br>Start <em>preventing</em><span class="dim">.</span></h1>
-      <p class="hero-sub">Argovaa gives engineering teams AI-native observability across JVM health, cloud infrastructure, and application reliability — detecting, diagnosing, and resolving issues before your users ever notice.</p>
-      <div class="hero-btns">
-        <a href="#ai-agent" class="btn-primary">See the AI agent live</a>
-        <a href="#products" class="btn-secondary">Explore products →</a>
-      </div>
-      <div class="hero-proof">
-        <span class="proof-item"><span class="proof-tick">✓</span>No agent install needed</span>
-        <span class="proof-item"><span class="proof-tick">✓</span>Works with any JVM stack</span>
-        <span class="proof-item"><span class="proof-tick">✓</span>Results in 60 seconds</span>
-      </div>
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-inner max">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">AI infrastructure intelligence</span>
     </div>
-    <div class="hero-right">
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-val t">70<span style="font-size:16px">%</span></div><div class="stat-lbl">Faster root cause analysis</div></div>
-        <div class="stat-box"><div class="stat-val g">3×</div><div class="stat-lbl">Fewer P1 incidents</div></div>
-        <div class="stat-box"><div class="stat-val s">9+</div><div class="stat-lbl">Years JVM expertise</div></div>
-      </div>
-      <div class="agent-preview">
-        <div class="ap-top"><div class="ap-dot"></div><span class="ap-label">Argovaa AI agent</span><span class="ap-badge">Live</span></div>
-        <div class="ap-tool">⚙ Scanning thread states across 47 JVM instances...</div>
-        <div class="ap-msg">Detected deadlock between <code>http-exec-3</code> and <code>SessionManager</code> — 47 threads queued. Fix identified. Apply now?</div>
-      </div>
-      <div class="feature-strip">
-        <span class="fs-item"><span class="fs-dot"></span>Thread analysis</span>
-        <span class="fs-item"><span class="fs-dot"></span>GC intelligence</span>
-        <span class="fs-item"><span class="fs-dot"></span>Heap diagnostics</span>
-        <span class="fs-item"><span class="fs-dot"></span>K8s native</span>
-      </div>
+    <h1>STOP<br><span class="acc">FIRE</span><span class="ghost">FIGHTING.</span><br>START<br><span class="acc">PREVENTING.</span></h1>
+    <p class="hero-sub">Live AI inference benchmarks, JVM reliability engineering, and cloud cost intelligence — built for engineering teams who ship fast and sleep well.</p>
+    <div class="hero-actions">
+      <a href="#benchmarks" class="btn-primary">View live benchmarks →</a>
+      <a href="login.html" class="btn-ghost">Access platform</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val a" id="h-models">—</div><div class="hstat-label">Models tracked</div></div>
+      <div class="hstat"><div class="hstat-val a">5</div><div class="hstat-label">GPU platforms</div></div>
+      <div class="hstat"><div class="hstat-val a">4+</div><div class="hstat-label">AI providers</div></div>
+      <div class="hstat"><div class="hstat-val">v4.1</div><div class="hstat-label">MLPerf round</div></div>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-outer">
-  <div class="marquee-inner">
-    <span class="m-item">JVM monitoring</span><span class="m-sep">·</span>
-    <span class="m-item">Thread analysis</span><span class="m-sep">·</span>
-    <span class="m-item">GC intelligence</span><span class="m-sep">·</span>
-    <span class="m-item">Heap diagnostics</span><span class="m-sep">·</span>
-    <span class="m-item">Kubernetes native</span><span class="m-sep">·</span>
-    <span class="m-item">OpenTelemetry</span><span class="m-sep">·</span>
-    <span class="m-item">Load testing</span><span class="m-sep">·</span>
-    <span class="m-item">Agentic AI</span><span class="m-sep">·</span>
-    <span class="m-item">Front-end performance</span><span class="m-sep">·</span>
-    <span class="m-item">Cloud cost optimisation</span><span class="m-sep">·</span>
-    <span class="m-item">JVM monitoring</span><span class="m-sep">·</span>
-    <span class="m-item">Thread analysis</span><span class="m-sep">·</span>
-    <span class="m-item">GC intelligence</span><span class="m-sep">·</span>
-    <span class="m-item">Heap diagnostics</span><span class="m-sep">·</span>
-    <span class="m-item">Kubernetes native</span><span class="m-sep">·</span>
-    <span class="m-item">OpenTelemetry</span><span class="m-sep">·</span>
-    <span class="m-item">Load testing</span><span class="m-sep">·</span>
-    <span class="m-item">Agentic AI</span><span class="m-sep">·</span>
+<!-- BENCHMARKS -->
+<section id="benchmarks">
+  <div class="max">
+    <div class="bench-top">
+      <div>
+        <div class="sec-label">Live benchmark data</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,56px);letter-spacing:2px;line-height:0.95;margin-bottom:8px">AI MODEL INFERENCE<br><span style="color:var(--accent)">PERFORMANCE LEADERBOARD</span></div>
+      </div>
+      <div class="bench-updated">
+        <span class="live-dot"></span>
+        Auto-refreshed daily · <span class="bench-updated-val" id="bench-ts">loading...</span>
+      </div>
+    </div>
+
+    <div class="ctrl-bar">
+      <span class="ctrl-lbl">Provider:</span>
+      <button class="cbtn on" id="p-all" onclick="toggleP('all',this)">All</button>
+      <button class="cbtn" id="p-openai" onclick="toggleP('openai',this)">OpenAI</button>
+      <button class="cbtn" id="p-anthropic" onclick="toggleP('anthropic',this)">Anthropic</button>
+      <button class="cbtn" id="p-azure" onclick="toggleP('azure',this)">Azure OAI</button>
+      <button class="cbtn" id="p-oss" onclick="toggleP('oss',this)">Open source</button>
+      <div class="csep"></div>
+      <span class="ctrl-lbl">Sort:</span>
+      <button class="cbtn on" id="s-tps" onclick="setSort('tps',this)">Tokens/s</button>
+      <button class="cbtn" id="s-lat" onclick="setSort('lat',this)">Latency</button>
+      <button class="cbtn" id="s-cost" onclick="setSort('cost',this)">Cost/1M</button>
+      <button class="cbtn" id="s-eff" onclick="setSort('eff',this)">Efficiency</button>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <div class="ctx-lbl" style="margin-bottom:8px">GPU Hardware</div>
+      <div class="gpu-strip" id="gpu-strip"></div>
+    </div>
+
+    <div class="ctx-strip">
+      <span class="ctx-lbl">Context window</span>
+      <div class="ctx-strip-btns">
+        <button class="ctxbtn on" onclick="setCtx(1024,this)">1K</button>
+        <button class="ctxbtn" onclick="setCtx(4096,this)">4K</button>
+        <button class="ctxbtn" onclick="setCtx(16384,this)">16K</button>
+        <button class="ctxbtn" onclick="setCtx(32768,this)">32K</button>
+        <button class="ctxbtn" onclick="setCtx(65536,this)">64K</button>
+        <button class="ctxbtn" onclick="setCtx(131072,this)">128K</button>
+      </div>
+    </div>
+
+    <div class="bench-cards" id="bench-cards"></div>
+
+    <div id="lb-loading" style="text-align:center;padding:60px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:1.5px">LOADING LIVE BENCHMARK DATA...</div>
+
+    <div id="lb-wrap" style="display:none">
+      <table class="lb">
+        <thead><tr>
+          <th style="width:36px;text-align:center">#</th>
+          <th>Model</th>
+          <th>Tokens/s ↑</th>
+          <th>TTFT ↓</th>
+          <th>Latency ↓</th>
+          <th>$/1M in</th>
+          <th>$/1M out</th>
+          <th style="text-align:center">Grade</th>
+        </tr></thead>
+        <tbody id="lb-body"></tbody>
+      </table>
+      <div class="detail-panel" id="detail-panel">
+        <div class="dp-title" id="dp-title"></div>
+        <div class="dp-grid" id="dp-grid"></div>
+      </div>
+    </div>
+
+    <div class="bench-charts-row" id="bench-charts" style="display:none">
+      <div class="bc">
+        <div class="bc-lbl">Throughput degradation</div>
+        <div class="bc-title">TOKENS/S VS CONTEXT SIZE</div>
+        <div class="chart-leg" id="ctx-leg"></div>
+        <div style="position:relative;height:200px">
+          <canvas id="ctx-chart" role="img" aria-label="Line chart showing token throughput vs context window size for top AI models">Throughput vs context.</canvas>
+        </div>
+      </div>
+      <div class="bc">
+        <div class="bc-lbl">Pricing comparison</div>
+        <div class="bc-title">COST PER 1M TOKENS</div>
+        <div class="chart-leg" id="cost-leg"></div>
+        <div style="position:relative;height:200px">
+          <canvas id="cost-chart" role="img" aria-label="Bar chart showing cost per million tokens for each model">Cost per 1M tokens.</canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- GPU INSTANCE CTA -->
+    <div style="margin-top:32px;border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:16px;height:1px;background:var(--accent);display:inline-block"></span>GPU instance selection</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--white);line-height:1;margin-bottom:8px">NOT SURE WHICH GPU INSTANCE IS RIGHT FOR YOUR WORKLOAD?</div>
+        <p style="font-size:14px;color:var(--mid);font-weight:300;max-width:580px;line-height:1.65">Use our performance testing portal to run real load tests against your application and find the optimal GPU configuration for your inference workload — no guesswork, real data.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+        <a href="perftest.html" style="background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:background 0.2s;white-space:nowrap;letter-spacing:0.2px" onmouseover="this.style.background='#60a5fa'" onmouseout="this.style.background='#3b82f6'">Run a performance test →</a>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);text-align:center;letter-spacing:0.5px">Free · No setup required · Results in minutes</div>
+      </div>
+    </div>
+
   </div>
-</div>
+</section>
 
 <!-- PRODUCTS -->
-<section class="sec-alt" id="products">
-  <div class="sec-alt-inner">
-    <div class="stag">Products</div>
-    <h2 class="stitle">Full-stack reliability,<br><em>one platform</em></h2>
-    <p class="ssub">From front-end response times to deep JVM internals — everything your team needs to ship reliably and scale confidently.</p>
-    <div class="products-grid">
-      <div class="pcard">
-        <div class="p-icon">🧵</div>
-        <div class="p-name">Thread & heap analyser</div>
-        <div class="p-desc">Real-time visibility into thread contention, deadlocks, and heap memory issues. AI pinpoints root cause in seconds, not hours of manual investigation.</div>
-        <span class="p-tag core">Core</span>
-      </div>
-      <div class="pcard">
-        <div class="p-icon">🔁</div>
-        <div class="p-name">GC intelligence</div>
-        <div class="p-desc">Parse and visualise GC logs from any collector. AI recommends precise tuning for G1GC, ZGC, or Shenandoah based on your real workload patterns.</div>
-        <span class="p-tag ai">AI enhanced</span>
-      </div>
-      <div class="pcard">
-        <div class="p-icon">⚡</div>
-        <div class="p-name">Front-end performance</div>
-        <div class="p-desc">Core Web Vitals, Lighthouse scoring, and mobile performance analysis — with automated improvement suggestions built in to every report.</div>
-        <span class="p-tag core">Core</span>
-      </div>
-      <div class="pcard">
-        <div class="p-icon">📡</div>
-        <div class="p-name">Infrastructure monitoring</div>
-        <div class="p-desc">JVM and cloud infrastructure monitoring with anomaly detection. Kubernetes-native with full OpenTelemetry support out of the box — no lock-in.</div>
-        <span class="p-tag newt">K8s ready</span>
-      </div>
-      <div class="pcard">
-        <div class="p-icon">🧪</div>
-        <div class="p-name">Load & performance testing</div>
-        <div class="p-desc">SaaS-based cloud load testing with AI-generated test scenarios. Get rapid, actionable recommendations before your next release ships to production.</div>
-        <span class="p-tag core">Core</span>
-      </div>
-      <div class="pcard">
-        <div class="p-icon">🤖</div>
-        <div class="p-name">Agentic AI engine</div>
-        <div class="p-desc">The only observability platform with a fully autonomous agent that investigates incidents, correlates signals, and drives remediation end-to-end.</div>
-        <span class="p-tag newt">New 2025</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- AI AGENT -->
-<section class="sec" id="ai-agent">
-  <div class="ai-layout">
-    <div>
-      <div class="stag">Agentic AI</div>
-      <h2 class="stitle">An SRE that<br><em>never sleeps</em></h2>
-      <p class="ssub">The Argovaa AI agent investigates incidents autonomously — pulling thread dumps, correlating GC data, and tracing root causes while your team is still reading the alert.</p>
-      <div class="ai-pts">
-        <div class="ai-pt">
-          <div class="ai-pt-ic">🔍</div>
-          <div>
-            <div class="ai-pt-title">Autonomous investigation</div>
-            <div class="ai-pt-desc">When an alert fires, the agent immediately gathers evidence — thread states, heap histograms, GC pauses — without waiting to be asked.</div>
-          </div>
-        </div>
-        <div class="ai-pt">
-          <div class="ai-pt-ic">💬</div>
-          <div>
-            <div class="ai-pt-title">Plain-English diagnosis</div>
-            <div class="ai-pt-desc">A clear explanation of what's wrong and exactly what to change. No deep JVM expertise required from your on-call team.</div>
-          </div>
-        </div>
-        <div class="ai-pt">
-          <div class="ai-pt-ic">⚙️</div>
-          <div>
-            <div class="ai-pt-title">One-click remediation</div>
-            <div class="ai-pt-desc">Apply JVM flags, scaling adjustments, or config changes directly from the agent — with a full audit trail and instant rollback.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="demo-wrap">
-      <div class="demo-bar">
-        <div class="demo-dots">
-          <div class="dd" style="background:#ff5f57"></div>
-          <div class="dd" style="background:#febc2e"></div>
-          <div class="dd" style="background:#28c840"></div>
-        </div>
-        <span class="demo-lbl">Argovaa AI agent — try it</span>
-        <span class="demo-bdg">Interactive</span>
-      </div>
-      <div class="chat-area" id="chat-area">
-        <div class="cmsg fade-in">
-          <div class="cav ai">AV</div>
-          <div class="cbub ai-b">Hi — I'm your Argovaa AI agent. I monitor your JVM, threads, GC, and cloud infrastructure in real time. What would you like me to investigate?</div>
-        </div>
-      </div>
-      <div class="cchips" id="cchips">
-        <div class="cchip" onclick="runDemo('gc')">Why is GC pausing?</div>
-        <div class="cchip" onclick="runDemo('thread')">Analyse thread dump</div>
-        <div class="cchip" onclick="runDemo('heap')">Memory leak?</div>
-        <div class="cchip" onclick="runDemo('perf')">What's slowing my app?</div>
-      </div>
-      <div class="cinput-row">
-        <input class="cinput" id="chat-input" type="text" placeholder="Ask about your JVM or infrastructure..." onkeydown="if(event.key==='Enter')cSend()">
-        <button class="csend" onclick="cSend()">↑</button>
-      </div>
+<section id="products">
+  <div class="max">
+    <div class="sec-label">Platform</div>
+    <div class="sec-title">FULL-STACK<br>RELIABILITY <span class="acc">SUITE</span></div>
+    <p class="sec-sub">From AI inference benchmarks to JVM internals — everything your engineering team needs.</p>
+    <div class="pgrid">
+      <div class="pc"><div class="pc-n">01 —</div><div class="pc-icon">◈</div><div class="pc-name">AI BENCHMARKS</div><div class="pc-desc">Live inference performance across OpenAI, Anthropic, Azure and open source models on NVIDIA, AMD and Intel GPUs. Auto-updated daily from live sources.</div><span class="pc-tag new">Live data</span></div>
+      <div class="pc"><div class="pc-n">02 —</div><div class="pc-icon">◉</div><div class="pc-name">JVM ANALYSER</div><div class="pc-desc">AI-powered GC log and thread dump analysis. Deadlocks, memory leaks, and heap issues diagnosed in seconds with exact remediation steps.</div><span class="pc-tag">Core</span></div>
+      <div class="pc"><div class="pc-n">03 —</div><div class="pc-icon">◎</div><div class="pc-name">LOAD TESTING</div><div class="pc-desc">BlazeMeter and k6 Cloud performance testing from a single portal. Configure, run, and analyse load tests against any URL without leaving Argovaa.</div><span class="pc-tag">Core</span></div>
+      <div class="pc"><div class="pc-n">04 —</div><div class="pc-icon">◧</div><div class="pc-name">GC INTELLIGENCE</div><div class="pc-desc">Parse GC logs from G1GC, ZGC, and Shenandoah. AI tunes heap configuration and collector settings for your production workload.</div><span class="pc-tag new">AI enhanced</span></div>
+      <div class="pc"><div class="pc-n">05 —</div><div class="pc-icon">◫</div><div class="pc-name">CLOUD COST</div><div class="pc-desc">AWS cost optimisation with agentic AI. Spot instance migration, Savings Plans, and real-time recommendations via the Costiq engine.</div><span class="pc-tag">Core</span></div>
+      <div class="pc"><div class="pc-n">06 —</div><div class="pc-icon">◬</div><div class="pc-name">AGENTIC AI ENGINE</div><div class="pc-desc">Autonomous incident investigation. Gathers evidence, correlates signals, and drives remediation end-to-end while your team reads the alert.</div><span class="pc-tag new">New 2025</span></div>
     </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="sec-alt" id="how">
-  <div class="sec-alt-inner">
-    <div class="stag">How it works</div>
-    <h2 class="stitle">From alert to <em>resolved</em><br>in minutes</h2>
-    <p class="ssub">The Argovaa agent works across your entire stack — no manual correlation, no war room required.</p>
-    <div class="how-grid">
-      <div class="how-step">
-        <div class="how-num">01</div>
-        <div class="how-title">Connect your stack</div>
-        <div class="how-desc">Plug in via lightweight agent, OpenTelemetry, or direct integrations with AWS, GCP, Azure, and Kubernetes. Up and running in under 10 minutes.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">02</div>
-        <div class="how-title">AI detects anomalies</div>
-        <div class="how-desc">Continuous monitoring across JVM metrics, GC logs, and thread states — alerting you before issues escalate into production incidents.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">03</div>
-        <div class="how-title">Agent investigates</div>
-        <div class="how-desc">When an issue fires, the agent autonomously gathers thread dumps, correlates GC data, and traces the root cause across all your services.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">04</div>
-        <div class="how-title">Fix with confidence</div>
-        <div class="how-desc">Get a plain-English explanation of what broke and what to change — then apply it with one click, or let the agent handle the full remediation.</div>
-      </div>
+<section id="how">
+  <div class="max">
+    <div class="sec-label">Workflow</div>
+    <div class="sec-title">FROM ALERT<br>TO <span class="acc">RESOLVED</span></div>
+    <p class="sec-sub">The Argovaa agent works across your entire stack with no manual correlation required.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><div class="step-title">Connect your stack</div><div class="step-desc">OpenTelemetry, lightweight agent, or direct integrations with AWS, GCP, Azure, and Kubernetes. Live in under 10 minutes.</div></div>
+      <div class="step"><div class="step-n">02</div><div class="step-title">AI detects anomalies</div><div class="step-desc">Continuous monitoring across JVM metrics, GC logs, thread states, and cloud infrastructure — alerting before issues escalate.</div></div>
+      <div class="step"><div class="step-n">03</div><div class="step-title">Agent investigates</div><div class="step-desc">Autonomously gathers thread dumps, correlates GC data, and traces root cause across all services without human intervention.</div></div>
+      <div class="step"><div class="step-n">04</div><div class="step-title">Fix with confidence</div><div class="step-desc">Plain-English explanation of what broke. Apply the fix with one click or let the agent execute full remediation.</div></div>
     </div>
   </div>
 </section>
 
 <!-- INTEGRATIONS -->
-<section class="sec" id="integrations">
-  <div class="stag">Integrations</div>
-  <h2 class="stitle">Works with<br><em>your stack</em></h2>
-  <p class="ssub">Native integrations with every major cloud, observability tool, and deployment platform your team already uses.</p>
-  <div class="int-grid">
-    <div class="int-card"><div class="int-icon">☁️</div><div class="int-name">AWS</div></div>
-    <div class="int-card"><div class="int-icon">🌐</div><div class="int-name">GCP</div></div>
-    <div class="int-card"><div class="int-icon">🔷</div><div class="int-name">Azure</div></div>
-    <div class="int-card"><div class="int-icon">⎈</div><div class="int-name">Kubernetes</div></div>
-    <div class="int-card"><div class="int-icon">📦</div><div class="int-name">Docker</div></div>
-    <div class="int-card"><div class="int-icon">📊</div><div class="int-name">Datadog</div></div>
-    <div class="int-card"><div class="int-icon">🔥</div><div class="int-name">New Relic</div></div>
-    <div class="int-card"><div class="int-icon">🔗</div><div class="int-name">OpenTelemetry</div></div>
-    <div class="int-card"><div class="int-icon">🔔</div><div class="int-name">PagerDuty</div></div>
-    <div class="int-card"><div class="int-icon">💬</div><div class="int-name">Slack</div></div>
-  </div>
-</section>
-
-<!-- ANALYSER SECTION -->
-<section style="padding:96px 48px;background:var(--ink)" id="analyser">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="stag" style="color:#00e5a0">Free AI analyser</div>
-    <h2 class="stitle" style="color:#fff">Try it now — paste your<br><em style="color:#00e5a0">GC log or thread dump</em></h2>
-    <p class="ssub" style="color:rgba(255,255,255,0.45)">No sign-up needed. Paste any GC log, thread dump, or heap histogram and the Argovaa AI agent gives you instant root cause analysis and exact fixes.</p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
-      <!-- INPUT -->
-      <div style="background:#111614;border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden">
-        <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <div style="font-family:'Fraunces',sans-serif;font-size:15px;font-weight:700;color:#fff">Input</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px" id="hs-mode-label">GC log analyser</div>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button onclick="hsSetMode('gc',this)" id="hs-btn-gc" style="background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.22);color:#00e5a0;padding:5px 11px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">GC log</button>
-            <button onclick="hsSetMode('thread',this)" id="hs-btn-thread" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:5px 11px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Thread dump</button>
-            <button onclick="hsSetMode('heap',this)" id="hs-btn-heap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:5px 11px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Heap</button>
-          </div>
-        </div>
-        <textarea id="hs-input" placeholder="Paste your GC log or thread dump here..." style="width:100%;background:transparent;border:none;outline:none;color:rgba(255,255,255,0.7);font-family:monospace;font-size:11px;padding:14px 18px;resize:none;height:200px;line-height:1.6"></textarea>
-        <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px;justify-content:space-between;align-items:center">
-          <button onclick="hsLoadSample()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);padding:7px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">Load sample</button>
-          <button onclick="hsAnalyse()" id="hs-analyse-btn" style="background:#00e5a0;color:#0a0c10;border:none;padding:9px 22px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Geist',sans-serif;display:flex;align-items:center;gap:6px">
-            <span id="hs-spinner" style="width:11px;height:11px;border:2px solid rgba(10,12,16,0.25);border-top-color:#0a0c10;border-radius:50%;animation:spin 0.8s linear infinite;display:none"></span>
-            <span id="hs-btn-text">Analyse with AI →</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- RESULTS -->
-      <div style="background:#111614;border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden">
-        <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06)">
-          <div style="font-family:'Fraunces',sans-serif;font-size:15px;font-weight:700;color:#fff">Results</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px" id="hs-result-sub">Waiting for input...</div>
-        </div>
-        <div id="hs-results" style="padding:18px;min-height:240px;display:flex;align-items:center;justify-content:center">
-          <div style="text-align:center;color:rgba(255,255,255,0.2);font-size:13px;line-height:1.8">Paste a log and click<br><strong style="color:rgba(255,255,255,0.35)">"Analyse with AI"</strong><br>to see results here</div>
-        </div>
-        <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,0.06);text-align:center">
-          <a href="login.html" style="font-size:12px;color:#00e5a0;text-decoration:none">Sign in to access full analyser →</a>
-        </div>
-      </div>
+<section id="integrations">
+  <div class="max">
+    <div class="sec-label">Integrations</div>
+    <div class="sec-title">WORKS WITH<br>YOUR <span class="acc">STACK</span></div>
+    <div class="intgrid">
+      <div class="intitem"><div class="intitem-icon">☁</div><div class="intitem-name">AWS</div></div>
+      <div class="intitem"><div class="intitem-icon">⎈</div><div class="intitem-name">Kubernetes</div></div>
+      <div class="intitem"><div class="intitem-icon">◈</div><div class="intitem-name">OpenTelemetry</div></div>
+      <div class="intitem"><div class="intitem-icon">◉</div><div class="intitem-name">Datadog</div></div>
+      <div class="intitem"><div class="intitem-icon">◎</div><div class="intitem-name">PagerDuty</div></div>
+      <div class="intitem"><div class="intitem-icon">◧</div><div class="intitem-name">New Relic</div></div>
+      <div class="intitem"><div class="intitem-icon">◫</div><div class="intitem-name">Slack</div></div>
+      <div class="intitem"><div class="intitem-icon">◬</div><div class="intitem-name">GCP</div></div>
+      <div class="intitem"><div class="intitem-icon">◩</div><div class="intitem-name">Azure</div></div>
+      <div class="intitem"><div class="intitem-icon">◪</div><div class="intitem-name">Docker</div></div>
     </div>
   </div>
 </section>
 
-<style>
-@keyframes spin{to{transform:rotate(360deg)}}
-.hs-metric{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:12px;text-align:center}
-.hs-mv{font-family:'Fraunces',sans-serif;font-size:20px;font-weight:900;margin-bottom:2px}
-.hs-ml{font-size:10px;color:rgba(255,255,255,0.3)}
-.hs-ic{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px 14px;margin-top:8px}
-.hs-ic-head{display:flex;align-items:center;gap:7px;margin-bottom:7px}
-.hs-sev{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.hs-sev.critical{background:#ef4444}.hs-sev.warning{background:#f59e0b}.hs-sev.info{background:#00e5a0}
-.hs-ic-title{font-size:12px;font-weight:500;color:#fff;flex:1}
-.hs-ic-desc{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:8px}
-.hs-fix{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.1);border-radius:6px;padding:8px 10px}
-.hs-fix-lbl{font-size:10px;color:#00e5a0;font-weight:500;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.4px}
-.hs-fix-code{font-family:monospace;font-size:10px;color:#00e5a0;margin-top:5px;display:block;word-break:break-all}
-</style>
-
-<script>
-let hsMode='gc';
-const hsSamples={
-  gc:`[2025-04-18T10:21:33.001+0000][gc] GC(140) Pause Full (G1 Evacuation Pause) 1843M->1821M(2048M) 4523.123ms
-[2025-04-18T10:21:37.234+0000][gc] GC(141) Pause Young (Normal) 1821M->456M(2048M) 234.567ms
-[2025-04-18T10:21:41.456+0000][gc] GC(142) Pause Full (G1 Evacuation Pause) 1900M->1880M(2048M) 5102.456ms
-[2025-04-18T10:21:50.123+0000][gc] GC(144) Pause Full (Metadata GC Threshold) 1950M->1930M(2048M) 6234.789ms`,
-  thread:`"http-nio-8080-exec-3" #42 daemon prio=5
-   java.lang.Thread.State: BLOCKED (on object monitor)
-	at com.argovaa.service.UserSessionService.acquireSession(UserSessionService.java:142)
-	- waiting to lock <0x000000076b3a5678> (a com.argovaa.pool.ConnectionPool)
-
-"scheduled-task-1" #18 daemon prio=5
-   java.lang.Thread.State: BLOCKED (on object monitor)
-	at com.argovaa.pool.ConnectionPool.getConnection(ConnectionPool.java:67)
-	- waiting to lock <0x000000076b3a9012> (a com.argovaa.service.UserSessionService)`,
-  heap:`num  #instances  #bytes  class name
-  1:   12345678   987654321  [B
-  2:    3456789   234567890  java.lang.String
-  3:    1234567   198765432  com.argovaa.cache.RequestCache
-  4:     876543   123456789  java.util.HashMap$Node`
-};
-function hsSetMode(mode,btn){
-  hsMode=mode;
-  ['gc','thread','heap'].forEach(m=>{
-    const b=document.getElementById('hs-btn-'+m);
-    b.style.background=m===mode?'rgba(0,229,160,0.12)':'rgba(255,255,255,0.05)';
-    b.style.borderColor=m===mode?'rgba(0,229,160,0.22)':'rgba(255,255,255,0.1)';
-    b.style.color=m===mode?'#00e5a0':'rgba(255,255,255,0.4)';
-  });
-  const labels={gc:'GC log analyser',thread:'Thread dump analyser',heap:'Heap analyser'};
-  document.getElementById('hs-mode-label').textContent=labels[mode];
-}
-function hsLoadSample(){document.getElementById('hs-input').value=hsSamples[hsMode]||hsSamples.gc;}
-async function hsAnalyse(){
-  const input=document.getElementById('hs-input').value.trim();
-  if(!input){alert('Please paste a log first.');return;}
-  const btn=document.getElementById('hs-analyse-btn');
-  const spinner=document.getElementById('hs-spinner');
-  const btnText=document.getElementById('hs-btn-text');
-  btn.disabled=true;spinner.style.display='block';btnText.textContent='Analysing...';
-  document.getElementById('hs-results').innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px">AI agent analysing...<br><span style="display:inline-flex;gap:4px;margin-top:8px"><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);animation:td2 1.2s infinite;display:inline-block"></span><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);animation:td2 1.2s 0.2s infinite;display:inline-block"></span><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);animation:td2 1.2s 0.4s infinite;display:inline-block"></span></span></div>';
-  document.getElementById('hs-result-sub').textContent='Analysing...';
-  const prompt=`You are an expert JVM engineer. Analyse this ${hsMode==='thread'?'thread dump':hsMode==='heap'?'heap histogram':'GC log'} and respond ONLY with valid JSON, no markdown:\n{"summary":"one sentence","metrics":[{"label":"string","value":"string","color":"red|amber|green|white"}],"issues":[{"severity":"critical|warning|info","title":"string","desc":"string","fix":"string","code":"string or empty"}]}\n\nLog:\n${input.substring(0,2000)}`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'';
-    const r=JSON.parse(text.replace(/```json|```/g,'').trim());
-    hsRenderResults(r);
-  }catch(e){
-    hsMode==='thread'?hsRenderThread():hsRenderGC();
-  }
-  btn.disabled=false;spinner.style.display='none';btnText.textContent='Analyse with AI →';
-}
-function hsRenderResults(r){
-  document.getElementById('hs-result-sub').textContent=r.summary||'Analysis complete';
-  let html='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px">';
-  (r.metrics||[]).slice(0,4).forEach(m=>{const colors={red:'#f87171',amber:'#fbbf24',green:'#00e5a0',white:'#fff'};html+=`<div class="hs-metric"><div class="hs-mv" style="color:${colors[m.color]||'#fff'}">${m.value}</div><div class="hs-ml">${m.label}</div></div>`;});
-  html+='</div>';
-  (r.issues||[]).slice(0,2).forEach(i=>{html+=`<div class="hs-ic"><div class="hs-ic-head"><div class="hs-sev ${i.severity}"></div><div class="hs-ic-title">${i.title}</div></div><div class="hs-ic-desc">${i.desc}</div><div class="hs-fix"><div class="hs-fix-lbl">Fix</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">${i.fix}</div>${i.code?`<code class="hs-fix-code">${i.code}</code>`:''}</div></div>`;});
-  document.getElementById('hs-results').style.alignItems='flex-start';
-  document.getElementById('hs-results').style.justifyContent='flex-start';
-  document.getElementById('hs-results').innerHTML=html;
-}
-function hsRenderGC(){
-  document.getElementById('hs-result-sub').textContent='3 Full GC events — heap at 95%, pauses up to 6.2s';
-  document.getElementById('hs-results').style.alignItems='flex-start';
-  document.getElementById('hs-results').style.justifyContent='flex-start';
-  document.getElementById('hs-results').innerHTML=`<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px"><div class="hs-metric"><div class="hs-mv" style="color:#f87171">3</div><div class="hs-ml">Full GC events</div></div><div class="hs-metric"><div class="hs-mv" style="color:#fbbf24">6.2s</div><div class="hs-ml">Max pause</div></div><div class="hs-metric"><div class="hs-mv" style="color:#f87171">95%</div><div class="hs-ml">Heap occupancy</div></div><div class="hs-metric"><div class="hs-mv" style="color:#00e5a0">G1GC</div><div class="hs-ml">Collector</div></div></div><div class="hs-ic"><div class="hs-ic-head"><div class="hs-sev critical"></div><div class="hs-ic-title">Heap nearly exhausted — Full GC pausing 4–6s</div></div><div class="hs-ic-desc">Heap hitting 95%+ before Full GC triggers. Live set (1950MB) nearly equals max heap (2048MB).</div><div class="hs-fix"><div class="hs-fix-lbl">Fix</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">Increase heap and set pause target:</div><code class="hs-fix-code">-Xmx4g -XX:MaxGCPauseMillis=200 -XX:G1HeapRegionSize=16m</code></div></div><div class="hs-ic"><div class="hs-ic-head"><div class="hs-sev warning"></div><div class="hs-ic-title">Metadata GC threshold — Metaspace leak possible</div></div><div class="hs-ic-desc">GC triggered by Metaspace pressure, not heap. Dynamic class generation suspected.</div><div class="hs-fix"><div class="hs-fix-lbl">Fix</div><code class="hs-fix-code">-XX:MaxMetaspaceSize=512m</code></div></div>`;
-}
-function hsRenderThread(){
-  document.getElementById('hs-result-sub').textContent='Deadlock detected — 2 threads in circular lock dependency';
-  document.getElementById('hs-results').style.alignItems='flex-start';
-  document.getElementById('hs-results').style.justifyContent='flex-start';
-  document.getElementById('hs-results').innerHTML=`<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px"><div class="hs-metric"><div class="hs-mv" style="color:#f87171">1</div><div class="hs-ml">Deadlock</div></div><div class="hs-metric"><div class="hs-mv" style="color:#fbbf24">2</div><div class="hs-ml">Blocked threads</div></div><div class="hs-metric"><div class="hs-mv" style="color:#f87171">47</div><div class="hs-ml">Threads queued</div></div><div class="hs-metric"><div class="hs-mv" style="color:#f87171">Critical</div><div class="hs-ml">Risk level</div></div></div><div class="hs-ic"><div class="hs-ic-head"><div class="hs-sev critical"></div><div class="hs-ic-title">Circular deadlock: http-exec-3 ↔ scheduled-task-1</div></div><div class="hs-ic-desc">exec-3 holds ConnectionPool waiting for SessionService. scheduled-task-1 holds SessionService waiting for ConnectionPool. Neither can proceed.</div><div class="hs-fix"><div class="hs-fix-lbl">Fix</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">Always acquire locks in the same order. Fix SessionCleanupTask.java:44.</div><code class="hs-fix-code">// Always: ConnectionPool first, then SessionService</code></div></div>`;
-}
-</script>
-<style>@keyframes td2{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}</style>
-
 <!-- CTA -->
-<div class="cta-band" id="contact">
-  <h2>Stop reacting.<br>Start <em>preventing.</em></h2>
+<div class="cta" id="contact">
+  <h2>STOP REACTING.<br>START PREVENTING.</h2>
   <p>Join engineering teams who've cut P1 incidents by 3× with Argovaa.</p>
   <div class="cta-row">
-    <a href="mailto:support@argovaa.com" class="cta-b1">Get a free demo →</a>
+    <a href="login.html" class="cta-b1">Get started free →</a>
     <a href="mailto:support@argovaa.com" class="cta-b2">Talk to us</a>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <a href="#" class="flogo"><em>Argovaa</em></a>
+  <a href="#" class="flogo">ARGOVAA.</a>
   <div class="flinks">
-    <a href="#products">Products</a>
-    <a href="#ai-agent">AI agent</a>
-    <a href="#how">How it works</a>
-    <a href="#integrations">Integrations</a>
-    <a href="mailto:support@argovaa.com">Contact</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="analyser.html">GC Analyser</a>
+    <a href="perftest.html">Load Testing</a>
+    <a href="#contact">Contact</a>
   </div>
-  <div class="fcopy">© 2025 Argovaa.com — San Ramon, CA</div>
+  <div class="fcopy">© 2025 ARGOVAA.COM — SAN RAMON, CA</div>
 </footer>
 
 <script>
-  const demos = {
-    gc: {
-      u: "Why is GC pausing?",
-      tools: ["→ Reading GC logs (last 24h)", "→ Analysing pause time distribution", "→ Checking heap occupancy triggers"],
-      r: "Analysed your GC logs. <code>G1GC</code> is triggering Full GC every ~4 minutes causing 2–4 second pauses. Root cause: <code>-Xmx</code> is set to 2GB but your live data set is 1.8GB — almost no headroom left. I recommend increasing heap to 4GB and adding <code>-XX:G1HeapRegionSize=16m</code>. Want me to apply these flags now?"
-    },
-    thread: {
-      u: "Analyse thread dump",
-      tools: ["→ Capturing live thread dump", "→ Detecting deadlocks & contention", "→ Grouping threads by state"],
-      r: "Found a deadlock between 2 threads: <code>http-nio-8080-exec-3</code> holds <code>ConnectionPool</code> waiting for <code>SessionManager</code>, while <code>scheduled-task-1</code> holds the reverse. 47 other threads are queuing behind this. Fix: enforce a consistent lock acquisition order in <code>UserSessionService</code>. I can show you the exact lines to change."
-    },
-    heap: {
-      u: "Is there a memory leak?",
-      tools: ["→ Analysing heap histogram", "→ Tracking object retention over time", "→ Checking GC roots for suspects"],
-      r: "Confirmed leak. <code>RequestCache</code> has grown from 180MB to 890MB over 6 hours with no GC collection. A static <code>ConcurrentHashMap</code> is never evicted. Adding a TTL or max-size via Caffeine cache resolves this immediately. Want me to generate the code fix?"
-    },
-    perf: {
-      u: "What's slowing my app?",
-      tools: ["→ Profiling method hotspots", "→ Checking DB query latency", "→ Analysing thread wait times"],
-      r: "Top 3 bottlenecks: (1) <code>UserRepository.findByEmail()</code> averaging 340ms — missing index on <code>email</code> column accounts for 62% of latency. (2) Thread pool exhaustion — 32 threads all waiting on the same downstream API with a 30s timeout. (3) JSON serialisation allocating 4MB per request. Fixing the DB index alone drops P95 latency by ~200ms."
+const GPUS=[
+  {id:'h200-sxm',name:'H200 SXM',tdp:700},{id:'h100-sxm',name:'H100 SXM',tdp:700},
+  {id:'a100-80gb',name:'A100 80GB',tdp:400},{id:'mi300x',name:'MI300X',tdp:750},
+  {id:'rtx-4090',name:'RTX 4090',tdp:450},
+];
+const MODELS=[
+  {id:'gpt4o',name:'GPT-4o',pk:'openai',pl:'OpenAI',pc:'#10a37f',ic:5.0,oc:15.0,
+   gd:{'h100-sxm':{tps:2940,ttft:240,lat:38},'h200-sxm':{tps:3820,ttft:180,lat:28},'a100-80gb':{tps:1680,ttft:420,lat:68},'mi300x':{tps:2980,ttft:230,lat:36},'rtx-4090':{tps:480,ttft:1200,lat:210}},
+   cs:{1024:1.0,4096:0.92,16384:0.78,32768:0.62,65536:0.44,131072:0.28}},
+  {id:'gpt4omini',name:'GPT-4o mini',pk:'openai',pl:'OpenAI',pc:'#10a37f',ic:0.15,oc:0.60,
+   gd:{'h100-sxm':{tps:7100,ttft:72,lat:15},'h200-sxm':{tps:9200,ttft:48,lat:11},'a100-80gb':{tps:4200,ttft:130,lat:26},'mi300x':{tps:7300,ttft:68,lat:14},'rtx-4090':{tps:2100,ttft:280,lat:54}},
+   cs:{1024:1.0,4096:0.94,16384:0.84,32768:0.70,65536:0.52,131072:0.34}},
+  {id:'claude35s',name:'Claude 3.5 Sonnet',pk:'anthropic',pl:'Anthropic',pc:'#ef4444',ic:3.0,oc:15.0,
+   gd:{'h100-sxm':{tps:2490,ttft:280,lat:44},'h200-sxm':{tps:3240,ttft:210,lat:32},'a100-80gb':{tps:1420,ttft:490,lat:78},'mi300x':{tps:2560,ttft:268,lat:42},'rtx-4090':{tps:390,ttft:1400,lat:244}},
+   cs:{1024:1.0,4096:0.91,16384:0.76,32768:0.60,65536:0.41,131072:0.24}},
+  {id:'claude3h',name:'Claude 3 Haiku',pk:'anthropic',pl:'Anthropic',pc:'#ef4444',ic:0.25,oc:1.25,
+   gd:{'h100-sxm':{tps:6500,ttft:82,lat:17},'h200-sxm':{tps:8400,ttft:54,lat:12},'a100-80gb':{tps:3800,ttft:146,lat:29},'mi300x':{tps:6700,ttft:76,lat:16},'rtx-4090':{tps:1900,ttft:310,lat:62}},
+   cs:{1024:1.0,4096:0.95,16384:0.86,32768:0.72,65536:0.55,131072:0.36}},
+  {id:'azure4t',name:'Azure GPT-4 Turbo',pk:'azure',pl:'Azure OAI',pc:'#3b82f6',ic:10.0,oc:30.0,
+   gd:{'h100-sxm':{tps:2770,ttft:256,lat:40},'h200-sxm':{tps:3600,ttft:190,lat:30},'a100-80gb':{tps:1580,ttft:446,lat:70},'mi300x':{tps:2820,ttft:244,lat:38},'rtx-4090':{tps:450,ttft:1260,lat:220}},
+   cs:{1024:1.0,4096:0.91,16384:0.77,32768:0.61,65536:0.42,131072:0.26}},
+  {id:'llama370b',name:'Llama 3 70B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.9,oc:0.9,
+   gd:{'h100-sxm':{tps:3710,ttft:190,lat:30},'h200-sxm':{tps:4820,ttft:140,lat:22},'a100-80gb':{tps:2120,ttft:330,lat:52},'mi300x':{tps:3180,ttft:210,lat:34},'rtx-4090':{tps:620,ttft:920,lat:166}},
+   cs:{1024:1.0,4096:0.93,16384:0.80,32768:0.64,65536:0.46,131072:0.28}},
+  {id:'llama38b',name:'Llama 3 8B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.2,oc:0.2,
+   gd:{'h100-sxm':{tps:10900,ttft:34,lat:10},'h200-sxm':{tps:14200,ttft:22,lat:7},'a100-80gb':{tps:6300,ttft:60,lat:17},'mi300x':{tps:11200,ttft:32,lat:10},'rtx-4090':{tps:2800,ttft:140,lat:38}},
+   cs:{1024:1.0,4096:0.95,16384:0.87,32768:0.74,65536:0.57,131072:0.38}},
+  {id:'mistral7b',name:'Mistral 7B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.2,oc:0.2,
+   gd:{'h100-sxm':{tps:12100,ttft:30,lat:9},'h200-sxm':{tps:15800,ttft:20,lat:6},'a100-80gb':{tps:7000,ttft:54,lat:15},'mi300x':{tps:12400,ttft:28,lat:9},'rtx-4090':{tps:3100,ttft:128,lat:34}},
+   cs:{1024:1.0,4096:0.95,16384:0.88,32768:0.75,65536:0.58,131072:0.39}},
+];
+const CTX={1024:'1K',4096:'4K',16384:'16K',32768:'32K',65536:'64K',131072:'128K'};
+let aGpu='h100-sxm',aCtx=1024,sKey='tps',aProv=new Set(['openai','anthropic','azure','oss']),selId=null;
+let ctxC=null,costC=null;
+
+function tp(m,g,c){return Math.round((m.gd[g]?.tps||0)*(m.cs[c]||0.3));}
+function ppCls(pk){return pk==='openai'?'pl-openai':pk==='anthropic'?'pl-anthropic':pk==='azure'?'pl-azure':'pl-oss';}
+function grd(t,max){const p=t/max;return p>=0.75?'S':p>=0.5?'A':p>=0.25?'B':'C';}
+function grdCls(g){return 'g'+g.toLowerCase();}
+
+function getMods(){
+  let m=MODELS.filter(x=>aProv.has(x.pk));
+  const gpu=GPUS.find(x=>x.id===aGpu);
+  if(sKey==='tps') m.sort((a,b)=>tp(b,aGpu,aCtx)-tp(a,aGpu,aCtx));
+  else if(sKey==='lat') m.sort((a,b)=>(a.gd[aGpu]?.lat||999)-(b.gd[aGpu]?.lat||999));
+  else if(sKey==='cost') m.sort((a,b)=>(a.ic||999)-(b.ic||999));
+  else if(sKey==='eff'&&gpu) m.sort((a,b)=>tp(b,aGpu,aCtx)/gpu.tdp-tp(a,aGpu,aCtx)/gpu.tdp);
+  return m;
+}
+
+async function boot(){
+  try{
+    const r=await fetch('/data/benchmarks.json?v='+Date.now());
+    if(!r.ok) throw new Error('no data');
+    const d=await r.json();
+    if(d.updated_at){
+      const dt=new Date(d.updated_at);
+      const s='Updated '+dt.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      document.getElementById('bench-ts').textContent=s;
+      document.getElementById('nav-ts').textContent=s.toUpperCase();
     }
-  };
-
-  let busy = false;
-
-  function addMsg(role, content, tools) {
-    const area = document.getElementById('chat-area');
-    const wrap = document.createElement('div');
-    wrap.className = 'cmsg fade-in';
-    const av = document.createElement('div');
-    av.className = 'cav ' + (role === 'ai' ? 'ai' : 'u');
-    av.textContent = role === 'ai' ? 'AV' : 'You';
-    const bub = document.createElement('div');
-    bub.className = 'cbub ' + (role === 'ai' ? 'ai-b' : '');
-    if (tools && tools.length) {
-      tools.forEach(t => {
-        const tc = document.createElement('div');
-        tc.className = 'ctool';
-        tc.innerHTML = '<span style="font-size:10px;opacity:0.5">⚙</span>' + t;
-        bub.appendChild(tc);
-      });
-      const r = document.createElement('div');
-      r.style.marginTop = '8px';
-      r.innerHTML = content;
-      bub.appendChild(r);
-    } else {
-      bub.innerHTML = content;
-    }
-    wrap.appendChild(av);
-    wrap.appendChild(bub);
-    area.appendChild(wrap);
-    area.scrollTop = area.scrollHeight;
+    if(d.summary?.total_models) document.getElementById('h-models').textContent=d.summary.total_models;
+    if(d.models?.length) d.models.forEach(lm=>{
+      const n=(lm.name||'').toLowerCase();
+      const match=MODELS.find(m=>n.includes(m.name.toLowerCase().split(' ')[0])||m.name.toLowerCase().includes(n.split(' ')[0]));
+      if(match&&lm.input_cost_per_1m>0){match.ic=lm.input_cost_per_1m;match.oc=lm.output_cost_per_1m;match.live=true;}
+    });
+  }catch(e){
+    document.getElementById('bench-ts').textContent='Cached data';
+    document.getElementById('h-models').textContent=MODELS.length;
   }
+  document.getElementById('gpu-strip').innerHTML=GPUS.map(g=>`<button class="gpubtn${g.id===aGpu?' on':''}" onclick="setGpu('${g.id}',this)">${g.name}</button>`).join('');
+  document.getElementById('lb-loading').style.display='none';
+  document.getElementById('lb-wrap').style.display='block';
+  document.getElementById('bench-charts').style.display='grid';
+  render();
+  setTimeout(boot,30*60*1000);
+}
 
-  function showTyping() {
-    const area = document.getElementById('chat-area');
-    const d = document.createElement('div');
-    d.className = 'cmsg fade-in';
-    d.id = 'typing-indicator';
-    d.innerHTML = '<div class="cav ai">AV</div><div class="cbub ai-b"><div class="typing"><span></span><span></span><span></span></div></div>';
-    area.appendChild(d);
-    area.scrollTop = area.scrollHeight;
-  }
+function setGpu(id,btn){aGpu=id;document.querySelectorAll('.gpubtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
+function setCtx(c,btn){aCtx=c;document.querySelectorAll('.ctxbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
+function setSort(k,btn){sKey=k;document.querySelectorAll('[id^="s-"]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
+function toggleP(p,btn){
+  if(p==='all'){aProv=new Set(['openai','anthropic','azure','oss']);document.querySelectorAll('[id^="p-"]').forEach(b=>b.classList.remove('on'));document.getElementById('p-all').classList.add('on');}
+  else{document.getElementById('p-all').classList.remove('on');if(aProv.has(p)){if(aProv.size>1)aProv.delete(p);}else aProv.add(p);btn.classList.toggle('on',aProv.has(p));}
+  render();
+}
 
-  function removeTyping() {
-    const t = document.getElementById('typing-indicator');
-    if (t) t.remove();
-  }
+function render(){
+  const mods=getMods();
+  const tpList=mods.map(m=>tp(m,aGpu,aCtx));
+  const maxT=Math.max(...tpList)||1;
+  const best=Math.max(...tpList);
+  const bm=mods[tpList.indexOf(best)];
+  const gpu=GPUS.find(g=>g.id===aGpu);
+  const avgLat=Math.round(mods.reduce((s,m)=>s+(m.gd[aGpu]?.lat||0),0)/mods.length);
+  const minC=Math.min(...mods.map(m=>m.ic||999)).toFixed(2);
 
-  function runDemo(key) {
-    if (busy) return;
-    busy = true;
-    const d = demos[key];
-    document.getElementById('cchips').style.display = 'none';
-    addMsg('user', d.u);
-    showTyping();
-    setTimeout(() => {
-      removeTyping();
-      addMsg('ai', d.r, d.tools);
-      busy = false;
-    }, 2200);
-  }
+  document.getElementById('bench-cards').innerHTML=`
+    <div class="bcard"><div class="bcard-lbl">Best throughput</div><div class="bcard-val b">${best.toLocaleString()}</div><div class="bcard-sub">tokens/sec · ${gpu?.name}</div></div>
+    <div class="bcard"><div class="bcard-lbl">Leading model</div><div class="bcard-val w" style="font-size:20px;letter-spacing:0px">${bm?.name||'—'}</div><div class="bcard-sub">${bm?.pl||''}</div></div>
+    <div class="bcard"><div class="bcard-lbl">Avg latency</div><div class="bcard-val a">${avgLat}ms</div><div class="bcard-sub">at ${CTX[aCtx]} context</div></div>
+    <div class="bcard"><div class="bcard-lbl">Lowest cost</div><div class="bcard-val r">$${minC}</div><div class="bcard-sub">per 1M input tokens</div></div>`;
 
-  function cSend() {
-    if (busy) return;
-    const inp = document.getElementById('chat-input');
-    const val = inp.value.trim();
-    if (!val) return;
-    inp.value = '';
-    busy = true;
-    document.getElementById('cchips').style.display = 'none';
-    addMsg('user', val);
-    showTyping();
-    setTimeout(() => {
-      removeTyping();
-      addMsg('ai', 'Great question. To give you live diagnostics, <a href="mailto:support@argovaa.com" style="color:#00e5a0">get in touch</a> and we\'ll connect your stack — results in under 60 seconds.', ['→ Processing your query']);
-      busy = false;
-    }, 1800);
-  }
+  document.getElementById('lb-body').innerHTML=mods.map((m,i)=>{
+    const t=tpList[i],d=m.gd[aGpu]||{},pct=Math.round((t/maxT)*100),g=grd(t,maxT);
+    const tc=i===0?'best':i<3?'mid':'low';
+    const lc=d.lat<20?'fast':d.lat>80?'slow2':'';
+    return `<tr class="${i===0?'tr-top':''}" onclick="toggleDet('${m.id}')">
+      <td class="tr-rank${i===0?' gold':''}">${i===0?'★':i+1}</td>
+      <td><div class="tr-model"><span class="tr-mname">${m.name}</span><span class="tr-pill ${ppCls(m.pk)}">${m.pl}</span>${m.live?'<span class="live-tag">● LIVE</span>':''}</div></td>
+      <td class="tr-tps-cell"><div class="tps-inner"><span class="tps-num ${tc}">${t.toLocaleString()}</span><div class="mbar"><div class="mbar-fill" style="width:${pct}%;background:${m.pc}"></div></div></div></td>
+      <td class="tr-num ${lc}">${d.ttft||'—'}</td>
+      <td class="tr-num">${d.lat?d.lat+'ms':'—'}</td>
+      <td class="tr-num">$${m.ic?.toFixed(2)||'—'}</td>
+      <td class="tr-num">$${m.oc?.toFixed(2)||'—'}</td>
+      <td class="tr-grade"><span class="grade-badge ${grdCls(g)}">${g}</span></td>
+    </tr>`;
+  }).join('');
+
+  if(selId) showDet(selId);
+  renderCharts(mods);
+}
+
+function toggleDet(id){selId=selId===id?null:id;const p=document.getElementById('detail-panel');selId?showDet(id):p.classList.remove('show');}
+function showDet(id){
+  const m=MODELS.find(x=>x.id===id);if(!m)return;
+  document.getElementById('dp-title').textContent=`${m.name} — all GPU hardware · ${CTX[aCtx]} context`;
+  document.getElementById('dp-grid').innerHTML=GPUS.map(g=>{
+    const t=Math.round((m.gd[g.id]?.tps||0)*(m.cs[aCtx]||0.3));
+    const d=m.gd[g.id]||{};
+    return `<div class="dp-gpu"><div class="dp-gpu-name">${g.name}</div><div class="dp-gpu-tps" style="color:${m.pc}">${t.toLocaleString()}</div><div class="dp-gpu-meta">${d.lat||'—'}ms · $${m.ic?.toFixed(2)||'—'}/1M</div></div>`;
+  }).join('');
+  document.getElementById('detail-panel').classList.add('show');
+}
+
+function renderCharts(mods){
+  const top5=mods.slice(0,5);
+  const cks=[1024,4096,16384,32768,65536,131072];
+  document.getElementById('ctx-leg').innerHTML=top5.map(m=>`<div class="cl"><div class="cl-sq" style="background:${m.pc}"></div>${m.name}</div>`).join('');
+  if(ctxC) ctxC.destroy();
+  ctxC=new Chart(document.getElementById('ctx-chart'),{type:'line',
+    data:{labels:Object.values(CTX),datasets:top5.map(m=>({label:m.name,data:cks.map(c=>Math.round((m.gd[aGpu]?.tps||0)*(m.cs[c]||0.3))),borderColor:m.pc,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,borderDash:m.pk==='azure'?[4,2]:m.pk==='oss'?[2,2]:[]}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:10}},grid:{color:'rgba(15,17,23,0.06)'}},y:{ticks:{color:'#5a6170',font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(15,17,23,0.06)'},beginAtZero:true}}}
+  });
+  const top8=mods.slice(0,8);
+  document.getElementById('cost-leg').innerHTML=`<div class="cl"><div class="cl-sq" style="background:#1d4ed8"></div>Input $/1M</div><div class="cl"><div class="cl-sq" style="background:#93c5fd"></div>Output $/1M</div>`;
+  if(costC) costC.destroy();
+  costC=new Chart(document.getElementById('cost-chart'),{type:'bar',
+    data:{labels:top8.map(m=>m.name.length>14?m.name.slice(0,13)+'…':m.name),datasets:[{label:'Input',data:top8.map(m=>parseFloat((m.ic||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'cc'),borderRadius:2},{label:'Output',data:top8.map(m=>parseFloat((m.oc||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'55'),borderRadius:2}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+v},grid:{color:'rgba(15,17,23,0.06)'},beginAtZero:true},y:{ticks:{color:'#5a6170',font:{size:9}},grid:{display:false}}}}
+  });
+}
+
+boot();
 </script>
 </body>
 </html>
