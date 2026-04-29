@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — AI Agent Builder</title>
+<meta name="description" content="Build AI agents connected to your data in minutes. Point to any data source — AWS S3, databases, APIs, documents — and launch a production-ready agent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f9fb;--surface:#fff;--surface2:#f1f3f7;--surface3:#e8eaef;
+  --ink:#0f1117;--mid:#5a6170;--faint:#c8ccd6;
+  --accent:#1d4ed8;--accent-bright:#2563eb;--accent-dim:rgba(29,78,216,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;
+  --bd:rgba(15,17,23,0.1);--bd2:rgba(15,17,23,0.05)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--bd);background:rgba(248,249,251,0.96);backdrop-filter:blur(24px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:12px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.act{color:var(--ink)}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+.btn-nav:hover{background:var(--accent-bright)}
+
+.max{max-width:1100px;margin:0 auto;width:100%}
+
+/* HERO */
+.hero{background:var(--ink);padding:80px 48px;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.06)}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px}
+.hero::after{content:'';position:absolute;top:0;left:48px;right:48px;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.7}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.hero-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.hero-tag::before{content:'';width:20px;height:1px;background:#93c5fd}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:2px;line-height:0.92;color:#fff;margin-bottom:16px}
+h1 .acc{color:#93c5fd}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.75;font-weight:300;margin-bottom:32px;max-width:440px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+.btn-pri{background:var(--accent);color:#fff;padding:12px 24px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-pri:hover{background:var(--accent-bright);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:rgba(255,255,255,0.65);padding:12px 24px;font-size:14px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.4);color:#fff}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06)}
+.hstat{background:rgba(255,255,255,0.02);padding:16px 18px}
+.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#93c5fd;line-height:1;margin-bottom:3px}
+.hstat-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+
+/* AGENT PREVIEW */
+.preview{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);overflow:hidden}
+.preview-bar{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:8px}
+.preview-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.preview-title{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);flex:1}
+.preview-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(29,78,216,0.2);color:#93c5fd;border:1px solid rgba(29,78,216,0.3)}
+.preview-body{padding:16px;display:flex;flex-direction:column;gap:10px}
+.preview-msg{display:flex;gap:8px;align-items:flex-start}
+.preview-av{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:0.5px}
+.preview-bubble{padding:8px 11px;font-size:12px;line-height:1.6;max-width:88%}
+.msg-ai .preview-av{background:rgba(29,78,216,0.2);border:1px solid rgba(29,78,216,0.3);color:#93c5fd}
+.msg-ai .preview-bubble{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.75)}
+.msg-user .preview-av{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);color:#c4b5fd}
+.msg-user .preview-bubble{background:rgba(29,78,216,0.1);border:1px solid rgba(29,78,216,0.2);color:rgba(255,255,255,0.7)}
+.msg-user{flex-direction:row-reverse}
+.preview-source{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);padding:0 16px 12px;display:flex;align-items:center;gap:6px}
+.preview-source::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--emerald)}
+
+/* BUILDER SECTION */
+#builder{padding:80px 48px;background:var(--bg);border-top:1px solid var(--bd)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,56px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:14px}
+.sec-title .acc{color:var(--accent)}
+.sec-sub{font-size:15px;color:var(--mid);max-width:520px;line-height:1.75;font-weight:300;margin-bottom:44px}
+
+/* STEP BUILDER */
+.builder-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:40px}
+.bstep{background:var(--surface);padding:28px 24px;position:relative;overflow:hidden;transition:background 0.2s}
+.bstep:hover{background:var(--surface2)}
+.bstep::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s}
+.bstep:hover::after{transform:scaleY(1)}
+.bstep-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:10px}
+.bstep-title{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:var(--ink);margin-bottom:8px}
+.bstep-desc{font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:14px}
+.bstep-tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border:1px solid var(--bd);color:var(--mid);display:inline-block}
+.bstep-tag.live{border-color:rgba(5,150,105,0.3);color:var(--emerald);background:rgba(5,150,105,0.06)}
+
+/* DATA SOURCES */
+#data{padding:80px 48px;background:var(--surface);border-top:1px solid var(--bd)}
+.data-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:32px}
+.dsource{background:var(--surface);padding:20px 16px;text-align:center;transition:background 0.2s;cursor:pointer;position:relative;overflow:hidden}
+.dsource:hover{background:var(--surface2)}
+.dsource.active{background:var(--accent-dim);border:1px solid rgba(29,78,216,0.2)}
+.dsource::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transition:transform 0.2s}
+.dsource:hover::after,.dsource.active::after{transform:scaleX(1)}
+.ds-icon{font-size:22px;margin-bottom:8px;opacity:0.6}
+.ds-name{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink);margin-bottom:3px}
+.ds-type{font-size:11px;color:var(--mid)}
+.ds-badge{font-family:'DM Mono',monospace;font-size:9px;padding:1px 5px;margin-top:4px;display:inline-block}
+.ds-badge.easy{background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.15)}
+.ds-badge.mid{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.15)}
+
+/* CODE SNIPPET */
+.code-block{background:var(--ink);border:1px solid rgba(255,255,255,0.06);overflow:hidden;margin-top:20px}
+.code-head{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.code-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);cursor:pointer;background:none;border:none;transition:color 0.2s}
+.code-copy:hover{color:var(--accent-bright)}
+.code-body{padding:16px;overflow-x:auto}
+.code-body pre{font-family:'DM Mono',monospace;font-size:12px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
+.kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3)}.fn{color:#fde68a}.num{color:#f9a8d4}.var{color:#d8b4fe}
+
+/* AGENT TEMPLATES */
+#templates{padding:80px 48px;background:var(--bg);border-top:1px solid var(--bd)}
+.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+.tcard{background:var(--surface);border:1px solid var(--bd);padding:24px;transition:all 0.2s;cursor:pointer;position:relative;overflow:hidden}
+.tcard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,17,23,0.08)}
+.tcard-icon{font-size:24px;margin-bottom:12px;opacity:0.7}
+.tcard-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:6px}
+.tcard-desc{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:14px}
+.tcard-tags{display:flex;gap:5px;flex-wrap:wrap}
+.tcard-tag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border:1px solid var(--bd);color:var(--mid)}
+.tcard-deploy{position:absolute;bottom:16px;right:16px;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);opacity:0;transition:opacity 0.2s}
+.tcard:hover .tcard-deploy{opacity:1}
+
+/* BUSINESS MODEL */
+#business{padding:80px 48px;background:var(--ink);border-top:1px solid rgba(255,255,255,0.06)}
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px}
+.bm-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:24px;transition:background 0.2s}
+.bm-card:hover{background:rgba(255,255,255,0.07)}
+.bm-card.featured{background:rgba(29,78,216,0.12);border-color:rgba(29,78,216,0.3)}
+.bm-num{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:4px}
+.bm-period{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px}
+.bm-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#fff;margin-bottom:4px}
+.bm-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;display:inline-block;margin-bottom:14px}
+.bm-badge.starter{background:rgba(5,150,105,0.15);color:#86efac;border:1px solid rgba(5,150,105,0.25)}
+.bm-badge.growth{background:rgba(29,78,216,0.2);color:#93c5fd;border:1px solid rgba(29,78,216,0.3)}
+.bm-badge.platform{background:rgba(124,58,237,0.15);color:#c4b5fd;border:1px solid rgba(124,58,237,0.25)}
+.bm-features{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.bm-feature{font-size:12px;color:rgba(255,255,255,0.6);display:flex;gap:7px}
+.bm-feature .ck{flex-shrink:0}
+.bm-btn{display:block;width:100%;padding:10px;text-align:center;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;border:none;cursor:pointer;transition:all 0.2s}
+.bm-btn.light{background:#fff;color:var(--accent)}
+.bm-btn.light:hover{opacity:0.9}
+.bm-btn.outline{background:transparent;color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2)}
+.bm-btn.outline:hover{background:rgba(255,255,255,0.08)}
+
+/* REVENUE MODEL */
+.revenue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);margin-bottom:40px}
+.rev-item{background:rgba(255,255,255,0.02);padding:20px 16px;text-align:center}
+.rev-icon{font-size:20px;margin-bottom:8px;opacity:0.5}
+.rev-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.5);margin-bottom:6px}
+.rev-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6}
+.rev-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#93c5fd;margin-top:8px}
+
+/* INTEGRATION SECTION */
+#integrate{padding:80px 48px;background:var(--surface);border-top:1px solid var(--bd)}
+.int-steps{display:grid;grid-template-columns:1fr;gap:1px;background:var(--bd);border:1px solid var(--bd)}
+.int-step{background:var(--surface);display:grid;grid-template-columns:60px 1fr 1fr;gap:0;align-items:stretch}
+.int-step:hover .int-body{background:var(--surface2)}
+.int-num-cell{background:var(--accent-dim);border-right:1px solid var(--bd);display:flex;align-items:center;justify-content:center}
+.int-num{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--accent)}
+.int-body{padding:20px 24px;border-right:1px solid var(--bd);transition:background 0.15s}
+.int-step-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--ink);margin-bottom:5px}
+.int-step-desc{font-size:13px;color:var(--mid);line-height:1.6}
+.int-code-cell{padding:12px 16px;background:var(--surface2)}
+.int-code-cell pre{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);line-height:1.7;white-space:pre-wrap}
+.int-code-cell .kw{color:var(--accent)}.int-code-cell .str{color:var(--emerald)}.int-code-cell .cm{color:var(--faint)}
+
+/* CTA */
+.cta{background:var(--accent);padding:72px 48px;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 47px,rgba(255,255,255,0.04) 48px),repeating-linear-gradient(0deg,transparent,transparent 47px,rgba(255,255,255,0.04) 48px);pointer-events:none}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,80px);letter-spacing:2px;color:#fff;line-height:0.9;margin-bottom:16px;position:relative}
+.cta p{font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px;font-weight:300;position:relative}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.cta-b1{background:#fff;color:var(--accent);padding:14px 32px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:opacity 0.2s}
+.cta-b1:hover{opacity:0.92}
+.cta-b2{background:transparent;color:rgba(255,255,255,0.85);padding:14px 32px;font-size:14px;border:1px solid rgba(255,255,255,0.35);cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:all 0.2s}
+.cta-b2:hover{background:rgba(255,255,255,0.1)}
+
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flinks{display:flex;gap:22px}
+.flinks a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .hero,.hero-inner{display:block;padding:48px 16px}
+  #builder,#data,#templates,#integrate,#business,.cta{padding:56px 16px}
+  .builder-steps,.template-grid,.bm-grid{grid-template-columns:1fr}
+  .revenue-grid{grid-template-columns:1fr 1fr}
+  .int-step{grid-template-columns:40px 1fr}
+  .int-code-cell{display:none}
+  footer{padding:20px 16px;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">ARGOVAA<em>.</em></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#benchmarks">Benchmarks</a></li>
+    <li><a href="tco.html">TCO</a></li>
+    <li><a href="agent-builder.html" class="act">Agent builder</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
+  </ul>
+  <a href="login.html" class="btn-nav">Get started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">AI agent builder</div>
+      <h1>BUILD YOUR<br>AI AGENT.<br>POINT TO<br>YOUR <span class="acc">DATA.</span></h1>
+      <p class="hero-sub">Create production-ready AI agents connected to your own data sources in minutes — no ML expertise required. AWS S3, databases, APIs, documents, and more.</p>
+      <div class="hero-btns">
+        <a href="login.html" class="btn-pri">Build your first agent →</a>
+        <a href="#templates" class="btn-ghost">Browse templates</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-val">5min</div><div class="hstat-lbl">To first agent</div></div>
+        <div class="hstat"><div class="hstat-val">20+</div><div class="hstat-lbl">Data connectors</div></div>
+        <div class="hstat"><div class="hstat-val">Zero</div><div class="hstat-lbl">ML expertise needed</div></div>
+      </div>
+    </div>
+
+    <!-- LIVE PREVIEW -->
+    <div class="preview">
+      <div class="preview-bar">
+        <div class="preview-dot" style="background:#ef4444"></div>
+        <div class="preview-dot" style="background:#f59e0b;animation-delay:0.3s"></div>
+        <div class="preview-dot" style="background:#10b981;animation-delay:0.6s"></div>
+        <span class="preview-title">Argovaa agent — connected to: AWS S3 + PostgreSQL</span>
+        <span class="preview-badge">LIVE</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-msg msg-user">
+          <div class="preview-av">You</div>
+          <div class="preview-bubble">What was our total LLM cost last month by model?</div>
+        </div>
+        <div class="preview-msg msg-ai">
+          <div class="preview-av">AI</div>
+          <div class="preview-bubble">Based on your cost data for March 2025:<br><br><strong style="color:#fff">GPT-4o</strong> — $4,280 (43%)<br><strong style="color:#fff">Claude 3.5 Sonnet</strong> — $3,140 (31%)<br><strong style="color:#fff">GPT-4o mini</strong> — $1,920 (19%)<br><strong style="color:#fff">Llama 3 70B</strong> — $680 (7%)<br><br>Total: <strong style="color:#93c5fd">$10,020</strong> · Up 18% from Feb</div>
+        </div>
+        <div class="preview-msg msg-user">
+          <div class="preview-av">You</div>
+          <div class="preview-bubble">Which service is driving the GPT-4o spend?</div>
+        </div>
+        <div class="preview-msg msg-ai">
+          <div class="preview-av">AI</div>
+          <div class="preview-bubble">Document summarisation accounts for <strong style="color:#fff">68%</strong> of your GPT-4o usage. Average 3,200 tokens/request. Switching to Claude 3 Haiku for this workload would save <strong style="color:#86efac">~$2,100/month</strong>.</div>
+        </div>
+      </div>
+      <div class="preview-source">Queried from: PostgreSQL cost_events table · S3 usage-logs-2025-03.parquet</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BUILD -->
+<section id="builder">
+  <div class="max">
+    <div class="sec-tag">3-step setup</div>
+    <div class="sec-title">BUILD AN AGENT<br>IN <span class="acc">5 MINUTES</span></div>
+    <p class="sec-sub">No ML expertise, no infrastructure setup. Pick a template, connect your data, deploy. That's it.</p>
+    <div class="builder-steps">
+      <div class="bstep">
+        <div class="bstep-num" style="color:#1d4ed8">01</div>
+        <div class="bstep-title">Choose a template</div>
+        <div class="bstep-desc">Start from a pre-built agent template — cost analyst, benchmark reporter, incident responder, or build from scratch. Each template includes system prompts, tool definitions, and suggested data sources.</div>
+        <span class="bstep-tag live">20+ templates</span>
+      </div>
+      <div class="bstep">
+        <div class="bstep-num" style="color:#7c3aed">02</div>
+        <div class="bstep-title">Point to your data</div>
+        <div class="bstep-desc">Connect AWS S3, PostgreSQL, MySQL, MongoDB, REST APIs, Slack, Google Sheets, CSV uploads, or any custom data source. The agent indexes your data and knows how to query it in context.</div>
+        <span class="bstep-tag live">20+ connectors</span>
+      </div>
+      <div class="bstep">
+        <div class="bstep-num" style="color:#059669">03</div>
+        <div class="bstep-title">Deploy &amp; integrate</div>
+        <div class="bstep-desc">Get a REST API endpoint, embeddable chat widget, or Slack bot. Embed the agent in your product, internal tools, or customer portal with a single line of code. White-label available.</div>
+        <span class="bstep-tag live">Production ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section id="data">
+  <div class="max">
+    <div class="sec-tag">Data connectors</div>
+    <div class="sec-title">POINT YOUR AGENT<br>TO ANY <span class="acc">DATA SOURCE</span></div>
+    <p class="sec-sub">Connect once — the agent knows your schema, your naming conventions, and how to query it intelligently.</p>
+    <div class="data-grid">
+      <div class="dsource active"><div class="ds-icon">☁</div><div class="ds-name">AWS S3</div><div class="ds-type">Files, Parquet, CSV</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">🗄</div><div class="ds-name">PostgreSQL</div><div class="ds-type">SQL database</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">⚡</div><div class="ds-name">MySQL</div><div class="ds-type">SQL database</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">🍃</div><div class="ds-name">MongoDB</div><div class="ds-type">NoSQL database</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">📊</div><div class="ds-name">BigQuery</div><div class="ds-type">Data warehouse</div><span class="ds-badge mid">Medium</span></div>
+      <div class="dsource"><div class="ds-icon">❄</div><div class="ds-name">Snowflake</div><div class="ds-type">Data warehouse</div><span class="ds-badge mid">Medium</span></div>
+      <div class="dsource"><div class="ds-icon">📄</div><div class="ds-name">PDF / Docs</div><div class="ds-type">Document store</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">📋</div><div class="ds-name">Google Sheets</div><div class="ds-type">Spreadsheet</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">🔗</div><div class="ds-name">REST API</div><div class="ds-type">Any HTTP endpoint</div><span class="ds-badge mid">Medium</span></div>
+      <div class="dsource"><div class="ds-icon">💬</div><div class="ds-name">Slack</div><div class="ds-type">Messages &amp; channels</div><span class="ds-badge easy">Easy</span></div>
+      <div class="dsource"><div class="ds-icon">📡</div><div class="ds-name">Kafka</div><div class="ds-type">Event streams</div><span class="ds-badge mid">Medium</span></div>
+      <div class="dsource"><div class="ds-icon">🔧</div><div class="ds-name">Custom</div><div class="ds-type">SDK / webhook</div><span class="ds-badge mid">Medium</span></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:12px">Quick connect — AWS S3 example</div>
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">Python</span>
+            <button class="code-copy" onclick="this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+          </div>
+          <div class="code-body"><pre><span class="kw">import</span> <span class="var">argovaa</span>
+
+<span class="cm"># Init agent with your API key</span>
+<span class="var">agent</span> = <span class="var">argovaa</span>.<span class="fn">Agent</span>(
+  api_key=<span class="str">"arg_live_xxxx"</span>,
+  name=<span class="str">"Cost analyst"</span>,
+  model=<span class="str">"claude-3-5-sonnet"</span>
+)
+
+<span class="cm"># Point to your data — one line per source</span>
+<span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"s3://my-bucket/cost-data/"</span>)
+<span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"postgresql://prod-db/analytics"</span>)
+<span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"https://api.myservice.com/metrics"</span>)
+
+<span class="cm"># Deploy — get a REST endpoint instantly</span>
+<span class="var">endpoint</span> = <span class="var">agent</span>.<span class="fn">deploy</span>()
+<span class="cm"># https://agents.argovaa.com/v1/agent_xxxx</span>
+
+<span class="cm"># Ask a question</span>
+<span class="var">result</span> = <span class="var">agent</span>.<span class="fn">ask</span>(<span class="str">"What drove our cost spike on March 14?"</span>)
+<span class="fn">print</span>(<span class="var">result</span>.answer)</pre></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:12px">Embed anywhere — chat widget</div>
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">HTML embed</span>
+            <button class="code-copy" onclick="this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+          </div>
+          <div class="code-body"><pre><span class="cm">&lt;!-- Drop this anywhere in your product --&gt;</span>
+<span class="kw">&lt;script</span>
+  src=<span class="str">"https://cdn.argovaa.com/widget.js"</span>
+  data-agent=<span class="str">"agent_xxxx"</span>
+  data-theme=<span class="str">"light"</span>
+  data-position=<span class="str">"bottom-right"</span>
+  data-title=<span class="str">"Cost assistant"</span>
+<span class="kw">&gt;&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Or use the REST API directly --&gt;</span>
+<span class="fn">fetch</span>(<span class="str">'https://agents.argovaa.com/v1/ask'</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: { <span class="str">'Authorization'</span>: <span class="str">'Bearer arg_live_xxxx'</span> },
+  body: JSON.<span class="fn">stringify</span>({
+    agent_id: <span class="str">'agent_xxxx'</span>,
+    question: <span class="str">'Summarise last week'</span>
+  })
+})</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATES -->
+<section id="templates">
+  <div class="max">
+    <div class="sec-tag">Agent templates</div>
+    <div class="sec-title">START FROM A<br><span class="acc">TEMPLATE</span></div>
+    <p class="sec-sub">Pre-built agents with system prompts, data queries, and tool definitions — ready to customise and deploy.</p>
+    <div class="template-grid">
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◈</div>
+        <div class="tcard-name">AI Cost Analyst</div>
+        <div class="tcard-desc">Answers questions about LLM spend, token usage, model cost comparisons, and cost-per-request. Connects to AWS CUR + usage logs.</div>
+        <div class="tcard-tags"><span class="tcard-tag">AWS CUR</span><span class="tcard-tag">PostgreSQL</span><span class="tcard-tag">Cost intelligence</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◉</div>
+        <div class="tcard-name">Benchmark Reporter</div>
+        <div class="tcard-desc">Queries your performance benchmark data, compares results across models and GPUs, and generates natural-language reports.</div>
+        <div class="tcard-tags"><span class="tcard-tag">S3</span><span class="tcard-tag">JSON/CSV</span><span class="tcard-tag">Reporting</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◎</div>
+        <div class="tcard-name">Incident Responder</div>
+        <div class="tcard-desc">Connects to your monitoring data, GC logs, and APM. Diagnoses incidents, suggests root cause, and recommends remediation steps.</div>
+        <div class="tcard-tags"><span class="tcard-tag">Datadog</span><span class="tcard-tag">CloudWatch</span><span class="tcard-tag">JVM logs</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◧</div>
+        <div class="tcard-name">Customer Data Agent</div>
+        <div class="tcard-desc">Answer questions about your customer data, usage patterns, and churn signals. Connects directly to your product database.</div>
+        <div class="tcard-tags"><span class="tcard-tag">PostgreSQL</span><span class="tcard-tag">Segment</span><span class="tcard-tag">Analytics</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◫</div>
+        <div class="tcard-name">Document Q&amp;A</div>
+        <div class="tcard-desc">Upload PDFs, docs, or point to an S3 bucket. The agent reads, indexes, and answers questions across thousands of pages instantly.</div>
+        <div class="tcard-tags"><span class="tcard-tag">PDF</span><span class="tcard-tag">S3</span><span class="tcard-tag">Knowledge base</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+      <div class="tcard" onclick="window.location.href='login.html'">
+        <div class="tcard-icon">◬</div>
+        <div class="tcard-name">Sales Intelligence</div>
+        <div class="tcard-desc">Connect to your CRM, deal data, and Slack to answer questions about pipeline, deal velocity, and revenue forecast.</div>
+        <div class="tcard-tags"><span class="tcard-tag">Salesforce</span><span class="tcard-tag">Slack</span><span class="tcard-tag">HubSpot</span></div>
+        <div class="tcard-deploy">Deploy →</div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <a href="login.html" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);text-decoration:none;letter-spacing:0.5px">View all 20+ templates →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATION STEPS -->
+<section id="integrate">
+  <div class="max">
+    <div class="sec-tag">Full integration guide</div>
+    <div class="sec-title">INTEGRATE YOUR<br>SERVICE IN <span class="acc">4 STEPS</span></div>
+    <p class="sec-sub" style="margin-bottom:32px">From sign-up to production agent in under 10 minutes.</p>
+    <div class="int-steps">
+      <div class="int-step">
+        <div class="int-num-cell"><div class="int-num">01</div></div>
+        <div class="int-body">
+          <div class="int-step-title">Sign in &amp; get API key</div>
+          <div class="int-step-desc">Create your Argovaa account. Your API key is in Settings → Agent keys. Paste it into the SDK init call.</div>
+        </div>
+        <div class="int-code-cell"><pre><span class="cm"># Install the SDK</span>
+<span class="kw">pip install</span> argovaa-sdk
+
+<span class="cm"># Your key is in Settings</span>
+<span class="var">api_key</span> = <span class="str">"arg_live_xxxx"</span></pre></div>
+      </div>
+      <div class="int-step">
+        <div class="int-num-cell"><div class="int-num">02</div></div>
+        <div class="int-body">
+          <div class="int-step-title">Create your agent</div>
+          <div class="int-step-desc">Choose a template or define your own system prompt. Set the model, tone, and capabilities for your specific use case.</div>
+        </div>
+        <div class="int-code-cell"><pre><span class="var">agent</span> = <span class="var">argovaa</span>.<span class="fn">Agent</span>(
+  api_key=<span class="var">api_key</span>,
+  name=<span class="str">"My analyst"</span>,
+  system_prompt=<span class="str">"You are..."</span>,
+  model=<span class="str">"claude-3-5-sonnet"</span>
+)</pre></div>
+      </div>
+      <div class="int-step">
+        <div class="int-num-cell"><div class="int-num">03</div></div>
+        <div class="int-body">
+          <div class="int-step-title">Connect your data</div>
+          <div class="int-step-desc">Pass connection strings for each data source. Argovaa handles authentication, schema discovery, and query generation automatically.</div>
+        </div>
+        <div class="int-code-cell"><pre><span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"s3://bucket/data/"</span>)
+<span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"postgresql://db/prod"</span>)
+<span class="var">agent</span>.<span class="fn">connect</span>(<span class="str">"https://api.co/v1"</span>,
+  auth={<span class="str">"token"</span>: <span class="var">MY_TOKEN</span>})</pre></div>
+      </div>
+      <div class="int-step">
+        <div class="int-num-cell"><div class="int-num">04</div></div>
+        <div class="int-body">
+          <div class="int-step-title">Deploy &amp; go live</div>
+          <div class="int-step-desc">Call deploy() to get a live endpoint. Embed the widget in your product or call the API. Monitor usage and costs in the Argovaa dashboard.</div>
+        </div>
+        <div class="int-code-cell"><pre><span class="var">ep</span> = <span class="var">agent</span>.<span class="fn">deploy</span>()
+<span class="cm"># → agents.argovaa.com/v1/agent_x</span>
+
+<span class="cm"># Or embed a chat widget</span>
+<span class="kw">&lt;script</span> data-agent=<span class="str">"agent_x"</span>
+  src=<span class="str">"cdn.argovaa.com/widget.js"</span>
+<span class="kw">&gt;&lt;/script&gt;</span></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS MODEL -->
+<section id="business">
+  <div class="max">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:#93c5fd"></span>Business model</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,60px);letter-spacing:2px;line-height:0.92;color:#fff;margin-bottom:16px">HOW YOU<br>MAKE MONEY<br><span style="color:#93c5fd">WITH ARGOVAA</span></div>
+    <p style="font-size:15px;color:rgba(255,255,255,0.5);max-width:560px;line-height:1.75;font-weight:300;margin-bottom:40px">Four revenue streams — from your own use to reselling to your customers under your own brand.</p>
+
+    <!-- Revenue streams -->
+    <div class="revenue-grid" style="margin-bottom:40px">
+      <div class="rev-item">
+        <div class="rev-icon">◈</div>
+        <div class="rev-name">SaaS subscriptions</div>
+        <div class="rev-desc">Charge your customers monthly for agent access per seat or per workspace</div>
+        <div class="rev-val">$49–$999/mo</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-icon">◉</div>
+        <div class="rev-name">Usage-based billing</div>
+        <div class="rev-desc">Charge per query, per 1K tokens, or per API call on top of Argovaa's base cost</div>
+        <div class="rev-val">$0.002–0.01/query</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-icon">◎</div>
+        <div class="rev-name">White-label resell</div>
+        <div class="rev-desc">Sell the agent builder under your own brand. Your customers never see Argovaa</div>
+        <div class="rev-val">Your margin</div>
+      </div>
+      <div class="rev-item">
+        <div class="rev-icon">◧</div>
+        <div class="rev-name">Implementation fees</div>
+        <div class="rev-desc">Charge setup, custom connector development, and onboarding fees per customer</div>
+        <div class="rev-val">$500–$5K setup</div>
+      </div>
+    </div>
+
+    <!-- Pricing tiers -->
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-bottom:20px;text-align:center">Argovaa agent builder pricing</div>
+    <div class="bm-grid">
+      <div class="bm-card">
+        <span class="bm-badge starter">STARTER</span>
+        <div class="bm-name">Builder</div>
+        <div class="bm-num">$79</div>
+        <div class="bm-period">per month</div>
+        <div class="bm-features">
+          <div class="bm-feature"><span class="ck" style="color:#86efac">✓</span>3 agents</div>
+          <div class="bm-feature"><span class="ck" style="color:#86efac">✓</span>5 data connectors</div>
+          <div class="bm-feature"><span class="ck" style="color:#86efac">✓</span>10K queries/month</div>
+          <div class="bm-feature"><span class="ck" style="color:#86efac">✓</span>REST API + embed widget</div>
+          <div class="bm-feature"><span class="ck" style="color:#86efac">✓</span>14-day free trial</div>
+        </div>
+        <a href="login.html" class="bm-btn outline">Start free trial</a>
+      </div>
+      <div class="bm-card featured">
+        <span class="bm-badge growth">MOST POPULAR</span>
+        <div class="bm-name">Growth</div>
+        <div class="bm-num">$299</div>
+        <div class="bm-period">per month</div>
+        <div class="bm-features">
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>Unlimited agents</div>
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>All 20+ connectors</div>
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>100K queries/month</div>
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>Multi-tenant support</div>
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>Custom branding</div>
+          <div class="bm-feature"><span class="ck" style="color:#93c5fd">✓</span>Priority support</div>
+        </div>
+        <a href="login.html" class="bm-btn light">Get started</a>
+      </div>
+      <div class="bm-card">
+        <span class="bm-badge platform">WHITE-LABEL</span>
+        <div class="bm-name">Platform</div>
+        <div class="bm-num">$999</div>
+        <div class="bm-period">per month · resell to your customers</div>
+        <div class="bm-features">
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Everything in Growth</div>
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Your own domain &amp; brand</div>
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Customer billing management</div>
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Reseller revenue share</div>
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Dedicated Slack support</div>
+          <div class="bm-feature"><span class="ck" style="color:#c4b5fd">✓</span>Custom SLA</div>
+        </div>
+        <a href="mailto:support@argovaa.com" class="bm-btn outline">Contact us</a>
+      </div>
+    </div>
+
+    <!-- Unit economics -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:28px 32px">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.35);margin-bottom:20px">Unit economics example — reseller on Platform plan</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)">
+        <div style="background:rgba(255,255,255,0.02);padding:16px 14px;text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px">You pay Argovaa</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#ef4444">$999/mo</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);padding:16px 14px;text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px">10 customers × $199</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#fff">$1,990/mo</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);padding:16px 14px;text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px">Your gross margin</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#86efac">$991/mo</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);padding:16px 14px;text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px">Break-even point</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#93c5fd">6 customers</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:12px;font-family:'DM Mono',monospace">At 20 customers you're making $2,981/month gross profit. At 50 customers: $8,951/month — without writing a single line of AI infrastructure code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>BUILD YOUR<br>FIRST AGENT TODAY.</h2>
+  <p>No credit card. No ML expertise. First agent live in 5 minutes.</p>
+  <div class="cta-btns">
+    <a href="login.html" class="cta-b1">Start building free →</a>
+    <a href="#templates" class="cta-b2">Browse templates</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo">ARGOVAA.</a>
+  <div class="flinks">
+    <a href="index.html">Home</a>
+    <a href="index.html#benchmarks">Benchmarks</a>
+    <a href="tco.html">TCO</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="analyser.html">GC Analyser</a>
+  </div>
+  <div class="fcopy">© 2025 ARGOVAA.COM</div>
+</footer>
+
+<script>
+document.querySelectorAll('.dsource').forEach(el=>{
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.dsource').forEach(d=>d.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.tcard').forEach(el=>{
+  el.addEventListener('click',function(){
+    window.location.href='login.html';
+  });
+});
+</script>
+</body>
+</html>
