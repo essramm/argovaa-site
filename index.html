@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Argovaa — AI Infrastructure Intelligence</title>
-<meta name="description" content="Argovaa — Live AI inference benchmarks, JVM reliability engineering, and cloud cost intelligence. Stop firefighting. Start preventing.">
+<title>Argovaa — AI Inference Benchmarks & Price Per Performance</title>
+<meta name="description" content="Live AI inference benchmarks across OpenAI, Anthropic, Azure OAI and open source models. Find the best price per performance for your workload.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f8f9fb;--surface:#ffffff;--surface2:#f1f3f7;--surface3:#e8eaef;
+  --bg:#f8f9fb;--surface:#fff;--surface2:#f1f3f7;--surface3:#e8eaef;
   --ink:#0f1117;--mid:#5a6170;--faint:#c8ccd6;
   --accent:#1d4ed8;--accent-bright:#2563eb;--accent-dim:rgba(29,78,216,0.08);
+  --ink-inv:#0f1117;
   --red:#dc2626;--amber:#d97706;--emerald:#059669;
-  --bd:rgba(15,17,23,0.1);--bd2:rgba(15,17,23,0.06)
+  --bd:rgba(15,17,23,0.1);--bd2:rgba(15,17,23,0.05)
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
@@ -24,88 +25,85 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--bd);background:rgba(248,249,251,0.96);backdrop-filter:blur(24px)}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
-.logo-dot{color:var(--accent)}
+.logo em{color:var(--accent);font-style:normal}
 .nav-links{display:flex;gap:24px;list-style:none}
 .nav-links a{font-size:12px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
 .nav-links a:hover,.nav-links a.act{color:var(--ink)}
 .nav-right{display:flex;align-items:center;gap:12px}
 .live-badge{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:0.5px;border:1px solid var(--bd);padding:4px 10px}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:glow 2s infinite}
-@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{opacity:0.5;box-shadow:0 0 0 5px transparent}}
-.btn-nav{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;transition:background 0.2s;text-decoration:none;display:inline-block}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:glow 2s infinite}
+@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{opacity:0.5;box-shadow:0 0 0 4px transparent}}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;text-decoration:none;display:inline-block}
 .btn-nav:hover{background:var(--accent-bright)}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 80px;position:relative;overflow:hidden;background:var(--bg)}
-.hero-noise{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;opacity:0.5}
 .hero-lines{position:absolute;inset:0;background-image:linear-gradient(var(--bd2) 1px,transparent 1px),linear-gradient(90deg,var(--bd2) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
-.hero-accent{position:absolute;top:0;left:48px;right:48px;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.7}
+.hero-bar{position:absolute;top:0;left:48px;right:48px;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.6}
 .hero-inner{max-width:1100px;width:100%;position:relative;z-index:1}
-.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:32px}
 .eyebrow-line{width:32px;height:2px;background:var(--accent)}
 .eyebrow-text{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
 h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,12vw,160px);line-height:0.88;letter-spacing:2px;color:var(--ink);margin-bottom:36px}
 h1 .acc{color:var(--accent)}
 h1 .ghost{-webkit-text-stroke:2px var(--faint);color:transparent}
 .hero-sub{font-size:17px;color:var(--mid);max-width:540px;line-height:1.75;font-weight:300;margin-bottom:48px}
-.hero-actions{display:flex;gap:10px;margin-bottom:80px}
-.btn-primary{background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block;letter-spacing:0.2px}
-.btn-primary:hover{background:var(--accent-bright);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--mid);padding:13px 28px;font-size:14px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
-.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.hero-btns{display:flex;gap:10px;margin-bottom:80px}
+.btn-pri{background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-pri:hover{background:var(--accent-bright);transform:translateY(-1px)}
+.btn-sec{background:transparent;color:var(--mid);padding:13px 28px;font-size:14px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-sec:hover{border-color:var(--ink);color:var(--ink)}
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:640px;border:1px solid var(--bd);background:var(--surface)}
 .hstat{padding:18px 20px;border-right:1px solid var(--bd)}
 .hstat:last-child{border-right:none}
 .hstat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--ink)}
 .hstat-val.a{color:var(--accent)}
-.hstat-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.hstat-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 
 /* SHARED */
 .max{max-width:1100px;margin:0 auto;width:100%}
-.sec-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.sec-label::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-lbl::before{content:'';width:20px;height:1px;background:var(--accent)}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,68px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:16px}
 .sec-title .acc{color:var(--accent)}
 .sec-sub{font-size:15px;color:var(--mid);max-width:480px;line-height:1.75;font-weight:300;margin-bottom:52px}
 
+/* AGENT SECTION */
+#agent{padding:96px 48px;background:var(--ink);border-top:1px solid rgba(255,255,255,0.06)}
+.agent-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:12px;padding:9px 14px;cursor:pointer;transition:all 0.15s;font-family:'DM Mono',monospace;letter-spacing:0.2px;display:block;width:100%}
+.agent-chip:hover{background:rgba(29,78,216,0.15);border-color:rgba(29,78,216,0.4);color:#93c5fd}
+@keyframes spin{to{transform:rotate(360deg)}}
+.agent-msg-fade{animation:msgIn 0.3s ease forwards}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
 /* BENCHMARK SECTION */
 #benchmarks{padding:96px 48px;background:var(--bg);border-top:1px solid var(--bd)}
 .bench-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
-.bench-updated{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);display:flex;align-items:center;gap:6px}
-.bench-updated-val{color:var(--accent)}
-
 .ctrl-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:20px}
 .ctrl-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
-.cbtn{background:transparent;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:5px 11px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.3px;transition:all 0.15s}
+.cbtn{background:transparent;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:5px 11px;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
 .cbtn:hover{border-color:var(--ink);color:var(--ink)}
 .cbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .csep{width:1px;height:16px;background:var(--bd);margin:0 2px}
-
 .gpu-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .gpubtn{background:var(--surface);border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:6px 12px;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
 .gpubtn:hover{border-color:var(--accent);color:var(--accent)}
-.gpubtn.on{background:rgba(29,78,216,0.08);border-color:var(--accent);color:var(--accent);font-weight:500}
-
+.gpubtn.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:500}
 .ctx-strip{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 .ctx-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
-.ctx-strip-btns{display:flex;gap:4px}
+.ctx-btns{display:flex;gap:4px}
 .ctxbtn{background:var(--surface);border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 10px;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
-.ctxbtn.on{background:rgba(29,78,216,0.08);border-color:var(--accent);color:var(--accent)}
-
+.ctxbtn.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
 .bench-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px}
 .bcard{background:var(--surface);padding:16px 18px}
 .bcard-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:6px}
-.bcard-val{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;line-height:1;color:var(--ink)}
-.bcard-val.b{color:var(--accent)}
-.bcard-val.w{color:var(--ink)}
-.bcard-val.a{color:var(--amber)}
-.bcard-val.r{color:var(--red)}
+.bcard-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;color:var(--ink)}
+.bcard-val.b{color:var(--accent)}.bcard-val.a{color:var(--amber)}.bcard-val.r{color:var(--red)}
 .bcard-sub{font-size:11px;color:var(--mid);margin-top:3px}
-
 .lb{width:100%;border-collapse:collapse}
 .lb th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);padding:10px 12px;border-bottom:2px solid var(--ink);text-align:left;background:var(--surface);white-space:nowrap}
 .lb th:not(:first-child){text-align:right}
-.lb td{padding:11px 12px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
+.lb td{padding:11px 12px;border-bottom:1px solid var(--bd2);font-size:13px;vertical-align:middle}
 .lb tr:hover td{background:var(--surface2);cursor:pointer}
 .lb tr.tr-top td{background:rgba(29,78,216,0.04)}
 .lb tr.tr-top:hover td{background:rgba(29,78,216,0.08)}
@@ -113,40 +111,34 @@ h1 .ghost{-webkit-text-stroke:2px var(--faint);color:transparent}
 .tr-rank.gold{color:var(--amber)}
 .tr-model{display:flex;flex-direction:column;gap:2px}
 .tr-mname{font-weight:500;color:var(--ink)}
-.tr-pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;letter-spacing:0.3px;margin-top:2px}
+.tr-pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;margin-top:2px}
 .pl-openai{background:rgba(5,150,105,0.1);color:#059669;border:1px solid rgba(5,150,105,0.2)}
 .pl-anthropic{background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.2)}
 .pl-azure{background:rgba(29,78,216,0.08);color:var(--accent);border:1px solid rgba(29,78,216,0.2)}
 .pl-oss{background:rgba(124,58,237,0.08);color:#7c3aed;border:1px solid rgba(124,58,237,0.2)}
-.tr-tps-cell{text-align:right!important}
 .tps-inner{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .tps-num{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink)}
-.tps-num.best{color:var(--accent)}
-.tps-num.mid{color:var(--ink)}
-.tps-num.low{color:var(--mid)}
+.tps-num.best{color:var(--accent)}.tps-num.low{color:var(--mid)}
 .mbar{width:56px;height:3px;background:var(--surface3)}
 .mbar-fill{height:100%}
 .tr-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);text-align:right!important}
-.tr-num.fast{color:var(--emerald)}
-.tr-num.slow2{color:var(--red)}
+.tr-num.fast{color:var(--emerald)}.tr-num.slow{color:var(--red)}
 .tr-grade{text-align:center!important}
-.grade-badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 7px;letter-spacing:0.3px}
+.grade{font-family:'DM Mono',monospace;font-size:10px;padding:3px 7px}
 .gs{background:rgba(29,78,216,0.1);color:var(--accent);border:1px solid rgba(29,78,216,0.25)}
 .ga{background:rgba(5,150,105,0.08);color:#059669;border:1px solid rgba(5,150,105,0.2)}
 .gb{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
 .gc{background:var(--surface2);color:var(--mid);border:1px solid var(--bd)}
-.live-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:0.3px}
-
-.detail-panel{display:none;background:var(--surface2);border-top:2px solid var(--accent);padding:20px;margin-top:0;margin-bottom:16px}
+.live-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--accent)}
+.detail-panel{display:none;background:var(--surface2);border-top:2px solid var(--accent);padding:20px;margin-bottom:16px}
 .detail-panel.show{display:block}
 .dp-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:14px}
 .dp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 .dp-gpu{background:var(--surface);border:1px solid var(--bd);padding:12px 14px}
-.dp-gpu-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:5px}
-.dp-gpu-tps{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.dp-gpu-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:5px}
+.dp-gpu-tps{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:3px}
 .dp-gpu-meta{font-size:11px;color:var(--mid)}
-
-.bench-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 .bc{background:var(--surface);border:1px solid var(--bd);padding:18px 20px}
 .bc-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:2px}
 .bc-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:10px}
@@ -154,14 +146,24 @@ h1 .ghost{-webkit-text-stroke:2px var(--faint);color:transparent}
 .cl{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid);font-family:'DM Mono',monospace}
 .cl-sq{width:8px;height:8px;flex-shrink:0}
 
+/* GPU CTA */
+.gpu-cta{margin-top:32px;border:1px solid rgba(29,78,216,0.2);background:rgba(29,78,216,0.04);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.gpu-cta-text{}
+.gpu-cta-tag{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.gpu-cta-tag::before{content:'';width:16px;height:1px;background:var(--accent)}
+.gpu-cta-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--ink);line-height:1;margin-bottom:8px}
+.gpu-cta-desc{font-size:14px;color:var(--mid);font-weight:300;max-width:560px;line-height:1.65}
+.gpu-cta-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.gpu-cta-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);text-align:center;letter-spacing:0.5px}
+
 /* PRODUCTS */
 #products{padding:96px 48px;background:var(--surface);border-top:1px solid var(--bd)}
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:0}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
 .pc{background:var(--surface);padding:32px 28px;position:relative;overflow:hidden;transition:background 0.2s}
 .pc:hover{background:var(--surface2)}
 .pc::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s}
 .pc:hover::after{transform:scaleY(1)}
-.pc-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-bottom:20px;letter-spacing:0.5px}
+.pc-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-bottom:20px}
 .pc-icon{font-size:18px;margin-bottom:14px;opacity:0.4}
 .pc-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--ink);margin-bottom:8px}
 .pc-desc{font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:16px}
@@ -185,7 +187,7 @@ h1 .ghost{-webkit-text-stroke:2px var(--faint);color:transparent}
 .intitem-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid)}
 
 /* CTA */
-.cta{background:var(--accent);padding:88px 48px;text-align:center;position:relative;overflow:hidden;border-top:1px solid rgba(29,78,216,0.3)}
+.cta{background:var(--accent);padding:88px 48px;text-align:center;position:relative;overflow:hidden}
 .cta::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 63px,rgba(255,255,255,0.04) 64px),repeating-linear-gradient(0deg,transparent,transparent 63px,rgba(255,255,255,0.04) 64px);pointer-events:none}
 .cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,100px);letter-spacing:2px;color:#fff;line-height:0.9;margin-bottom:20px;position:relative}
 .cta p{font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:36px;font-weight:300;position:relative}
@@ -201,16 +203,14 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
 .flinks{display:flex;gap:22px}
 .flinks a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s}
 .flinks a:hover{color:#fff}
-.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.3px}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2)}
 
 @media(max-width:768px){
   nav{padding:0 16px}.nav-links{display:none}
-  .hero{padding:80px 16px 60px}
-  h1{font-size:72px}
+  .hero{padding:80px 16px 60px}h1{font-size:72px}
   .hero-stats{grid-template-columns:1fr 1fr}
-  #benchmarks,#products,#how,#integrations,.cta{padding:60px 16px}
-  .bench-charts-row{grid-template-columns:1fr}
-  .pgrid{grid-template-columns:1fr}
+  #agent,#benchmarks,#products,#how,#integrations,.cta{padding:60px 16px}
+  .charts-row,.pgrid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr 1fr}
   .intgrid{grid-template-columns:repeat(3,1fr)}
   .bench-cards{grid-template-columns:1fr 1fr}
@@ -220,40 +220,82 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="logo">ARGOVAA<span class="logo-dot">.</span></a>
+  <a href="#" class="logo">ARGOVAA<em>.</em></a>
   <ul class="nav-links">
-    <li><a href="#benchmarks" class="act">Benchmarks</a></li>
-    <li><a href="#products">Products</a></li>
+    <li><a href="#agent" class="act">AI Agent</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
     <li><a href="analyser.html">GC Analyser</a></li>
-    <li><a href="perftest.html">Load Testing</a></li>
+    <li><a href="benchmarks.html">Benchmark tools</a></li>
   </ul>
   <div class="nav-right">
-    <div class="live-badge"><span class="live-dot"></span><span id="nav-ts">LIVE DATA</span></div>
+    <div class="live-badge"><span class="ldot"></span><span id="nav-ts">LIVE DATA</span></div>
     <a href="login.html" class="btn-nav">Get started</a>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-noise"></div>
   <div class="hero-lines"></div>
-  <div class="hero-accent"></div>
+  <div class="hero-bar"></div>
   <div class="hero-inner max">
-    <div class="hero-eyebrow">
-      <div class="eyebrow-line"></div>
-      <span class="eyebrow-text">AI infrastructure intelligence</span>
-    </div>
-    <h1>STOP<br><span class="acc">FIRE</span><span class="ghost">FIGHTING.</span><br>START<br><span class="acc">PREVENTING.</span></h1>
-    <p class="hero-sub">Live AI inference benchmarks, JVM reliability engineering, and cloud cost intelligence — built for engineering teams who ship fast and sleep well.</p>
-    <div class="hero-actions">
-      <a href="#benchmarks" class="btn-primary">View live benchmarks →</a>
-      <a href="login.html" class="btn-ghost">Access platform</a>
+    <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text">AI infrastructure intelligence</span></div>
+    <h1>BEST<br><span class="acc">PRICE</span><br>PER<br><span class="acc">PERFORMANCE.</span></h1>
+    <p class="hero-sub">Stop overpaying for AI inference. Argovaa benchmarks every major model across NVIDIA, AMD and Intel GPUs — so you always know which configuration delivers the best tokens per dollar.</p>
+    <div class="hero-btns">
+      <a href="#agent" class="btn-pri">Ask the AI agent →</a>
+      <a href="#benchmarks" class="btn-sec">View benchmarks</a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><div class="hstat-val a" id="h-models">—</div><div class="hstat-label">Models tracked</div></div>
-      <div class="hstat"><div class="hstat-val a">5</div><div class="hstat-label">GPU platforms</div></div>
-      <div class="hstat"><div class="hstat-val a">4+</div><div class="hstat-label">AI providers</div></div>
-      <div class="hstat"><div class="hstat-val">v4.1</div><div class="hstat-label">MLPerf round</div></div>
+      <div class="hstat"><div class="hstat-val a" id="h-models">360</div><div class="hstat-lbl">Models tracked</div></div>
+      <div class="hstat"><div class="hstat-val a">5</div><div class="hstat-lbl">GPU platforms</div></div>
+      <div class="hstat"><div class="hstat-val a">4+</div><div class="hstat-lbl">AI providers</div></div>
+      <div class="hstat"><div class="hstat-val">v4.1</div><div class="hstat-lbl">MLPerf round</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI AGENT -->
+<section id="agent">
+  <div class="max">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:#93c5fd;display:inline-block"></span>AI benchmark agent</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4vw,58px);letter-spacing:2px;line-height:0.95;color:#fff;margin-bottom:16px">ASK ANYTHING<br>ABOUT <span style="color:#93c5fd">AI MODELS</span><br>&amp; GPU COSTS</div>
+        <p style="font-size:15px;color:rgba(255,255,255,0.5);line-height:1.75;font-weight:300;margin-bottom:28px;max-width:420px">Ask in plain English. The agent searches across 360+ models, 5 GPU platforms, latency data, and pricing to give you instant answers.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:2px">Try asking:</div>
+          <button class="agent-chip" onclick="askAgent('What is the cheapest model for long context tasks?')">What is the cheapest model for long context tasks?</button>
+          <button class="agent-chip" onclick="askAgent('Which GPU gives the best tokens per dollar for GPT-4o?')">Which GPU gives the best tokens per dollar for GPT-4o?</button>
+          <button class="agent-chip" onclick="askAgent('Compare Claude 3 Haiku vs GPT-4o mini on H100')">Compare Claude 3 Haiku vs GPT-4o mini on H100</button>
+          <button class="agent-chip" onclick="askAgent('What is the fastest model at 128K context?')">What is the fastest model at 128K context?</button>
+          <button class="agent-chip" onclick="askAgent('Show me the top 3 models by price per performance')">Show me the top 3 models by price per performance</button>
+        </div>
+      </div>
+      <div style="background:#16181d;border:1px solid rgba(255,255,255,0.08);overflow:hidden">
+        <div style="padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="ldot"></span>
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4)">Argovaa benchmark agent</span>
+          </div>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;background:rgba(29,78,216,0.15);border:1px solid rgba(29,78,216,0.3);color:#93c5fd;padding:2px 8px">POWERED BY CLAUDE</span>
+        </div>
+        <div id="agent-msgs" style="padding:18px;display:flex;flex-direction:column;gap:12px;min-height:340px;max-height:400px;overflow-y:auto">
+          <div style="display:flex;gap:9px;align-items:flex-start">
+            <div style="width:26px;height:26px;background:rgba(29,78,216,0.2);border:1px solid rgba(29,78,216,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;color:#93c5fd;letter-spacing:1px">AI</div>
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);padding:10px 13px;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;max-width:90%">Hi! I have access to live benchmark data for <strong style="color:#fff">360+ AI models</strong> across OpenAI, Anthropic, Azure and open source — tokens/sec, latency, and pricing on 5 GPU platforms. Ask me anything.</div>
+          </div>
+        </div>
+        <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:8px">
+          <input id="agent-input" type="text" placeholder="Ask about models, GPUs, pricing, latency..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:9px 13px;color:rgba(255,255,255,0.8);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(29,78,216,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')sendAgent()">
+          <button onclick="sendAgent()" id="agent-btn" style="background:#1d4ed8;color:#fff;border:none;padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:background 0.2s">
+            <span id="agent-spinner" style="width:12px;height:12px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:none"></span>
+            <span id="agent-txt">Ask →</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -263,15 +305,14 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
   <div class="max">
     <div class="bench-top">
       <div>
-        <div class="sec-label">Live benchmark data</div>
+        <div class="sec-lbl">Live benchmark data</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,56px);letter-spacing:2px;line-height:0.95;margin-bottom:8px">AI MODEL INFERENCE<br><span style="color:var(--accent)">PERFORMANCE LEADERBOARD</span></div>
       </div>
-      <div class="bench-updated">
-        <span class="live-dot"></span>
-        Auto-refreshed daily · <span class="bench-updated-val" id="bench-ts">loading...</span>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);display:flex;align-items:center;gap:6px">
+        <span class="ldot" style="background:var(--accent)"></span>
+        Auto-refreshed daily · <span style="color:var(--accent)" id="bench-ts">loading...</span>
       </div>
     </div>
-
     <div class="ctrl-bar">
       <span class="ctrl-lbl">Provider:</span>
       <button class="cbtn on" id="p-all" onclick="toggleP('all',this)">All</button>
@@ -286,15 +327,13 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
       <button class="cbtn" id="s-cost" onclick="setSort('cost',this)">Cost/1M</button>
       <button class="cbtn" id="s-eff" onclick="setSort('eff',this)">Efficiency</button>
     </div>
-
     <div style="margin-bottom:12px">
       <div class="ctx-lbl" style="margin-bottom:8px">GPU Hardware</div>
       <div class="gpu-strip" id="gpu-strip"></div>
     </div>
-
     <div class="ctx-strip">
       <span class="ctx-lbl">Context window</span>
-      <div class="ctx-strip-btns">
+      <div class="ctx-btns">
         <button class="ctxbtn on" onclick="setCtx(1024,this)">1K</button>
         <button class="ctxbtn" onclick="setCtx(4096,this)">4K</button>
         <button class="ctxbtn" onclick="setCtx(16384,this)">16K</button>
@@ -303,11 +342,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
         <button class="ctxbtn" onclick="setCtx(131072,this)">128K</button>
       </div>
     </div>
-
     <div class="bench-cards" id="bench-cards"></div>
-
     <div id="lb-loading" style="text-align:center;padding:60px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:1.5px">LOADING LIVE BENCHMARK DATA...</div>
-
     <div id="lb-wrap" style="display:none">
       <table class="lb">
         <thead><tr>
@@ -327,63 +363,55 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
         <div class="dp-grid" id="dp-grid"></div>
       </div>
     </div>
-
-    <div class="bench-charts-row" id="bench-charts" style="display:none">
+    <div class="charts-row" id="charts-row" style="display:none">
       <div class="bc">
         <div class="bc-lbl">Throughput degradation</div>
         <div class="bc-title">TOKENS/S VS CONTEXT SIZE</div>
         <div class="chart-leg" id="ctx-leg"></div>
-        <div style="position:relative;height:200px">
-          <canvas id="ctx-chart" role="img" aria-label="Line chart showing token throughput vs context window size for top AI models">Throughput vs context.</canvas>
-        </div>
+        <div style="position:relative;height:200px"><canvas id="ctx-chart"></canvas></div>
       </div>
       <div class="bc">
         <div class="bc-lbl">Pricing comparison</div>
         <div class="bc-title">COST PER 1M TOKENS</div>
         <div class="chart-leg" id="cost-leg"></div>
-        <div style="position:relative;height:200px">
-          <canvas id="cost-chart" role="img" aria-label="Bar chart showing cost per million tokens for each model">Cost per 1M tokens.</canvas>
-        </div>
+        <div style="position:relative;height:200px"><canvas id="cost-chart"></canvas></div>
       </div>
     </div>
-
-    <!-- GPU INSTANCE CTA -->
-    <div style="margin-top:32px;border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-      <div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:16px;height:1px;background:var(--accent);display:inline-block"></span>GPU instance selection</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--white);line-height:1;margin-bottom:8px">NOT SURE WHICH GPU INSTANCE IS RIGHT FOR YOUR WORKLOAD?</div>
-        <p style="font-size:14px;color:var(--mid);font-weight:300;max-width:580px;line-height:1.65">Use our performance testing portal to run real load tests against your application and find the optimal GPU configuration for your inference workload — no guesswork, real data.</p>
+    <div class="gpu-cta">
+      <div class="gpu-cta-text">
+        <div class="gpu-cta-tag">GPU instance selection</div>
+        <div class="gpu-cta-title">NOT SURE WHICH GPU IS RIGHT FOR YOUR WORKLOAD?</div>
+        <p class="gpu-cta-desc">Use our performance benchmarking tools to run real load tests and find the optimal GPU configuration — no guesswork, real data.</p>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
-        <a href="perftest.html" style="background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:background 0.2s;white-space:nowrap;letter-spacing:0.2px" onmouseover="this.style.background='#60a5fa'" onmouseout="this.style.background='#3b82f6'">Run a performance test →</a>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);text-align:center;letter-spacing:0.5px">Free · No setup required · Results in minutes</div>
+      <div class="gpu-cta-actions">
+        <a href="benchmarks.html" class="btn-pri" style="text-align:center">Run benchmark tools →</a>
+        <div class="gpu-cta-note">Free · No setup · Results in minutes</div>
       </div>
     </div>
-
   </div>
 </section>
 
 <!-- PRODUCTS -->
 <section id="products">
   <div class="max">
-    <div class="sec-label">Platform</div>
+    <div class="sec-lbl">Platform</div>
     <div class="sec-title">FULL-STACK<br>RELIABILITY <span class="acc">SUITE</span></div>
     <p class="sec-sub">From AI inference benchmarks to JVM internals — everything your engineering team needs.</p>
     <div class="pgrid">
-      <div class="pc"><div class="pc-n">01 —</div><div class="pc-icon">◈</div><div class="pc-name">AI BENCHMARKS</div><div class="pc-desc">Live inference performance across OpenAI, Anthropic, Azure and open source models on NVIDIA, AMD and Intel GPUs. Auto-updated daily from live sources.</div><span class="pc-tag new">Live data</span></div>
+      <div class="pc"><div class="pc-n">01 —</div><div class="pc-icon">◈</div><div class="pc-name">AI BENCHMARKS</div><div class="pc-desc">Live inference performance across OpenAI, Anthropic, Azure and open source models on NVIDIA, AMD and Intel GPUs. Auto-updated daily.</div><span class="pc-tag new">Live data</span></div>
       <div class="pc"><div class="pc-n">02 —</div><div class="pc-icon">◉</div><div class="pc-name">JVM ANALYSER</div><div class="pc-desc">AI-powered GC log and thread dump analysis. Deadlocks, memory leaks, and heap issues diagnosed in seconds with exact remediation steps.</div><span class="pc-tag">Core</span></div>
-      <div class="pc"><div class="pc-n">03 —</div><div class="pc-icon">◎</div><div class="pc-name">LOAD TESTING</div><div class="pc-desc">BlazeMeter and k6 Cloud performance testing from a single portal. Configure, run, and analyse load tests against any URL without leaving Argovaa.</div><span class="pc-tag">Core</span></div>
-      <div class="pc"><div class="pc-n">04 —</div><div class="pc-icon">◧</div><div class="pc-name">GC INTELLIGENCE</div><div class="pc-desc">Parse GC logs from G1GC, ZGC, and Shenandoah. AI tunes heap configuration and collector settings for your production workload.</div><span class="pc-tag new">AI enhanced</span></div>
-      <div class="pc"><div class="pc-n">05 —</div><div class="pc-icon">◫</div><div class="pc-name">CLOUD COST</div><div class="pc-desc">AWS cost optimisation with agentic AI. Spot instance migration, Savings Plans, and real-time recommendations via the Costiq engine.</div><span class="pc-tag">Core</span></div>
-      <div class="pc"><div class="pc-n">06 —</div><div class="pc-icon">◬</div><div class="pc-name">AGENTIC AI ENGINE</div><div class="pc-desc">Autonomous incident investigation. Gathers evidence, correlates signals, and drives remediation end-to-end while your team reads the alert.</div><span class="pc-tag new">New 2025</span></div>
+      <div class="pc"><div class="pc-n">03 —</div><div class="pc-icon">◎</div><div class="pc-name">BENCHMARK TOOLS</div><div class="pc-desc">BlazeMeter and k6 Cloud performance benchmarking from a single portal. Configure, run, and analyse tests against any endpoint.</div><span class="pc-tag">Core</span></div>
+      <div class="pc"><div class="pc-n">04 —</div><div class="pc-icon">◧</div><div class="pc-name">TOKENOMICS</div><div class="pc-desc">AI cost modelling across pricing tiers — on-demand, provisioned throughput, and batch. Forecast spend before you commit.</div><span class="pc-tag new">New</span></div>
+      <div class="pc"><div class="pc-n">05 —</div><div class="pc-icon">◫</div><div class="pc-name">CLOUD COST</div><div class="pc-desc">AWS cost optimisation with agentic AI. Spot migration, Savings Plans, and real-time recommendations via the Costiq engine.</div><span class="pc-tag">Core</span></div>
+      <div class="pc"><div class="pc-n">06 —</div><div class="pc-icon">◬</div><div class="pc-name">AGENTIC AI ENGINE</div><div class="pc-desc">Autonomous incident investigation. Gathers evidence, correlates signals, and drives remediation end-to-end.</div><span class="pc-tag new">New 2025</span></div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- HOW -->
 <section id="how">
   <div class="max">
-    <div class="sec-label">Workflow</div>
+    <div class="sec-lbl">Workflow</div>
     <div class="sec-title">FROM ALERT<br>TO <span class="acc">RESOLVED</span></div>
     <p class="sec-sub">The Argovaa agent works across your entire stack with no manual correlation required.</p>
     <div class="steps">
@@ -398,7 +426,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
 <!-- INTEGRATIONS -->
 <section id="integrations">
   <div class="max">
-    <div class="sec-label">Integrations</div>
+    <div class="sec-lbl">Integrations</div>
     <div class="sec-title">WORKS WITH<br>YOUR <span class="acc">STACK</span></div>
     <div class="intgrid">
       <div class="intitem"><div class="intitem-icon">☁</div><div class="intitem-name">AWS</div></div>
@@ -417,8 +445,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
 
 <!-- CTA -->
 <div class="cta" id="contact">
-  <h2>STOP REACTING.<br>START PREVENTING.</h2>
-  <p>Join engineering teams who've cut P1 incidents by 3× with Argovaa.</p>
+  <h2>MAXIMUM<br>PERFORMANCE.<br>MINIMUM COST.</h2>
+  <p>Live AI inference benchmarks across every major model and GPU — know exactly what you're paying for.</p>
   <div class="cta-row">
     <a href="login.html" class="cta-b1">Get started free →</a>
     <a href="mailto:support@argovaa.com" class="cta-b2">Talk to us</a>
@@ -429,44 +457,45 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding
   <a href="#" class="flogo">ARGOVAA.</a>
   <div class="flinks">
     <a href="#benchmarks">Benchmarks</a>
+    <a href="tokenomics.html">Tokenomics</a>
     <a href="analyser.html">GC Analyser</a>
-    <a href="perftest.html">Load Testing</a>
+    <a href="benchmarks.html">Benchmark tools</a>
     <a href="#contact">Contact</a>
   </div>
-  <div class="fcopy">© 2025 ARGOVAA.COM — SAN RAMON, CA</div>
+  <div class="fcopy">© 2025 ARGOVAA.COM</div>
 </footer>
 
 <script>
 const GPUS=[
   {id:'h200-sxm',name:'H200 SXM',tdp:700},{id:'h100-sxm',name:'H100 SXM',tdp:700},
   {id:'a100-80gb',name:'A100 80GB',tdp:400},{id:'mi300x',name:'MI300X',tdp:750},
-  {id:'rtx-4090',name:'RTX 4090',tdp:450},
+  {id:'rtx-4090',name:'RTX 4090',tdp:450}
 ];
 const MODELS=[
-  {id:'gpt4o',name:'GPT-4o',pk:'openai',pl:'OpenAI',pc:'#10a37f',ic:5.0,oc:15.0,
+  {id:'gpt4o',name:'GPT-4o',pk:'openai',pl:'OpenAI',pc:'#059669',ic:5.0,oc:15.0,
    gd:{'h100-sxm':{tps:2940,ttft:240,lat:38},'h200-sxm':{tps:3820,ttft:180,lat:28},'a100-80gb':{tps:1680,ttft:420,lat:68},'mi300x':{tps:2980,ttft:230,lat:36},'rtx-4090':{tps:480,ttft:1200,lat:210}},
    cs:{1024:1.0,4096:0.92,16384:0.78,32768:0.62,65536:0.44,131072:0.28}},
-  {id:'gpt4omini',name:'GPT-4o mini',pk:'openai',pl:'OpenAI',pc:'#10a37f',ic:0.15,oc:0.60,
+  {id:'gpt4omini',name:'GPT-4o mini',pk:'openai',pl:'OpenAI',pc:'#059669',ic:0.15,oc:0.60,
    gd:{'h100-sxm':{tps:7100,ttft:72,lat:15},'h200-sxm':{tps:9200,ttft:48,lat:11},'a100-80gb':{tps:4200,ttft:130,lat:26},'mi300x':{tps:7300,ttft:68,lat:14},'rtx-4090':{tps:2100,ttft:280,lat:54}},
    cs:{1024:1.0,4096:0.94,16384:0.84,32768:0.70,65536:0.52,131072:0.34}},
-  {id:'claude35s',name:'Claude 3.5 Sonnet',pk:'anthropic',pl:'Anthropic',pc:'#ef4444',ic:3.0,oc:15.0,
+  {id:'claude35s',name:'Claude 3.5 Sonnet',pk:'anthropic',pl:'Anthropic',pc:'#dc2626',ic:3.0,oc:15.0,
    gd:{'h100-sxm':{tps:2490,ttft:280,lat:44},'h200-sxm':{tps:3240,ttft:210,lat:32},'a100-80gb':{tps:1420,ttft:490,lat:78},'mi300x':{tps:2560,ttft:268,lat:42},'rtx-4090':{tps:390,ttft:1400,lat:244}},
    cs:{1024:1.0,4096:0.91,16384:0.76,32768:0.60,65536:0.41,131072:0.24}},
-  {id:'claude3h',name:'Claude 3 Haiku',pk:'anthropic',pl:'Anthropic',pc:'#ef4444',ic:0.25,oc:1.25,
+  {id:'claude3h',name:'Claude 3 Haiku',pk:'anthropic',pl:'Anthropic',pc:'#dc2626',ic:0.25,oc:1.25,
    gd:{'h100-sxm':{tps:6500,ttft:82,lat:17},'h200-sxm':{tps:8400,ttft:54,lat:12},'a100-80gb':{tps:3800,ttft:146,lat:29},'mi300x':{tps:6700,ttft:76,lat:16},'rtx-4090':{tps:1900,ttft:310,lat:62}},
    cs:{1024:1.0,4096:0.95,16384:0.86,32768:0.72,65536:0.55,131072:0.36}},
-  {id:'azure4t',name:'Azure GPT-4 Turbo',pk:'azure',pl:'Azure OAI',pc:'#3b82f6',ic:10.0,oc:30.0,
+  {id:'azure4t',name:'Azure GPT-4 Turbo',pk:'azure',pl:'Azure OAI',pc:'#1d4ed8',ic:10.0,oc:30.0,
    gd:{'h100-sxm':{tps:2770,ttft:256,lat:40},'h200-sxm':{tps:3600,ttft:190,lat:30},'a100-80gb':{tps:1580,ttft:446,lat:70},'mi300x':{tps:2820,ttft:244,lat:38},'rtx-4090':{tps:450,ttft:1260,lat:220}},
    cs:{1024:1.0,4096:0.91,16384:0.77,32768:0.61,65536:0.42,131072:0.26}},
-  {id:'llama370b',name:'Llama 3 70B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.9,oc:0.9,
+  {id:'llama370b',name:'Llama 3 70B',pk:'oss',pl:'Open source',pc:'#7c3aed',ic:0.9,oc:0.9,
    gd:{'h100-sxm':{tps:3710,ttft:190,lat:30},'h200-sxm':{tps:4820,ttft:140,lat:22},'a100-80gb':{tps:2120,ttft:330,lat:52},'mi300x':{tps:3180,ttft:210,lat:34},'rtx-4090':{tps:620,ttft:920,lat:166}},
    cs:{1024:1.0,4096:0.93,16384:0.80,32768:0.64,65536:0.46,131072:0.28}},
-  {id:'llama38b',name:'Llama 3 8B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.2,oc:0.2,
+  {id:'llama38b',name:'Llama 3 8B',pk:'oss',pl:'Open source',pc:'#7c3aed',ic:0.2,oc:0.2,
    gd:{'h100-sxm':{tps:10900,ttft:34,lat:10},'h200-sxm':{tps:14200,ttft:22,lat:7},'a100-80gb':{tps:6300,ttft:60,lat:17},'mi300x':{tps:11200,ttft:32,lat:10},'rtx-4090':{tps:2800,ttft:140,lat:38}},
    cs:{1024:1.0,4096:0.95,16384:0.87,32768:0.74,65536:0.57,131072:0.38}},
-  {id:'mistral7b',name:'Mistral 7B',pk:'oss',pl:'Open source',pc:'#a78bfa',ic:0.2,oc:0.2,
+  {id:'mistral7b',name:'Mistral 7B',pk:'oss',pl:'Open source',pc:'#7c3aed',ic:0.2,oc:0.2,
    gd:{'h100-sxm':{tps:12100,ttft:30,lat:9},'h200-sxm':{tps:15800,ttft:20,lat:6},'a100-80gb':{tps:7000,ttft:54,lat:15},'mi300x':{tps:12400,ttft:28,lat:9},'rtx-4090':{tps:3100,ttft:128,lat:34}},
-   cs:{1024:1.0,4096:0.95,16384:0.88,32768:0.75,65536:0.58,131072:0.39}},
+   cs:{1024:1.0,4096:0.95,16384:0.88,32768:0.75,65536:0.58,131072:0.39}}
 ];
 const CTX={1024:'1K',4096:'4K',16384:'16K',32768:'32K',65536:'64K',131072:'128K'};
 let aGpu='h100-sxm',aCtx=1024,sKey='tps',aProv=new Set(['openai','anthropic','azure','oss']),selId=null;
@@ -475,7 +504,7 @@ let ctxC=null,costC=null;
 function tp(m,g,c){return Math.round((m.gd[g]?.tps||0)*(m.cs[c]||0.3));}
 function ppCls(pk){return pk==='openai'?'pl-openai':pk==='anthropic'?'pl-anthropic':pk==='azure'?'pl-azure':'pl-oss';}
 function grd(t,max){const p=t/max;return p>=0.75?'S':p>=0.5?'A':p>=0.25?'B':'C';}
-function grdCls(g){return 'g'+g.toLowerCase();}
+function gCls(g){return 'g'+g.toLowerCase();}
 
 function getMods(){
   let m=MODELS.filter(x=>aProv.has(x.pk));
@@ -498,7 +527,7 @@ async function boot(){
       document.getElementById('bench-ts').textContent=s;
       document.getElementById('nav-ts').textContent=s.toUpperCase();
     }
-    if(d.summary?.total_models) document.getElementById('h-models').textContent=d.summary.total_models;
+    if(d.summary?.total_models){document.getElementById('h-models').textContent=d.summary.total_models;}
     if(d.models?.length) d.models.forEach(lm=>{
       const n=(lm.name||'').toLowerCase();
       const match=MODELS.find(m=>n.includes(m.name.toLowerCase().split(' ')[0])||m.name.toLowerCase().includes(n.split(' ')[0]));
@@ -506,12 +535,11 @@ async function boot(){
     });
   }catch(e){
     document.getElementById('bench-ts').textContent='Cached data';
-    document.getElementById('h-models').textContent=MODELS.length;
   }
   document.getElementById('gpu-strip').innerHTML=GPUS.map(g=>`<button class="gpubtn${g.id===aGpu?' on':''}" onclick="setGpu('${g.id}',this)">${g.name}</button>`).join('');
   document.getElementById('lb-loading').style.display='none';
   document.getElementById('lb-wrap').style.display='block';
-  document.getElementById('bench-charts').style.display='grid';
+  document.getElementById('charts-row').style.display='grid';
   render();
   setTimeout(boot,30*60*1000);
 }
@@ -529,31 +557,31 @@ function render(){
   const mods=getMods();
   const tpList=mods.map(m=>tp(m,aGpu,aCtx));
   const maxT=Math.max(...tpList)||1;
+  const gpu=GPUS.find(g=>g.id===aGpu);
   const best=Math.max(...tpList);
   const bm=mods[tpList.indexOf(best)];
-  const gpu=GPUS.find(g=>g.id===aGpu);
   const avgLat=Math.round(mods.reduce((s,m)=>s+(m.gd[aGpu]?.lat||0),0)/mods.length);
   const minC=Math.min(...mods.map(m=>m.ic||999)).toFixed(2);
 
   document.getElementById('bench-cards').innerHTML=`
     <div class="bcard"><div class="bcard-lbl">Best throughput</div><div class="bcard-val b">${best.toLocaleString()}</div><div class="bcard-sub">tokens/sec · ${gpu?.name}</div></div>
-    <div class="bcard"><div class="bcard-lbl">Leading model</div><div class="bcard-val w" style="font-size:20px;letter-spacing:0px">${bm?.name||'—'}</div><div class="bcard-sub">${bm?.pl||''}</div></div>
+    <div class="bcard"><div class="bcard-lbl">Leading model</div><div class="bcard-val" style="font-size:18px;letter-spacing:0">${bm?.name||'—'}</div><div class="bcard-sub">${bm?.pl||''}</div></div>
     <div class="bcard"><div class="bcard-lbl">Avg latency</div><div class="bcard-val a">${avgLat}ms</div><div class="bcard-sub">at ${CTX[aCtx]} context</div></div>
     <div class="bcard"><div class="bcard-lbl">Lowest cost</div><div class="bcard-val r">$${minC}</div><div class="bcard-sub">per 1M input tokens</div></div>`;
 
   document.getElementById('lb-body').innerHTML=mods.map((m,i)=>{
     const t=tpList[i],d=m.gd[aGpu]||{},pct=Math.round((t/maxT)*100),g=grd(t,maxT);
-    const tc=i===0?'best':i<3?'mid':'low';
-    const lc=d.lat<20?'fast':d.lat>80?'slow2':'';
+    const tc=i===0?'best':i<3?'':'low';
+    const lc=(d.lat||99)<20?'fast':(d.lat||99)>80?'slow':'';
     return `<tr class="${i===0?'tr-top':''}" onclick="toggleDet('${m.id}')">
       <td class="tr-rank${i===0?' gold':''}">${i===0?'★':i+1}</td>
       <td><div class="tr-model"><span class="tr-mname">${m.name}</span><span class="tr-pill ${ppCls(m.pk)}">${m.pl}</span>${m.live?'<span class="live-tag">● LIVE</span>':''}</div></td>
-      <td class="tr-tps-cell"><div class="tps-inner"><span class="tps-num ${tc}">${t.toLocaleString()}</span><div class="mbar"><div class="mbar-fill" style="width:${pct}%;background:${m.pc}"></div></div></div></td>
+      <td style="text-align:right"><div class="tps-inner"><span class="tps-num ${tc}">${t.toLocaleString()}</span><div class="mbar"><div class="mbar-fill" style="width:${pct}%;background:${m.pc}"></div></div></div></td>
       <td class="tr-num ${lc}">${d.ttft||'—'}</td>
       <td class="tr-num">${d.lat?d.lat+'ms':'—'}</td>
       <td class="tr-num">$${m.ic?.toFixed(2)||'—'}</td>
       <td class="tr-num">$${m.oc?.toFixed(2)||'—'}</td>
-      <td class="tr-grade"><span class="grade-badge ${grdCls(g)}">${g}</span></td>
+      <td class="tr-grade"><span class="grade ${gCls(g)}">${g}</span></td>
     </tr>`;
   }).join('');
 
@@ -564,7 +592,7 @@ function render(){
 function toggleDet(id){selId=selId===id?null:id;const p=document.getElementById('detail-panel');selId?showDet(id):p.classList.remove('show');}
 function showDet(id){
   const m=MODELS.find(x=>x.id===id);if(!m)return;
-  document.getElementById('dp-title').textContent=`${m.name} — all GPU hardware · ${CTX[aCtx]} context`;
+  document.getElementById('dp-title').textContent=m.name+' — all GPU hardware · '+CTX[aCtx]+' context';
   document.getElementById('dp-grid').innerHTML=GPUS.map(g=>{
     const t=Math.round((m.gd[g.id]?.tps||0)*(m.cs[aCtx]||0.3));
     const d=m.gd[g.id]||{};
@@ -574,21 +602,114 @@ function showDet(id){
 }
 
 function renderCharts(mods){
-  const top5=mods.slice(0,5);
-  const cks=[1024,4096,16384,32768,65536,131072];
+  const top5=mods.slice(0,5),cks=[1024,4096,16384,32768,65536,131072];
   document.getElementById('ctx-leg').innerHTML=top5.map(m=>`<div class="cl"><div class="cl-sq" style="background:${m.pc}"></div>${m.name}</div>`).join('');
   if(ctxC) ctxC.destroy();
   ctxC=new Chart(document.getElementById('ctx-chart'),{type:'line',
-    data:{labels:Object.values(CTX),datasets:top5.map(m=>({label:m.name,data:cks.map(c=>Math.round((m.gd[aGpu]?.tps||0)*(m.cs[c]||0.3))),borderColor:m.pc,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,borderDash:m.pk==='azure'?[4,2]:m.pk==='oss'?[2,2]:[]}))},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:10}},grid:{color:'rgba(15,17,23,0.06)'}},y:{ticks:{color:'#5a6170',font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(15,17,23,0.06)'},beginAtZero:true}}}
+    data:{labels:Object.values(CTX),datasets:top5.map(m=>({label:m.name,data:cks.map(c=>Math.round((m.gd[aGpu]?.tps||0)*(m.cs[c]||0.3))),borderColor:m.pc,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,borderDash:m.pk==='azure'?[4,2]:m.pk==='oss'?[2,2]:[]  }))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:10}},grid:{color:'rgba(15,17,23,0.05)'}},y:{ticks:{color:'#5a6170',font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(15,17,23,0.05)'},beginAtZero:true}}}
   });
   const top8=mods.slice(0,8);
   document.getElementById('cost-leg').innerHTML=`<div class="cl"><div class="cl-sq" style="background:#1d4ed8"></div>Input $/1M</div><div class="cl"><div class="cl-sq" style="background:#93c5fd"></div>Output $/1M</div>`;
   if(costC) costC.destroy();
   costC=new Chart(document.getElementById('cost-chart'),{type:'bar',
-    data:{labels:top8.map(m=>m.name.length>14?m.name.slice(0,13)+'…':m.name),datasets:[{label:'Input',data:top8.map(m=>parseFloat((m.ic||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'cc'),borderRadius:2},{label:'Output',data:top8.map(m=>parseFloat((m.oc||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'55'),borderRadius:2}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+v},grid:{color:'rgba(15,17,23,0.06)'},beginAtZero:true},y:{ticks:{color:'#5a6170',font:{size:9}},grid:{display:false}}}}
+    data:{labels:top8.map(m=>m.name.length>14?m.name.slice(0,13)+'…':m.name),datasets:[{label:'Input',data:top8.map(m=>parseFloat((m.ic||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'cc'),borderRadius:2},{label:'Output',data:top8.map(m=>parseFloat((m.oc||0).toFixed(2))),backgroundColor:top8.map(m=>m.pc+'44'),borderRadius:2}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+v},grid:{color:'rgba(15,17,23,0.05)'},beginAtZero:true},y:{ticks:{color:'#5a6170',font:{size:9}},grid:{display:false}}}}
   });
+}
+
+// ── AI AGENT ──────────────────────────────────────────────────────────────────
+let agentBusy=false;
+
+function buildCtx(){
+  const gn=GPUS.find(g=>g.id===aGpu)?.name||'H100 SXM';
+  const mods=MODELS.map(m=>{
+    const d=m.gd[aGpu]||m.gd['h100-sxm']||{};
+    const t=Math.round((d.tps||0)*(m.cs[aCtx]||0.3));
+    const eff=m.ic>0?(t/m.ic).toFixed(1):'—';
+    return `- ${m.name} (${m.pl}): ${t} t/s | TTFT:${d.ttft||'—'}ms | Lat:${d.lat||'—'}ms | In:$${m.ic}/1M | Out:$${m.oc}/1M | t/$:${eff}`;
+  }).join('\n');
+  return `You are the Argovaa AI benchmark agent. Answer questions about AI model performance, pricing, and GPU selection concisely and with specific numbers.\n\nGPU: ${gn} | Context: ${CTX[aCtx]} tokens\n\nDATA:\n${mods}\n\nGPUs: ${GPUS.map(g=>g.name).join(', ')}\n\nRules: be specific with numbers, show clear winners, use tokens-per-dollar for price/perf questions, keep answers under 150 words.`;
+}
+
+function addMsg(role,html){
+  const area=document.getElementById('agent-msgs');
+  const wrap=document.createElement('div');
+  wrap.className='agent-msg-fade';
+  wrap.style.cssText='display:flex;gap:9px;align-items:flex-start';
+  const isAI=role==='ai';
+  const av=`width:26px;height:26px;background:${isAI?'rgba(29,78,216,0.2)':'rgba(255,255,255,0.07)'};border:1px solid ${isAI?'rgba(29,78,216,0.3)':'rgba(255,255,255,0.1)'};flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;color:${isAI?'#93c5fd':'rgba(255,255,255,0.5)'};letter-spacing:1px`;
+  const bub=`background:${isAI?'rgba(255,255,255,0.04)':'rgba(29,78,216,0.1)'};border:1px solid ${isAI?'rgba(255,255,255,0.08)':'rgba(29,78,216,0.2)'};padding:10px 13px;font-size:13px;color:rgba(255,255,255,0.78);line-height:1.65;max-width:90%`;
+  wrap.innerHTML=`<div style="${av}">${isAI?'AI':'You'}</div><div style="${bub}">${html}</div>`;
+  area.appendChild(wrap);
+  area.scrollTop=area.scrollHeight;
+}
+
+function showTyping(){
+  const area=document.getElementById('agent-msgs');
+  const d=document.createElement('div');
+  d.id='typing';d.style.cssText='display:flex;gap:9px;align-items:flex-start';
+  d.innerHTML=`<div style="width:26px;height:26px;background:rgba(29,78,216,0.2);border:1px solid rgba(29,78,216,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;color:#93c5fd;letter-spacing:1px">AI</div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:10px 13px;display:flex;gap:4px;align-items:center"><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.3);animation:td 1.2s infinite;display:inline-block"></span><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.3);animation:td 1.2s 0.2s infinite;display:inline-block"></span><span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.3);animation:td 1.2s 0.4s infinite;display:inline-block"></span></div>`;
+  area.appendChild(d);area.scrollTop=area.scrollHeight;
+}
+
+function askAgent(q){document.getElementById('agent-input').value=q;sendAgent();}
+
+async function sendAgent(){
+  if(agentBusy)return;
+  const inp=document.getElementById('agent-input');
+  const q=inp.value.trim();if(!q)return;
+  inp.value='';agentBusy=true;
+  document.getElementById('agent-btn').disabled=true;
+  document.getElementById('agent-spinner').style.display='block';
+  document.getElementById('agent-txt').textContent='Thinking...';
+  addMsg('user',q);showTyping();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildCtx(),messages:[{role:'user',content:q}]})
+    });
+    const data=await res.json();
+    const answer=data.content?.[0]?.text||'Sorry, could not process that.';
+    document.getElementById('typing')?.remove();
+    addMsg('ai',answer.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#fff">$1</strong>').replace(/\n/g,'<br>'));
+  }catch(e){
+    document.getElementById('typing')?.remove();
+    addMsg('ai',localAnswer(q));
+  }
+  agentBusy=false;
+  document.getElementById('agent-btn').disabled=false;
+  document.getElementById('agent-spinner').style.display='none';
+  document.getElementById('agent-txt').textContent='Ask →';
+}
+
+function localAnswer(q){
+  const ql=q.toLowerCase(),g=aGpu,c=aCtx;
+  const ranked=MODELS.map(m=>{const t=tp(m,g,c);return{...m,t,eff:m.ic>0?t/m.ic:0};}).sort((a,b)=>b.eff-a.eff);
+  if(ql.includes('cheap')||ql.includes('lowest cost')){
+    const s=[...MODELS].sort((a,b)=>(a.ic||999)-(b.ic||999)).slice(0,3);
+    return '<strong style="color:#fff">Cheapest by input cost:</strong><br>'+s.map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — $${m.ic}/1M`).join('<br>');
+  }
+  if(ql.includes('fast')||ql.includes('throughput')){
+    const s=[...MODELS].map(m=>({...m,t:tp(m,g,c)})).sort((a,b)=>b.t-a.t).slice(0,3);
+    return '<strong style="color:#fff">Fastest on '+GPUS.find(x=>x.id===g)?.name+':</strong><br>'+s.map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — ${m.t.toLocaleString()} t/s`).join('<br>');
+  }
+  if(ql.includes('price')||ql.includes('value')||ql.includes('top 3')){
+    return '<strong style="color:#fff">Best price/performance on '+GPUS.find(x=>x.id===g)?.name+':</strong><br>'+ranked.slice(0,3).map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — ${m.t.toLocaleString()} t/s · $${m.ic}/1M · <strong style="color:#93c5fd">${m.eff.toFixed(0)} t/$</strong>`).join('<br>');
+  }
+  if(ql.includes('compare')||ql.includes(' vs ')){
+    const found=MODELS.filter(m=>ql.includes(m.name.toLowerCase().split(' ')[0]));
+    if(found.length>=2) return '<strong style="color:#fff">Comparison on '+GPUS.find(x=>x.id===g)?.name+':</strong><br>'+found.map(m=>`<strong style="color:#fff">${m.name}</strong> — ${tp(m,g,c).toLocaleString()} t/s · ${m.gd[g]?.lat||'—'}ms · $${m.ic}/1M`).join('<br>');
+  }
+  if(ql.includes('latency')){
+    const s=[...MODELS].map(m=>({...m,lat:m.gd[g]?.lat||999})).sort((a,b)=>a.lat-b.lat).slice(0,3);
+    return '<strong style="color:#fff">Lowest latency on '+GPUS.find(x=>x.id===g)?.name+':</strong><br>'+s.map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — ${m.lat}ms`).join('<br>');
+  }
+  if(ql.includes('128k')||ql.includes('context')||ql.includes('long')){
+    const s=MODELS.filter(m=>m.cs[131072]).map(m=>({...m,t:tp(m,g,131072)})).sort((a,b)=>b.t-a.t).slice(0,3);
+    return '<strong style="color:#fff">Best at 128K context on '+GPUS.find(x=>x.id===g)?.name+':</strong><br>'+s.map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — ${m.t.toLocaleString()} t/s`).join('<br>');
+  }
+  return '<strong style="color:#fff">Top 3 by price/performance:</strong><br>'+ranked.slice(0,3).map((m,i)=>`${i+1}. <strong style="color:#fff">${m.name}</strong> — ${m.t.toLocaleString()} t/s · ${m.eff.toFixed(0)} tokens/$`).join('<br>')+'<br><br><span style="color:rgba(255,255,255,0.4)">Try: "cheapest model", "fastest at 128K", "compare Claude vs GPT-4o"</span>';
 }
 
 boot();
