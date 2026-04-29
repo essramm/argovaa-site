@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Argovaa – Performance Testing Portal</title>
+<title>Argovaa – Performance Benchmarking Portal</title>
 <script>
 (function(){
   try{
@@ -149,7 +149,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="analyser.html">GC Analyser</a></li>
-    <li><a href="perftest.html" class="active">Performance testing</a></li>
+    <li><a href="perftest.html" class="active">Performance benchmarking</a></li>
   </ul>
   <div class="nav-right">
     <span class="nav-user" id="nav-user"></span>
@@ -160,8 +160,8 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
 <div class="page-wrap">
   <div class="page-header">
     <div class="page-tag">Performance benchmarking tools</div>
-    <h1 class="page-title">Performance testing<br><em>portal</em></h1>
-    <p class="page-sub">Choose your performance testing tool, configure your test, and run load tests directly from Argovaa with real-time results and live metrics.</p>
+    <h1 class="page-title">Performance benchmarking<br><em>portal</em></h1>
+    <p class="page-sub">Choose your benchmarking tool, configure your test, and run performance benchmarks directly from Argovaa with real-time results and live metrics.</p>
   </div>
 
   <!-- TOOL SELECTOR -->
@@ -171,11 +171,11 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
         <div style="width:36px;height:36px;border-radius:9px;background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.25);display:flex;align-items:center;justify-content:center;font-size:18px">⚡</div>
         <div>
           <div style="font-family:'Fraunces',sans-serif;font-size:16px;font-weight:700;color:#fff">BlazeMeter</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px">Enterprise load testing</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px">Enterprise performance benchmarking</div>
         </div>
         <div id="bzm-check" style="margin-left:auto;width:20px;height:20px;border-radius:50%;background:#00e5a0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#0a0c10;font-weight:700">✓</div>
       </div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Industry-standard load testing platform. Requires paid account for API test creation. Free tier limited to manual tests.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Industry-standard performance benchmarking platform. Requires paid account for API benchmark creation. Free tier limited to manual benchmarks.</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 8px;background:rgba(147,51,234,0.1);border:1px solid rgba(147,51,234,0.2);color:#c084fc;border-radius:100px">JMeter compatible</span>
         <span style="font-size:10px;padding:2px 8px;background:rgba(147,51,234,0.1);border:1px solid rgba(147,51,234,0.2);color:#c084fc;border-radius:100px">500+ locations</span>
@@ -192,7 +192,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
         </div>
         <div id="k6-check" style="margin-left:auto;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.3);font-weight:700"></div>
       </div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Modern developer-friendly load testing. Free tier includes 50 VUs and full API access. No restrictions on test creation.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px">Modern developer-friendly performance benchmarking. Free tier includes 50 VUs and full API access. No restrictions on test creation.</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span style="font-size:10px;padding:2px 8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;border-radius:100px">Free API access</span>
         <span style="font-size:10px;padding:2px 8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.18);color:#00e5a0;border-radius:100px">50 VUs free</span>
@@ -252,7 +252,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
         <div class="card-head">
           <div>
             <div class="card-title">Test configuration</div>
-            <div class="card-sub">Configure your load test parameters</div>
+            <div class="card-sub">Configure your benchmark parameters</div>
           </div>
         </div>
         <div class="card-body">
@@ -267,7 +267,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
             <div class="field">
               <label>Target URL</label>
               <input type="url" id="t-url" placeholder="https://your-app.com" value="https://argovaa.com">
-              <div class="field-hint">The URL you want to load test</div>
+              <div class="field-hint">The URL you want to benchmark</div>
             </div>
             <div class="field-row">
               <div class="field">
@@ -287,7 +287,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
               <div class="field">
                 <label>Test type</label>
                 <select id="t-type">
-                  <option value="load">Load test</option>
+                  <option value="load">Benchmark run</option>
                   <option value="stress">Stress test</option>
                   <option value="spike">Spike test</option>
                   <option value="soak">Soak test</option>
@@ -296,7 +296,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
             </div>
             <div class="field">
               <label>Test name</label>
-              <input type="text" id="t-name" placeholder="My load test" value="Argovaa load test">
+              <input type="text" id="t-name" placeholder="My benchmark" value="Argovaa benchmark">
             </div>
           </div>
 
@@ -341,7 +341,7 @@ footer{background:#111614;border-top:1px solid rgba(255,255,255,0.06);padding:24
             <div class="warn-box">Quick scenarios — click to auto-fill the config above with proven test parameters for each scenario type.</div>
             <div style="display:flex;flex-direction:column;gap:8px">
               <div onclick="applyScenario('load')" style="background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(0,229,160,0.08)'" onmouseout="this.style.background='rgba(0,229,160,0.04)'">
-                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Standard load test</div>
+                <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:3px">Standard benchmark</div>
                 <div style="font-size:11px;color:rgba(255,255,255,0.4)">50 users · 2min ramp · 10min hold · Tests normal traffic</div>
               </div>
               <div onclick="applyScenario('spike')" style="background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:12px 14px;cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='rgba(251,191,36,0.08)'" onmouseout="this.style.background='rgba(251,191,36,0.04)'">
@@ -551,7 +551,7 @@ function switchTab(id,btn){
 
 // Scenarios
 const scenarios={
-  load:{users:50,duration:10,ramp:120,type:'load',name:'Standard load test'},
+  load:{users:50,duration:10,ramp:120,type:'load',name:'Standard benchmark'},
   spike:{users:200,duration:5,ramp:30,type:'spike',name:'Spike test'},
   stress:{users:500,duration:10,ramp:300,type:'stress',name:'Stress test'},
   soak:{users:20,duration:60,ramp:180,type:'soak',name:'Soak test'}
