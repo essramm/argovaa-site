@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — Golden Signals for AI Agents</title>
+<meta name="description" content="Monitor throughput, availability, latency, and errors across every AI agent in your stack. Full-stack reliability for agentic workloads.">
+<script>
+(function(){try{const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');window._isLoggedIn=!!s.loggedIn;}catch(e){window._isLoggedIn=false;}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#e8edf3;
+  --ink:#0d1420;--mid:#4a5568;--faint:#b8c4d4;
+  --accent:#1a56db;--accent-bright:#2563eb;--accent-dim:rgba(26,86,219,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;
+  --bd:rgba(13,20,32,0.1);--bd2:rgba(13,20,32,0.05)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* SHARED NAV */
+nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid var(--bd);background:rgba(240,244,248,0.97);backdrop-filter:blur(20px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-links a{font-size:11px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.2s;padding:0 12px;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.act{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-signin{background:transparent;color:var(--mid);padding:6px 14px;font-size:12px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none}
+.btn-signin:hover{border-color:var(--ink);color:var(--ink)}
+.btn-cta{background:var(--accent);color:#fff;padding:7px 16px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+.btn-cta:hover{background:var(--accent-bright)}
+.max{max-width:1100px;margin:0 auto;width:100%;padding:0 40px}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,54px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:14px}
+.sec-h .acc{color:var(--accent)}
+
+/* PAGE HERO */
+.page-hero{background:linear-gradient(135deg,#0d1420,#1a2744);padding:64px 40px 52px;border-bottom:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px}
+.page-hero::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.7}
+.page-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.page-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.page-tag::before{content:'';width:20px;height:1px;background:#93c5fd}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,68px);letter-spacing:2px;line-height:0.92;color:#fff;margin-bottom:14px}
+.page-title .acc{color:#93c5fd}
+.page-sub{font-size:15px;color:rgba(255,255,255,0.5);max-width:560px;line-height:1.75;font-weight:300}
+
+/* SIGNALS DASHBOARD */
+.signals-live{padding:52px 0;background:var(--bg)}
+.signals-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:28px}
+.sc{background:var(--surface);padding:22px 20px;position:relative;overflow:hidden;transition:background 0.2s;cursor:pointer}
+.sc:hover{background:var(--surface2)}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.sc.throughput::after{background:var(--accent)}
+.sc.availability::after{background:var(--emerald)}
+.sc.latency::after{background:var(--amber)}
+.sc.errors::after{background:var(--red)}
+.sc-icon{font-size:18px;margin-bottom:10px;opacity:0.5}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.sc-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:4px}
+.sc-trend{font-size:12px;color:var(--mid)}
+.sc-alert{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;margin-top:6px}
+.al-green{background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.2)}
+.al-amber{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.al-red{background:rgba(220,38,38,0.08);color:var(--red);border:1px solid rgba(220,38,38,0.2)}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.chart-card{background:var(--surface);border:1px solid var(--bd);padding:20px}
+.chart-head{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:4px}
+.chart-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:12px}
+
+/* ALERT TABLE */
+.alert-table{width:100%;border-collapse:collapse;margin-bottom:28px}
+.alert-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);padding:10px 12px;border-bottom:2px solid var(--ink);text-align:left;background:var(--surface);white-space:nowrap}
+.alert-table td{padding:10px 12px;border-bottom:1px solid var(--bd2);font-size:13px}
+.alert-table tr:hover td{background:var(--surface2)}
+.badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px}
+.b-green{background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.2)}
+.b-amber{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.b-blue{background:rgba(26,86,219,0.08);color:var(--accent);border:1px solid rgba(26,86,219,0.2)}
+
+/* SNIPPETS */
+.snippets-section{padding:52px 0;background:var(--surface);border-top:1px solid var(--bd)}
+.snippet-tabs{display:flex;gap:4px;margin-bottom:20px}
+.stab{font-family:'DM Mono',monospace;font-size:11px;padding:6px 14px;border:1px solid var(--bd);color:var(--mid);cursor:pointer;background:transparent;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.5px}
+.stab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.snippet-panel{display:none}.snippet-panel.on{display:block}
+.code-block{background:var(--ink);border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.code-head{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.code-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);cursor:pointer;background:none;border:none}
+.code-body{padding:16px;overflow-x:auto}
+.code-body pre{font-family:'DM Mono',monospace;font-size:12px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
+.kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3)}.fn{color:#fde68a}.var{color:#d8b4fe}
+.locked-overlay{background:rgba(240,244,248,0.96);border:1px solid var(--bd);padding:24px;text-align:center;margin-top:0}
+
+/* PRICING */
+.pricing-strip{background:var(--accent);padding:52px 0;border-top:1px solid rgba(26,86,219,0.3)}
+.pricing-strip-inner{max-width:1100px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.splan{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:24px}
+.splan.feat{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.35)}
+.splan-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#fff;margin-bottom:4px}
+.splan-price{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:4px}
+.splan-sub{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;font-family:'DM Mono',monospace}
+.splan-features{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.splan-feature{font-size:12px;color:rgba(255,255,255,0.75);display:flex;gap:7px}<br>.splan-btn{display:block;width:100%;padding:10px;text-align:center;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;cursor:pointer;border:none;transition:all 0.2s;background:#fff;color:var(--accent)}
+.splan-btn.outline{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3)}
+.splan-btn:hover{opacity:0.9}
+
+footer{background:#0a0f1c;border-top:1px solid rgba(255,255,255,0.06);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flogo em{color:#60a5fa;font-style:normal}
+.flinks{display:flex;gap:20px;flex-wrap:wrap}
+.flinks a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.3px;transition:color 0.2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .page-hero,.signals-live,.snippets-section{padding:48px 16px}
+  .max{padding:0 16px}
+  .signals-cards,.charts-row,.pricing-strip-inner{grid-template-columns:1fr}
+  footer{padding:20px 16px;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">ARG<em>O</em>VAA</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="agent-builder.html">Agent builder</a></li>
+    <li><a href="benchmarks.html">Benchmarks</a></li>
+    <li><a href="golden-signals.html" class="act">SRE signals</a></li>
+    <li><a href="tco.html">TCO</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
+    <li><a href="analyser.html">GC analyser</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-signin">Sign in</a>
+    <a href="login.html" class="btn-cta">Get started</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-tag">Full-stack reliability suite</div>
+    <div class="page-title">GOLDEN SIGNALS FOR<br><span class="acc">AI AGENTS</span></div>
+    <p class="page-sub">Four primary signals — throughput, availability, latency, and errors — monitored across every agent, model call, tool, and integration in your AI stack. Real-time dashboards, alert thresholds, and copy-paste telemetry snippets.</p>
+  </div>
+</div>
+
+<section class="signals-live">
+  <div class="max">
+    <div class="sec-tag">Live dashboard</div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <div class="sec-h" style="margin-bottom:0">REAL-TIME <span class="acc">AGENT HEALTH</span></div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block;animation:pulse2 2s infinite"></span>Last updated: <span id="last-updated">just now</span></div>
+    </div>
+    <style>@keyframes pulse2{0%,100%{opacity:1}50%{opacity:0.4}}</style>
+
+    <div class="signals-cards">
+      <div class="sc throughput">
+        <div class="sc-icon">◈</div>
+        <div class="sc-label">Throughput</div>
+        <div class="sc-val" style="color:var(--accent)" id="s-tput">2,840</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-bottom:4px">req/min</div>
+        <div class="sc-trend">↑ 12% vs last hour · 1.2M tokens/min</div>
+        <span class="sc-alert al-green">NORMAL</span>
+      </div>
+      <div class="sc availability">
+        <div class="sc-icon">◉</div>
+        <div class="sc-label">Availability</div>
+        <div class="sc-val" style="color:var(--emerald)" id="s-avail">99.94%</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-bottom:4px">last 30 days</div>
+        <div class="sc-trend">SLA target: 99.9% · 3 nines ✓</div>
+        <span class="sc-alert al-green">ABOVE SLA</span>
+      </div>
+      <div class="sc latency">
+        <div class="sc-icon">◎</div>
+        <div class="sc-label">Latency P95</div>
+        <div class="sc-val" style="color:var(--amber)" id="s-lat">284ms</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-bottom:4px">end-to-end</div>
+        <div class="sc-trend">P50: 128ms · P99: 512ms · TTFT: 94ms</div>
+        <span class="sc-alert al-amber">REVIEW</span>
+      </div>
+      <div class="sc errors">
+        <div class="sc-icon">◧</div>
+        <div class="sc-label">Error rate</div>
+        <div class="sc-val" style="color:var(--emerald)" id="s-err">0.06%</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-bottom:4px">last 1 hour</div>
+        <div class="sc-trend">4xx: 0.04% · 5xx: 0.02% · Model: 0%</div>
+        <span class="sc-alert al-green">BELOW THRESHOLD</span>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-head">Throughput over time</div>
+        <div class="chart-title">REQUESTS PER MINUTE — 24H</div>
+        <div style="position:relative;height:200px"><canvas id="tput-chart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-head">Latency distribution</div>
+        <div class="chart-title">P50 / P95 / P99 — 24H</div>
+        <div style="position:relative;height:200px"><canvas id="lat-chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="sec-tag">Alert configuration</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--ink);margin-bottom:20px">RECOMMENDED <span style="color:var(--accent)">ALERT THRESHOLDS</span></div>
+    <table class="alert-table">
+      <thead><tr>
+        <th>Signal</th>
+        <th>Definition</th>
+        <th>Alert condition</th>
+        <th>Current</th>
+        <th>Status</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="font-weight:500">Throughput</td><td style="font-size:12px;color:var(--mid)">Requests, agent runs, tokens/min</td><td style="font-family:'DM Mono',monospace;font-size:11px">&gt;30% above forecast or unexpected drop</td><td style="font-family:'DM Mono',monospace;font-size:11px">2,840 req/min</td><td><span class="badge b-green">NORMAL</span></td></tr>
+        <tr><td style="font-weight:500">Availability</td><td style="font-size:12px;color:var(--mid)">Successful agent requests / total</td><td style="font-family:'DM Mono',monospace;font-size:11px">Alert below 99.9%</td><td style="font-family:'DM Mono',monospace;font-size:11px">99.94%</td><td><span class="badge b-green">ABOVE SLA</span></td></tr>
+        <tr><td style="font-weight:500">Latency P95</td><td style="font-size:12px;color:var(--mid)">End-to-end response time</td><td style="font-family:'DM Mono',monospace;font-size:11px">P95 &gt; target for 3 consecutive windows</td><td style="font-family:'DM Mono',monospace;font-size:11px">284ms (target: 250ms)</td><td><span class="badge b-amber">REVIEW</span></td></tr>
+        <tr><td style="font-weight:500">Error rate</td><td style="font-size:12px;color:var(--mid)">Failed requests, model failures, timeouts</td><td style="font-family:'DM Mono',monospace;font-size:11px">&gt;1% or 2× baseline spike</td><td style="font-family:'DM Mono',monospace;font-size:11px">0.06%</td><td><span class="badge b-green">NORMAL</span></td></tr>
+        <tr><td style="font-weight:500">TTFT</td><td style="font-size:12px;color:var(--mid)">Time to first token from model</td><td style="font-family:'DM Mono',monospace;font-size:11px">&gt;500ms avg for 5 min window</td><td style="font-family:'DM Mono',monospace;font-size:11px">94ms avg</td><td><span class="badge b-green">NORMAL</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="snippets-section" id="snippets">
+  <div class="max">
+    <div class="sec-tag">Customer snippet hub</div>
+    <div class="sec-h" style="margin-bottom:8px">INSTRUMENT YOUR SERVICE<br><span class="acc">IN MINUTES</span></div>
+    <p style="font-size:15px;color:var(--mid);max-width:520px;line-height:1.75;font-weight:300;margin-bottom:28px">Copy one snippet into your service to start sending golden signals to Argovaa. Production code is locked — sign in to access your API key and copy-ready snippets.</p>
+
+    <div class="snippet-tabs">
+      <button class="stab on" onclick="showSnippet('js',this)">JavaScript</button>
+      <button class="stab" onclick="showSnippet('node',this)">Node.js</button>
+      <button class="stab" onclick="showSnippet('python',this)">Python</button>
+    </div>
+
+    <div class="snippet-panel on" id="sp-js">
+      <div class="code-block">
+        <div class="code-head">
+          <span class="code-lang">JavaScript browser snippet</span>
+          <button class="code-copy" onclick="copySnip('js-code')">Copy</button>
+        </div>
+        <div class="code-body" id="js-code-wrap">
+          <pre id="js-code"><span class="kw">&lt;script&gt;</span>
+  <span class="var">window</span>.<span class="var">ArgovaaConfig</span> = {
+    <span class="var">apiKey</span>: <span class="str">"YOUR_PUBLIC_CLIENT_KEY"</span>,
+    <span class="var">service</span>: <span class="str">"customer-agent-app"</span>,
+    <span class="var">environment</span>: <span class="str">"production"</span>,
+    <span class="var">dashboardId</span>: <span class="str">"golden-signals"</span>
+  };
+<span class="kw">&lt;/script&gt;</span>
+<span class="kw">&lt;script</span> src=<span class="str">"https://cdn.argovaa.com/telemetry/argovaa-golden-signals.js"</span> <span class="var">async</span><span class="kw">&gt;&lt;/script&gt;</span>
+
+<span class="cm">// Automatically tracks: throughput, latency, errors, availability</span>
+<span class="cm">// on every agent call. No additional code needed.</span></pre>
+          <div id="js-lock" class="locked-overlay" style="display:none">
+            <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);margin-bottom:12px">🔒 Sign in to view your API key and access production-ready snippets</div>
+            <a href="login.html" style="background:var(--accent);color:#fff;padding:10px 24px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Sign in to unlock →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="snippet-panel" id="sp-node">
+      <div class="code-block">
+        <div class="code-head">
+          <span class="code-lang">Node.js — npm install @argovaa/telemetry</span>
+          <button class="code-copy" onclick="copySnip('node-code')">Copy</button>
+        </div>
+        <div class="code-body">
+          <pre id="node-code"><span class="kw">import</span> { <span class="var">ArgovaaTelemetry</span> } <span class="kw">from</span> <span class="str">"@argovaa/telemetry"</span>;
+
+<span class="kw">const</span> <span class="var">argovaa</span> = <span class="kw">new</span> <span class="fn">ArgovaaTelemetry</span>({
+  <span class="var">apiKey</span>: process.<span class="var">env</span>.<span class="var">ARGOVAA_API_KEY</span>,
+  <span class="var">service</span>: <span class="str">"agent-runtime-api"</span>,
+  <span class="var">environment</span>: <span class="str">"production"</span>
+});
+
+<span class="kw">export async function</span> <span class="fn">runAgent</span>(req, res) {
+  <span class="kw">const</span> <span class="var">trace</span> = <span class="var">argovaa</span>.<span class="fn">startTrace</span>(<span class="str">"agent_request"</span>, {
+    <span class="var">tenantId</span>: req.headers[<span class="str">"x-tenant-id"</span>],
+    <span class="var">agentName</span>: <span class="str">"support-agent"</span>
+  });
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">result</span> = <span class="kw">await</span> agent.<span class="fn">execute</span>(req.body);
+    <span class="var">trace</span>.<span class="fn">recordThroughput</span>({ requests: <span class="num">1</span>, tokens: result.usage.totalTokens });
+    <span class="var">trace</span>.<span class="fn">recordLatency</span>({ totalMs: result.latencyMs, ttftMs: result.ttftMs });
+    <span class="var">trace</span>.<span class="fn">recordAvailability</span>(<span class="kw">true</span>);
+    res.<span class="fn">json</span>(result);
+  } <span class="kw">catch</span> (error) {
+    <span class="var">trace</span>.<span class="fn">recordError</span>({ type: error.name, message: error.message });
+    <span class="var">trace</span>.<span class="fn">recordAvailability</span>(<span class="kw">false</span>);
+    res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: <span class="str">"Agent request failed"</span> });
+  } <span class="kw">finally</span> {
+    <span class="var">trace</span>.<span class="fn">end</span>();
+  }
+}</pre>
+          <div id="node-lock" class="locked-overlay" style="display:none">
+            <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);margin-bottom:12px">🔒 Sign in to view your API key and access production-ready snippets</div>
+            <a href="login.html" style="background:var(--accent);color:#fff;padding:10px 24px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Sign in to unlock →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="snippet-panel" id="sp-python">
+      <div class="code-block">
+        <div class="code-head">
+          <span class="code-lang">Python — pip install argovaa-telemetry</span>
+          <button class="code-copy" onclick="copySnip('py-code')">Copy</button>
+        </div>
+        <div class="code-body">
+          <pre id="py-code"><span class="kw">from</span> <span class="var">argovaa.telemetry</span> <span class="kw">import</span> <span class="var">ArgovaaTelemetry</span>
+
+<span class="var">argovaa</span> = <span class="fn">ArgovaaTelemetry</span>(
+    api_key=os.environ[<span class="str">"ARGOVAA_API_KEY"</span>],
+    service=<span class="str">"agent-runtime-api"</span>,
+    environment=<span class="str">"production"</span>
+)
+
+<span class="kw">def</span> <span class="fn">run_agent</span>(request):
+    <span class="kw">with</span> argovaa.<span class="fn">trace</span>(<span class="str">"agent_request"</span>, agent_name=<span class="str">"finance-agent"</span>) <span class="kw">as</span> trace:
+        <span class="kw">try</span>:
+            response = agent.<span class="fn">execute</span>(request.json)
+            trace.<span class="fn">throughput</span>(requests=<span class="num">1</span>, tokens=response.usage.total_tokens)
+            trace.<span class="fn">latency</span>(total_ms=response.latency_ms, ttft_ms=response.ttft_ms)
+            trace.<span class="fn">availability</span>(success=<span class="kw">True</span>)
+            <span class="kw">return</span> response.<span class="fn">to_json</span>()
+        <span class="kw">except</span> Exception <span class="kw">as</span> exc:
+            trace.<span class="fn">error</span>(type=exc.__class__.__name__, message=<span class="fn">str</span>(exc))
+            trace.<span class="fn">availability</span>(success=<span class="kw">False</span>)
+            <span class="kw">raise</span></pre>
+          <div id="py-lock" class="locked-overlay" style="display:none">
+            <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);margin-bottom:12px">🔒 Sign in to view your API key and access production-ready snippets</div>
+            <a href="login.html" style="background:var(--accent);color:#fff;padding:10px 24px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Sign in to unlock →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<div class="pricing-strip">
+  <div style="text-align:center;margin-bottom:24px;max-width:1100px;margin:0 auto 24px;padding:0 40px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:8px">Reliability suite pricing</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,48px);letter-spacing:2px;color:#fff;line-height:0.95">MONITOR YOUR<br>AI STACK FROM $99/MO</div>
+  </div>
+  <div class="pricing-strip-inner">
+    <div class="splan">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(5,150,105,0.2);color:#86efac;border:1px solid rgba(5,150,105,0.3);display:inline-block;margin-bottom:12px">OBSERVE</div>
+      <div class="splan-name">Observe</div>
+      <div class="splan-price">$99</div>
+      <div class="splan-sub">per month</div>
+      <div class="splan-features">
+        <div class="splan-feature"><span style="color:#86efac">✓</span>4 golden signals dashboard</div>
+        <div class="splan-feature"><span style="color:#86efac">✓</span>5 agents monitored</div>
+        <div class="splan-feature"><span style="color:#86efac">✓</span>7-day retention</div>
+        <div class="splan-feature"><span style="color:#86efac">✓</span>Email alerts</div>
+        <div class="splan-feature"><span style="color:#86efac">✓</span>JS + Python snippets</div>
+      </div>
+      <a href="login.html" class="splan-btn outline">Get started</a>
+    </div>
+    <div class="splan feat">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(255,255,255,0.2);color:#fff;display:inline-block;margin-bottom:12px">MOST POPULAR</div>
+      <div class="splan-name">Operate</div>
+      <div class="splan-price">$349</div>
+      <div class="splan-sub">per month</div>
+      <div class="splan-features">
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>Unlimited agents</div>
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>30-day retention</div>
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>PagerDuty + Slack alerts</div>
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>Multi-tenant signals</div>
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>P99 latency tracking</div>
+        <div class="splan-feature"><span style="color:#93c5fd">✓</span>Custom alert thresholds</div>
+      </div>
+      <a href="login.html" class="splan-btn">Get started</a>
+    </div>
+    <div class="splan">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(124,58,237,0.2);color:#c4b5fd;border:1px solid rgba(124,58,237,0.3);display:inline-block;margin-bottom:12px">ENTERPRISE</div>
+      <div class="splan-name">Enterprise</div>
+      <div class="splan-price">$999</div>
+      <div class="splan-sub">per month</div>
+      <div class="splan-features">
+        <div class="splan-feature"><span style="color:#c4b5fd">✓</span>Everything in Operate</div>
+        <div class="splan-feature"><span style="color:#c4b5fd">✓</span>90-day retention</div>
+        <div class="splan-feature"><span style="color:#c4b5fd">✓</span>RBAC + audit logs</div>
+        <div class="splan-feature"><span style="color:#c4b5fd">✓</span>SLA 99.9%</div>
+        <div class="splan-feature"><span style="color:#c4b5fd">✓</span>Custom integrations</div>
+      </div>
+      <a href="mailto:seeth.gudetee@gmail.com" class="splan-btn outline">Contact us</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo">ARG<em>O</em>VAA</a>
+  <div class="flinks">
+    <a href="index.html">Home</a>
+    <a href="agent-builder.html">Agent builder</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="golden-signals.html">SRE signals</a>
+    <a href="tco.html">TCO</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="analyser.html">GC analyser</a>
+    <a href="perftest.html">Benchmarking</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="fcopy">© 2025 ARGOVAA.COM · seeth.gudetee@gmail.com</div>
+</footer>
+
+<script>
+// Check login state and lock snippets if not logged in
+if(!window._isLoggedIn){
+  ['js-lock','node-lock','py-lock'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display='block';
+  });
+  // Blur code if not logged in
+  document.querySelectorAll('.code-body pre').forEach(pre=>{
+    pre.style.filter='blur(3px)';
+    pre.style.userSelect='none';
+    pre.style.pointerEvents='none';
+  });
+}
+
+// Snippet tabs
+function showSnippet(id,btn){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.snippet-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('sp-'+id).classList.add('on');
+}
+
+// Copy snippet
+function copySnip(id){
+  const el=document.getElementById(id);
+  if(!window._isLoggedIn){window.location.href='login.html';return;}
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const btn=el.closest('.code-block').querySelector('.code-copy');
+    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+// Live chart — throughput
+const tputLabels=Array.from({length:24},(_,i)=>i+':00');
+const tputData=tputLabels.map(()=>Math.round(2200+Math.random()*800));
+new Chart(document.getElementById('tput-chart'),{
+  type:'line',
+  data:{labels:tputLabels,datasets:[{label:'req/min',data:tputData,borderColor:'#1a56db',backgroundColor:'rgba(26,86,219,0.08)',borderWidth:2,pointRadius:0,fill:true,tension:0.4}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a5568',font:{size:9},maxRotation:0},grid:{color:'rgba(13,20,32,0.05)'}},y:{ticks:{color:'#4a5568',font:{size:9}},grid:{color:'rgba(13,20,32,0.05)'},beginAtZero:false}}}
+});
+
+// Live chart — latency
+const latData50=tputLabels.map(()=>Math.round(100+Math.random()*60));
+const latData95=tputLabels.map(()=>Math.round(220+Math.random()*120));
+const latData99=tputLabels.map(()=>Math.round(420+Math.random()*180));
+new Chart(document.getElementById('lat-chart'),{
+  type:'line',
+  data:{labels:tputLabels,datasets:[
+    {label:'P50',data:latData50,borderColor:'#059669',borderWidth:2,pointRadius:0,fill:false,tension:0.4},
+    {label:'P95',data:latData95,borderColor:'#d97706',borderWidth:2,pointRadius:0,fill:false,tension:0.4},
+    {label:'P99',data:latData99,borderColor:'#dc2626',borderWidth:2,pointRadius:0,fill:false,tension:0.4},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a5568',font:{size:10},boxWidth:10}}},scales:{x:{ticks:{color:'#4a5568',font:{size:9},maxRotation:0},grid:{color:'rgba(13,20,32,0.05)'}},y:{ticks:{color:'#4a5568',font:{size:9},callback:v=>v+'ms'},grid:{color:'rgba(13,20,32,0.05)'},beginAtZero:false}}}
+});
+
+// Simulate live updates
+setInterval(()=>{
+  document.getElementById('s-tput').textContent=(2600+Math.round(Math.random()*500)).toLocaleString();
+  document.getElementById('last-updated').textContent='just now';
+},8000);
+</script>
+</body>
+</html>

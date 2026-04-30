@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — Token Cost of Ownership (TCO)</title>
+<meta name="description" content="Instrument your AI service, pull AWS CUR cloud costs, blend LLM token costs, and get the true total cost of ownership per request.">
+<script>
+(function(){
+  try{const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');if(!s.loggedIn){window.location.href='login.html';}}
+  catch(e){window.location.href='login.html';}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f9fb;--surface:#fff;--surface2:#f1f3f7;--surface3:#e8eaef;
+  --ink:#0f1117;--mid:#5a6170;--faint:#c8ccd6;
+  --accent:#1d4ed8;--accent-bright:#2563eb;--accent-dim:rgba(29,78,216,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;
+  --bd:rgba(15,17,23,0.1);--bd2:rgba(15,17,23,0.05)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--bd);background:rgba(248,249,251,0.96);backdrop-filter:blur(24px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:12px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.act{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-user{font-size:12px;color:var(--mid);font-family:'DM Mono',monospace}
+.btn-so{background:transparent;border:1px solid var(--bd);color:var(--mid);padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-so:hover{border-color:var(--ink);color:var(--ink)}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+
+.max{max-width:1100px;margin:0 auto;width:100%}
+
+/* PAGE HERO */
+.page-hero{padding:64px 48px 52px;background:var(--ink);border-bottom:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px}
+.page-hero::after{content:'';position:absolute;top:0;left:48px;right:48px;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);opacity:0.7}
+.page-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.page-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.page-tag::before{content:'';width:20px;height:1px;background:#93c5fd}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:2px;line-height:0.92;color:#fff;margin-bottom:16px}
+.page-title .acc{color:#93c5fd}
+.page-sub{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.75;font-weight:300;max-width:460px}
+.tco-formula{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:24px;display:flex;flex-direction:column;gap:12px}
+.formula-item{display:flex;align-items:center;gap:12px;font-size:13px}
+.formula-dot{width:10px;height:10px;flex-shrink:0}
+.formula-label{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;min-width:140px}
+.formula-desc{font-size:12px;color:rgba(255,255,255,0.45)}
+.formula-plus{font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(255,255,255,0.2);padding-left:22px}
+.formula-eq{border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;display:flex;align-items:center;gap:12px}
+.formula-eq-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#fff}
+
+/* STEPS */
+.steps-section{padding:0 48px;background:var(--surface);border-bottom:1px solid var(--bd)}
+.steps-nav{display:flex;gap:0;max-width:1100px;margin:0 auto}
+.step-tab{display:flex;align-items:center;gap:10px;padding:18px 24px;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;text-decoration:none;flex:1}
+.step-tab:hover{background:var(--surface2)}
+.step-tab.on{border-bottom-color:var(--accent);background:var(--accent-dim)}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--surface3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;flex-shrink:0;transition:all 0.2s}
+.step-tab.on .step-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-tab.done .step-num{background:var(--emerald);border-color:var(--emerald);color:#fff}
+.step-info{}
+.step-name{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink);font-weight:500}
+.step-desc{font-size:11px;color:var(--mid)}
+
+/* PANELS */
+.panel{display:none;padding:48px}.panel.on{display:block}
+.panel-inner{max-width:1100px;margin:0 auto}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--bd)}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--ink)}
+.card-sub{font-size:11px;color:var(--mid);font-family:'DM Mono',monospace;margin-top:2px}
+.card-body{padding:20px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--bd);padding:9px 12px;color:var(--ink);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:80px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.7}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-hint{font-size:11px;color:var(--mid);margin-top:4px;font-family:'DM Mono',monospace}
+
+/* CODE BLOCK */
+.code-block{background:var(--ink);border:1px solid rgba(255,255,255,0.06);padding:0;overflow:hidden;margin-bottom:16px}
+.code-head{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.code-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);cursor:pointer;background:none;border:none;transition:color 0.2s;padding:0}
+.code-copy:hover{color:var(--accent-bright)}
+.code-body{padding:16px;overflow-x:auto}
+.code-body pre{font-family:'DM Mono',monospace;font-size:12px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
+.kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3);font-style:italic}.fn{color:#fde68a}.num{color:#f9a8d4}.var{color:#d8b4fe}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--bd);padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface2)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-dim)}
+.upload-zone input{display:none}
+.upload-icon{font-size:28px;margin-bottom:12px;opacity:0.4}
+.upload-title{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--mid)}
+
+/* RESULT CARDS */
+.tco-results{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px}
+.tco-card{background:var(--surface);padding:18px 20px}
+.tco-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:6px}
+.tco-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.tco-val.b{color:var(--accent)}.tco-val.g{color:var(--emerald)}
+.tco-val.a{color:var(--amber)}.tco-val.r{color:var(--red)}.tco-val.p{color:var(--purple)}
+.tco-sub{font-size:11px;color:var(--mid)}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);padding:10px 12px;border-bottom:2px solid var(--ink);text-align:left;background:var(--surface);white-space:nowrap}
+.data-table th.r{text-align:right}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--bd2);font-size:13px}
+.data-table td.r{text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid)}
+.data-table td.g{color:var(--emerald)}.data-table td.a{color:var(--amber)}.data-table td.r2{color:var(--red)}
+.data-table tr:hover td{background:var(--surface2)}
+
+/* BADGES */
+.badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;display:inline-block}
+.badge-blue{background:rgba(29,78,216,0.08);color:var(--accent);border:1px solid rgba(29,78,216,0.2)}
+.badge-green{background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.2)}
+.badge-amber{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.badge-purple{background:rgba(124,58,237,0.08);color:var(--purple);border:1px solid rgba(124,58,237,0.2)}
+
+/* BTN */
+.btn-primary{background:var(--accent);color:#fff;padding:11px 24px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary:hover{background:var(--accent-bright)}
+.btn-outline{background:transparent;color:var(--mid);padding:11px 24px;font-size:13px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-outline:hover{border-color:var(--ink);color:var(--ink)}
+
+/* PRICING BANNER */
+.pricing-banner{background:var(--accent);padding:52px 48px;border-top:1px solid rgba(29,78,216,0.3)}
+.pricing-banner-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.plan{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:24px;position:relative;transition:background 0.2s}
+.plan:hover{background:rgba(255,255,255,0.1)}
+.plan.featured{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.3)}
+.plan-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(255,255,255,0.15);color:#fff;letter-spacing:0.5px;margin-bottom:12px;display:inline-block}
+.plan-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#fff;margin-bottom:4px}
+.plan-price{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:4px}
+.plan-price-sub{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:20px}
+.plan-features{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.plan-feature{font-size:12px;color:rgba(255,255,255,0.75);display:flex;align-items:center;gap:7px}
+.plan-feature::before{content:'✓';color:#86efac;font-weight:700;flex-shrink:0}
+.plan-btn{width:100%;background:#fff;color:var(--accent);padding:10px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s}
+.plan-btn:hover{opacity:0.9}
+
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.08);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flinks{display:flex;gap:22px}
+.flinks a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.3px;text-transform:uppercase;transition:color 0.2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .page-hero{padding:48px 16px}.page-hero-inner,.two-col,.three-col,.tco-results,.pricing-banner-inner{grid-template-columns:1fr}
+  .steps-nav{flex-direction:column}
+  .panel{padding:24px 16px}
+  footer{padding:20px 16px;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">ARGOVAA<em>.</em></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="agent-builder.html">Agent builder</a></li>
+    <li><a href="benchmarks.html">Benchmarks</a></li>
+    <li><a href="golden-signals.html">SRE signals</a></li>
+    <li><a href="tco.html" class="act">TCO</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
+    <li><a href="analyser.html">GC analyser</a></li>
+    <li><a href="perftest.html">Benchmarking</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-user" id="nav-user"></span>
+    <button class="btn-so" onclick="signOut()">Sign out</button>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div>
+      <div class="page-tag">Cloud cost intelligence</div>
+      <div class="page-title">TOKEN COST OF<br><span class="acc">OWNERSHIP</span></div>
+      <p class="page-sub">Instrument your service, pull AWS cost data, add LLM token spend, and get the true total cost per request — so you know exactly what each AI call actually costs your business.</p>
+    </div>
+    <div class="tco-formula">
+      <div class="formula-item">
+        <div class="formula-dot" style="background:#3b82f6"></div>
+        <div class="formula-label" style="color:#93c5fd">Infrastructure cost</div>
+        <div class="formula-desc">AWS EC2, ECS, Lambda, networking from CUR</div>
+      </div>
+      <div class="formula-plus">+</div>
+      <div class="formula-item">
+        <div class="formula-dot" style="background:#a78bfa"></div>
+        <div class="formula-label" style="color:#c4b5fd">LLM token cost</div>
+        <div class="formula-desc">OpenAI, Anthropic, Azure input/output tokens</div>
+      </div>
+      <div class="formula-plus">+</div>
+      <div class="formula-item">
+        <div class="formula-dot" style="background:#86efac"></div>
+        <div class="formula-label" style="color:#86efac">Service overhead</div>
+        <div class="formula-desc">Latency, retries, storage, observability</div>
+      </div>
+      <div class="formula-eq">
+        <div style="font-family:'DM Mono',monospace;font-size:20px;color:rgba(255,255,255,0.2)">=</div>
+        <div class="formula-eq-label">TRUE COST PER REQUEST</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP NAV -->
+<div class="steps-section">
+  <div class="steps-nav">
+    <a class="step-tab on" onclick="showStep(1,this)" href="#">
+      <div class="step-num">1</div>
+      <div class="step-info"><div class="step-name">Instrument</div><div class="step-desc">Add SDK to your service</div></div>
+    </a>
+    <a class="step-tab" onclick="showStep(2,this)" href="#">
+      <div class="step-num">2</div>
+      <div class="step-info"><div class="step-name">AWS Cloud Cost</div><div class="step-desc">Upload CUR file</div></div>
+    </a>
+    <a class="step-tab" onclick="showStep(3,this)" href="#">
+      <div class="step-num">3</div>
+      <div class="step-info"><div class="step-name">LLM Token Cost</div><div class="step-desc">Enter API usage</div></div>
+    </a>
+    <a class="step-tab" onclick="showStep(4,this)" href="#">
+      <div class="step-num">4</div>
+      <div class="step-info"><div class="step-name">TCO Dashboard</div><div class="step-desc">Blended cost breakdown</div></div>
+    </a>
+  </div>
+</div>
+
+<!-- STEP 1: INSTRUMENT -->
+<div class="panel on" id="panel-1">
+  <div class="panel-inner">
+    <div class="sec-lbl" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:var(--accent)"></span>Step 1 — Instrument your service</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,44px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:8px">ADD THE ARGOVAA SDK<br><span style="color:var(--accent)">TO YOUR SERVICE</span></div>
+    <p style="font-size:14px;color:var(--mid);max-width:600px;line-height:1.75;margin-bottom:32px;font-weight:300">Copy one of the snippets below into your service. The SDK tracks token usage, latency, and request metadata — sending it to Argovaa for cost blending.</p>
+
+    <div class="two-col">
+      <div>
+        <!-- Python SDK -->
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">Python — pip install argovaa-sdk</span>
+            <button class="code-copy" onclick="copyCode('py-code')">Copy</button>
+          </div>
+          <div class="code-body"><pre id="py-code"><span class="kw">import</span> <span class="var">argovaa</span>
+<span class="kw">from</span> <span class="var">openai</span> <span class="kw">import</span> <span class="var">OpenAI</span>
+
+<span class="cm"># Initialise with your Argovaa API key</span>
+<span class="var">argovaa</span>.<span class="fn">init</span>(
+  api_key=<span class="str">"arg_live_xxxxxxxxxxxx"</span>,
+  service_name=<span class="str">"my-ai-service"</span>,
+  environment=<span class="str">"production"</span>
+)
+
+<span class="cm"># Wrap your existing LLM client</span>
+<span class="var">client</span> = <span class="var">argovaa</span>.<span class="fn">wrap</span>(<span class="fn">OpenAI</span>())
+
+<span class="cm"># Use exactly as before — tracking is automatic</span>
+<span class="var">response</span> = <span class="var">client</span>.chat.completions.<span class="fn">create</span>(
+  model=<span class="str">"gpt-4o"</span>,
+  messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: prompt}],
+  <span class="cm"># Argovaa captures: tokens, latency, cost, model</span>
+)
+
+<span class="cm"># Optionally tag requests for cost attribution</span>
+<span class="kw">with</span> <span class="var">argovaa</span>.<span class="fn">trace</span>(
+  user_id=<span class="var">user_id</span>,
+  feature=<span class="str">"document-summary"</span>,
+  tenant=<span class="var">tenant_id</span>       <span class="cm"># for multi-tenant billing</span>
+):
+  <span class="var">result</span> = <span class="var">client</span>.chat.completions.<span class="fn">create</span>(...)</pre></div>
+        </div>
+
+        <!-- Node SDK -->
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">Node.js — npm install @argovaa/sdk</span>
+            <button class="code-copy" onclick="copyCode('node-code')">Copy</button>
+          </div>
+          <div class="code-body"><pre id="node-code"><span class="kw">import</span> { <span class="var">Argovaa</span> } <span class="kw">from</span> <span class="str">'@argovaa/sdk'</span>;
+<span class="kw">import</span> <span class="var">OpenAI</span> <span class="kw">from</span> <span class="str">'openai'</span>;
+
+<span class="cm">// Initialise Argovaa</span>
+<span class="kw">const</span> <span class="var">argovaa</span> = <span class="kw">new</span> <span class="fn">Argovaa</span>({
+  apiKey: <span class="str">'arg_live_xxxxxxxxxxxx'</span>,
+  serviceName: <span class="str">'my-ai-service'</span>,
+  environment: <span class="str">'production'</span>,
+});
+
+<span class="cm">// Wrap your OpenAI client</span>
+<span class="kw">const</span> <span class="var">openai</span> = <span class="var">argovaa</span>.<span class="fn">wrap</span>(<span class="kw">new</span> <span class="fn">OpenAI</span>());
+
+<span class="cm">// Tracking is fully automatic from here</span>
+<span class="kw">const</span> <span class="var">response</span> = <span class="kw">await</span> <span class="var">openai</span>.chat.completions.<span class="fn">create</span>({
+  model: <span class="str">'gpt-4o'</span>,
+  messages: [{ role: <span class="str">'user'</span>, content: prompt }],
+});
+
+<span class="cm">// Tag for multi-tenant cost attribution</span>
+<span class="kw">await</span> <span class="var">argovaa</span>.<span class="fn">trace</span>({
+  userId: <span class="var">userId</span>,
+  feature: <span class="str">'document-summary'</span>,
+  tenant: <span class="var">tenantId</span>,
+  customCost: <span class="num">0.002</span>  <span class="cm">// optional fixed overhead</span>
+}, <span class="kw">async</span> () => {
+  <span class="kw">return</span> <span class="var">openai</span>.chat.completions.<span class="fn">create</span>({...});
+});</pre></div>
+        </div>
+      </div>
+
+      <div>
+        <!-- What gets tracked -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">What gets tracked</div>
+              <div class="card-sub">Per-request, zero-config</div>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data-table">
+              <thead><tr><th>Metric</th><th class="r">Source</th></tr></thead>
+              <tbody>
+                <tr><td>Input tokens</td><td class="r"><span class="badge badge-blue">LLM API</span></td></tr>
+                <tr><td>Output tokens</td><td class="r"><span class="badge badge-blue">LLM API</span></td></tr>
+                <tr><td>Model name</td><td class="r"><span class="badge badge-blue">LLM API</span></td></tr>
+                <tr><td>Token cost ($)</td><td class="r"><span class="badge badge-blue">Calculated</span></td></tr>
+                <tr><td>Latency (ms)</td><td class="r"><span class="badge badge-green">SDK</span></td></tr>
+                <tr><td>Error rate</td><td class="r"><span class="badge badge-green">SDK</span></td></tr>
+                <tr><td>User / tenant ID</td><td class="r"><span class="badge badge-green">SDK</span></td></tr>
+                <tr><td>Feature / endpoint</td><td class="r"><span class="badge badge-green">SDK</span></td></tr>
+                <tr><td>AWS infra cost</td><td class="r"><span class="badge badge-amber">CUR upload</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Your API key -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Your Argovaa API key</div>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--surface2);border:1px solid var(--bd);padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <span>arg_live_<span id="api-key-display">●●●●●●●●●●●●</span></span>
+              <button onclick="toggleKey()" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);background:none;border:none;cursor:pointer">Show / Hide</button>
+            </div>
+            <p style="font-size:12px;color:var(--mid);line-height:1.65">Use this key to initialise the SDK. Keep it secret — never commit to version control. Rotate from Settings if compromised.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn-primary" onclick="showStep(2,document.querySelectorAll('.step-tab')[1])">Next: Upload AWS CUR →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: AWS COST -->
+<div class="panel" id="panel-2">
+  <div class="panel-inner">
+    <div class="sec-lbl" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:var(--accent)"></span>Step 2 — AWS cloud cost</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,44px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:8px">PULL YOUR<br><span style="color:var(--accent)">AWS COST DATA</span></div>
+    <p style="font-size:14px;color:var(--mid);max-width:600px;line-height:1.75;margin-bottom:32px;font-weight:300">Upload your AWS Cost and Usage Report (CUR) CSV file. We extract EC2, ECS, Lambda, and networking costs and blend them with your LLM token usage.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div class="card-title">Upload AWS CUR file</div>
+            <div class="card-sub">CSV format · monthly export</div>
+          </div>
+          <div class="card-body">
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('cur-file').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+              <input type="file" id="cur-file" accept=".csv,.gz" onchange="handleFile(event)">
+              <div class="upload-icon">📂</div>
+              <div class="upload-title">Drop your CUR CSV here</div>
+              <div class="upload-sub">or click to browse · .csv or .csv.gz supported</div>
+            </div>
+            <div id="file-status" style="display:none;margin-top:12px;background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.2);padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--emerald)"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Or enter manually</div>
+            <div class="card-sub">For quick estimates</div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label>EC2 monthly cost ($)</label>
+                <input type="number" id="aws-ec2" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>ECS / Fargate ($)</label>
+                <input type="number" id="aws-ecs" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Lambda ($)</label>
+                <input type="number" id="aws-lambda" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>Networking / Data transfer ($)</label>
+                <input type="number" id="aws-network" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>RDS / Database ($)</label>
+                <input type="number" id="aws-rds" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>S3 / Storage ($)</label>
+                <input type="number" id="aws-s3" value="0" min="0" step="0.01" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Total monthly requests served</label>
+              <input type="number" id="aws-requests" value="100000" min="1" oninput="calcTCO()">
+              <div class="field-hint">Used to calculate per-request infra cost</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div class="card-title">How to export AWS CUR</div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;background:var(--accent-dim);border:1px solid rgba(29,78,216,0.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--accent);flex-shrink:0">1</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.6">Go to <strong style="color:var(--ink)">AWS Console → Billing → Cost &amp; Usage Reports</strong></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;background:var(--accent-dim);border:1px solid rgba(29,78,216,0.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--accent);flex-shrink:0">2</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.6">Click <strong style="color:var(--ink)">Create report</strong> → enable <strong style="color:var(--ink)">Resource IDs</strong> and <strong style="color:var(--ink)">CSV format</strong></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;background:var(--accent-dim);border:1px solid rgba(29,78,216,0.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--accent);flex-shrink:0">3</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.6">Set S3 bucket for delivery → wait for the first export (up to 24h for new reports)</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;background:var(--accent-dim);border:1px solid rgba(29,78,216,0.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--accent);flex-shrink:0">4</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.6">Download the CSV from S3 and upload it here — Argovaa parses EC2, ECS, Lambda, and networking automatically</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">AWS cost breakdown</div></div>
+          <div class="card-body">
+            <div style="position:relative;height:200px"><canvas id="aws-chart"></canvas></div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn-primary" onclick="showStep(3,document.querySelectorAll('.step-tab')[2])">Next: LLM token cost →</button>
+          <button class="btn-outline" onclick="showStep(1,document.querySelectorAll('.step-tab')[0])">← Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: LLM COST -->
+<div class="panel" id="panel-3">
+  <div class="panel-inner">
+    <div class="sec-lbl" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:var(--accent)"></span>Step 3 — LLM token cost</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,44px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:8px">ENTER YOUR<br><span style="color:var(--accent)">LLM TOKEN USAGE</span></div>
+    <p style="font-size:14px;color:var(--mid);max-width:600px;line-height:1.75;margin-bottom:32px;font-weight:300">Enter token usage from your LLM provider dashboard, or the SDK will populate this automatically once instrumented.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">LLM usage &amp; pricing</div>
+            <div class="card-sub">Monthly totals</div>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label>Provider &amp; model</label>
+              <select id="llm-model" onchange="updatePricing()">
+                <option value="gpt4o">OpenAI — GPT-4o ($5/$15 per 1M)</option>
+                <option value="gpt4omini">OpenAI — GPT-4o mini ($0.15/$0.60 per 1M)</option>
+                <option value="claude35s">Anthropic — Claude 3.5 Sonnet ($3/$15 per 1M)</option>
+                <option value="claude3h">Anthropic — Claude 3 Haiku ($0.25/$1.25 per 1M)</option>
+                <option value="claude3o">Anthropic — Claude 3 Opus ($15/$75 per 1M)</option>
+                <option value="azure4t">Azure OAI — GPT-4 Turbo ($10/$30 per 1M)</option>
+                <option value="llama370b">Together AI — Llama 3 70B ($0.90/$0.90 per 1M)</option>
+                <option value="custom">Custom pricing...</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Input price ($/1M tokens)</label>
+                <input type="number" id="llm-in-price" value="5.0" step="0.001" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>Output price ($/1M tokens)</label>
+                <input type="number" id="llm-out-price" value="15.0" step="0.001" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Monthly input tokens</label>
+                <input type="number" id="llm-in-tokens" value="50000000" min="0" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>Monthly output tokens</label>
+                <input type="number" id="llm-out-tokens" value="20000000" min="0" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Avg input tokens / request</label>
+                <input type="number" id="llm-avg-in" value="500" min="1" oninput="calcTCO()">
+              </div>
+              <div class="field">
+                <label>Avg output tokens / request</label>
+                <input type="number" id="llm-avg-out" value="200" min="1" oninput="calcTCO()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Pricing tier</label>
+              <select id="llm-tier" onchange="calcTCO()">
+                <option value="1.0">On-demand (standard rate)</option>
+                <option value="0.65">Provisioned throughput (–35%)</option>
+                <option value="0.5">Batch processing (–50%)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><div class="card-title">LLM cost summary</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:16px">
+              <div style="background:var(--surface);padding:14px 16px">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:5px">Monthly input cost</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--accent)" id="llm-in-cost">$—</div>
+              </div>
+              <div style="background:var(--surface);padding:14px 16px">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:5px">Monthly output cost</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--purple)" id="llm-out-cost">$—</div>
+              </div>
+              <div style="background:var(--surface);padding:14px 16px">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:5px">Total LLM monthly</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--ink)" id="llm-total-cost">$—</div>
+              </div>
+              <div style="background:var(--surface);padding:14px 16px">
+                <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:5px">LLM cost / request</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--ink)" id="llm-per-req">$—</div>
+              </div>
+            </div>
+            <div style="position:relative;height:160px"><canvas id="llm-chart"></canvas></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-primary" onclick="showStep(4,document.querySelectorAll('.step-tab')[3])">Calculate TCO →</button>
+          <button class="btn-outline" onclick="showStep(2,document.querySelectorAll('.step-tab')[1])">← Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: TCO DASHBOARD -->
+<div class="panel" id="panel-4">
+  <div class="panel-inner">
+    <div class="sec-lbl" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:var(--accent)"></span>Step 4 — Total cost of ownership</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,44px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:8px">YOUR TRUE<br><span style="color:var(--accent)">COST PER REQUEST</span></div>
+    <p style="font-size:14px;color:var(--mid);max-width:600px;line-height:1.75;margin-bottom:28px;font-weight:300">All three cost layers blended into a single TCO view — infrastructure, LLM tokens, and overhead per request.</p>
+
+    <div class="tco-results" id="tco-results">
+      <div class="tco-card"><div class="tco-lbl">Infrastructure / req</div><div class="tco-val b" id="tco-infra">$—</div><div class="tco-sub">AWS cloud cost</div></div>
+      <div class="tco-card"><div class="tco-lbl">LLM tokens / req</div><div class="tco-val p" id="tco-llm">$—</div><div class="tco-sub">Input + output tokens</div></div>
+      <div class="tco-card"><div class="tco-lbl">Overhead / req</div><div class="tco-val a" id="tco-overhead">$—</div><div class="tco-sub">Storage, observability</div></div>
+      <div class="tco-card" style="background:var(--ink)"><div class="tco-lbl" style="color:rgba(255,255,255,0.4)">Total TCO / request</div><div class="tco-val g" id="tco-total">$—</div><div class="tco-sub" style="color:rgba(255,255,255,0.4)">All layers combined</div></div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Cost breakdown</div></div>
+        <div class="card-body"><div style="position:relative;height:220px"><canvas id="tco-pie"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Monthly TCO projection</div></div>
+        <div class="card-body"><div style="position:relative;height:220px"><canvas id="tco-bar"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Full cost attribution table</div>
+          <div class="card-sub">Per-layer breakdown with optimisation recommendations</div>
+        </div>
+        <button class="btn-outline" onclick="exportCSV()" style="font-size:12px;padding:7px 14px">Export CSV</button>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr>
+            <th>Cost layer</th>
+            <th class="r">Monthly ($)</th>
+            <th class="r">Per request ($)</th>
+            <th class="r">% of TCO</th>
+            <th class="r">Status</th>
+          </tr></thead>
+          <tbody id="tco-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Optimisation recommendations</div>
+        <div class="card-sub">AI-generated savings opportunities</div>
+      </div>
+      <div class="card-body" id="recommendations">
+        <div style="text-align:center;padding:24px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid)">Complete steps 1–3 to generate recommendations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING / MONETISATION -->
+<div class="pricing-banner">
+  <div style="grid-column:1/-1;text-align:center;margin-bottom:28px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px">Argovaa TCO Platform — offer this to your customers</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,52px);letter-spacing:2px;color:#fff;line-height:0.95">WHITE-LABEL THIS FOR YOUR CUSTOMERS</div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.6);margin-top:10px;font-weight:300;max-width:560px;margin-left:auto;margin-right:auto">Embed the Argovaa TCO platform in your own product. Each customer instruments their service, uploads their AWS CUR, and gets a branded cost dashboard — you earn per seat.</p>
+  </div>
+  <div class="pricing-banner-inner">
+    <div class="plan">
+      <div class="plan-badge">STARTER</div>
+      <div class="plan-name">Developer</div>
+      <div class="plan-price">$49</div>
+      <div class="plan-price-sub">per month · 1 service</div>
+      <div class="plan-features">
+        <div class="plan-feature">1 instrumented service</div>
+        <div class="plan-feature">AWS CUR upload &amp; parsing</div>
+        <div class="plan-feature">LLM cost blending</div>
+        <div class="plan-feature">TCO dashboard</div>
+        <div class="plan-feature">30-day history</div>
+      </div>
+      <button class="plan-btn" onclick="window.location.href='login.html'">Get started</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">MOST POPULAR</div>
+      <div class="plan-name">Team</div>
+      <div class="plan-price">$199</div>
+      <div class="plan-price-sub">per month · up to 10 services</div>
+      <div class="plan-features">
+        <div class="plan-feature">Up to 10 services</div>
+        <div class="plan-feature">Multi-tenant attribution</div>
+        <div class="plan-feature">Automated CUR sync from S3</div>
+        <div class="plan-feature">Slack &amp; email alerts</div>
+        <div class="plan-feature">API access for custom dashboards</div>
+        <div class="plan-feature">90-day history + exports</div>
+      </div>
+      <button class="plan-btn" onclick="window.location.href='login.html'">Get started</button>
+    </div>
+    <div class="plan">
+      <div class="plan-badge">WHITE-LABEL</div>
+      <div class="plan-name">Platform</div>
+      <div class="plan-price">$999</div>
+      <div class="plan-price-sub">per month · unlimited · resell</div>
+      <div class="plan-features">
+        <div class="plan-feature">Unlimited services &amp; customers</div>
+        <div class="plan-feature">Your own branding &amp; domain</div>
+        <div class="plan-feature">Customer billing management</div>
+        <div class="plan-feature">Revenue share with Argovaa</div>
+        <div class="plan-feature">Dedicated support &amp; SLA</div>
+        <div class="plan-feature">Custom integrations</div>
+      </div>
+      <button class="plan-btn" onclick="window.location.href='mailto:support@argovaa.com'">Contact us</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo">ARGOVAA.</a>
+  <div class="flinks">
+    <a href="index.html">Home</a>
+    <a href="agent-builder.html">Agent builder</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="golden-signals.html">SRE signals</a>
+    <a href="tco.html">TCO</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="analyser.html">GC analyser</a>
+    <a href="perftest.html">Benchmarking</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="fcopy">© 2025 ARGOVAA.COM · seeth.gudetee@gmail.com</div>
+</footer>
+
+<script>
+// Session
+try{
+  const s=JSON.parse(localStorage.getItem('argovaa_session')||'{}');
+  if(s.name) document.getElementById('nav-user').textContent='👤 '+s.name;
+}catch(e){}
+function signOut(){localStorage.removeItem('argovaa_session');window.location.href='login.html';}
+
+// API key toggle
+let keyVisible=false;
+const DEMO_KEY='K2m9xPqLrTnBvWsZ';
+function toggleKey(){
+  keyVisible=!keyVisible;
+  document.getElementById('api-key-display').textContent=keyVisible?DEMO_KEY:'●●●●●●●●●●●●';
+}
+
+// Step navigation
+function showStep(n,btn){
+  document.querySelectorAll('.step-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('panel-'+n).classList.add('on');
+  if(n===4) calcTCO();
+  if(n===2) renderAWSChart();
+  if(n===3) {updatePricing();calcTCO();}
+  return false;
+}
+
+// Copy code
+function copyCode(id){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const btn=el.closest('.code-block').querySelector('.code-copy');
+    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+// File upload
+function dragOver(e){e.preventDefault();document.getElementById('upload-zone').classList.add('drag');}
+function dragLeave(e){document.getElementById('upload-zone').classList.remove('drag');}
+function dropFile(e){
+  e.preventDefault();dragLeave(e);
+  const file=e.dataTransfer.files[0];
+  if(file) processFile(file);
+}
+function handleFile(e){if(e.target.files[0]) processFile(e.target.files[0]);}
+function processFile(file){
+  const status=document.getElementById('file-status');
+  status.style.display='block';
+  status.textContent='✓ '+file.name+' ('+Math.round(file.size/1024)+'KB) — parsing AWS cost data...';
+  // Simulate parsing — in production this would parse the CSV
+  setTimeout(()=>{
+    document.getElementById('aws-ec2').value=1240;
+    document.getElementById('aws-ecs').value=380;
+    document.getElementById('aws-lambda').value=45;
+    document.getElementById('aws-network').value=120;
+    document.getElementById('aws-rds').value=290;
+    document.getElementById('aws-s3').value=34;
+    document.getElementById('aws-requests').value=850000;
+    status.textContent='✓ Parsed: EC2 $1,240 · ECS $380 · Lambda $45 · Network $120 · RDS $290 · S3 $34 · 850K requests';
+    renderAWSChart();calcTCO();
+  },1200);
+}
+
+// LLM pricing
+const PRICES={
+  gpt4o:{ic:5.0,oc:15.0},gpt4omini:{ic:0.15,oc:0.60},
+  claude35s:{ic:3.0,oc:15.0},claude3h:{ic:0.25,oc:1.25},claude3o:{ic:15.0,oc:75.0},
+  azure4t:{ic:10.0,oc:30.0},llama370b:{ic:0.9,oc:0.9},custom:{ic:0,oc:0}
+};
+function updatePricing(){
+  const m=document.getElementById('llm-model').value;
+  const p=PRICES[m];
+  document.getElementById('llm-in-price').value=p.ic;
+  document.getElementById('llm-out-price').value=p.oc;
+  calcTCO();
+}
+
+// AWS chart
+let awsChart=null,llmChart=null,tcoPie=null,tcoBar=null;
+function renderAWSChart(){
+  const vals={
+    ec2:parseFloat(document.getElementById('aws-ec2').value)||0,
+    ecs:parseFloat(document.getElementById('aws-ecs').value)||0,
+    lambda:parseFloat(document.getElementById('aws-lambda').value)||0,
+    network:parseFloat(document.getElementById('aws-network').value)||0,
+    rds:parseFloat(document.getElementById('aws-rds').value)||0,
+    s3:parseFloat(document.getElementById('aws-s3').value)||0
+  };
+  if(awsChart) awsChart.destroy();
+  awsChart=new Chart(document.getElementById('aws-chart'),{
+    type:'doughnut',
+    data:{
+      labels:['EC2','ECS/Fargate','Lambda','Networking','RDS','S3'],
+      datasets:[{data:Object.values(vals),backgroundColor:['#1d4ed8','#2563eb','#7c3aed','#059669','#d97706','#dc2626'],borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#5a6170',font:{size:10},boxWidth:10}}}}
+  });
+}
+
+// Main TCO calculator
+function calcTCO(){
+  const ec2=parseFloat(document.getElementById('aws-ec2').value)||0;
+  const ecs=parseFloat(document.getElementById('aws-ecs').value)||0;
+  const lambda=parseFloat(document.getElementById('aws-lambda').value)||0;
+  const network=parseFloat(document.getElementById('aws-network').value)||0;
+  const rds=parseFloat(document.getElementById('aws-rds').value)||0;
+  const s3=parseFloat(document.getElementById('aws-s3').value)||0;
+  const requests=parseInt(document.getElementById('aws-requests').value)||100000;
+  const inTok=parseInt(document.getElementById('llm-in-tokens').value)||0;
+  const outTok=parseInt(document.getElementById('llm-out-tokens').value)||0;
+  const inPrice=parseFloat(document.getElementById('llm-in-price').value)||0;
+  const outPrice=parseFloat(document.getElementById('llm-out-price').value)||0;
+  const tierMult=parseFloat(document.getElementById('llm-tier').value)||1;
+  const avgIn=parseInt(document.getElementById('llm-avg-in').value)||500;
+  const avgOut=parseInt(document.getElementById('llm-avg-out').value)||200;
+
+  const awsTotal=ec2+ecs+lambda+network+rds+s3;
+  const awsPerReq=requests>0?awsTotal/requests:0;
+  const llmIn=(inTok/1000000)*inPrice*tierMult;
+  const llmOut=(outTok/1000000)*outPrice*tierMult;
+  const llmTotal=llmIn+llmOut;
+  const llmPerReq=((avgIn/1000000)*inPrice+(avgOut/1000000)*outPrice)*tierMult;
+  const overhead=awsTotal*0.08; // 8% overhead estimate
+  const overheadPerReq=requests>0?overhead/requests:0;
+  const totalMonthly=awsTotal+llmTotal+overhead;
+  const totalPerReq=awsPerReq+llmPerReq+overheadPerReq;
+
+  // Update LLM summary
+  document.getElementById('llm-in-cost').textContent='$'+fmt(llmIn);
+  document.getElementById('llm-out-cost').textContent='$'+fmt(llmOut);
+  document.getElementById('llm-total-cost').textContent='$'+fmt(llmTotal);
+  document.getElementById('llm-per-req').textContent='$'+llmPerReq.toFixed(6);
+
+  // Update TCO cards
+  document.getElementById('tco-infra').textContent='$'+totalPerReq>0?awsPerReq.toFixed(6):'—';
+  document.getElementById('tco-llm').textContent='$'+llmPerReq.toFixed(6);
+  document.getElementById('tco-overhead').textContent='$'+overheadPerReq.toFixed(6);
+  document.getElementById('tco-total').textContent='$'+totalPerReq.toFixed(6);
+
+  // TCO table
+  const layers=[
+    {name:'EC2 Compute',monthly:ec2,perReq:ec2/requests,pct:totalMonthly>0?(ec2/totalMonthly*100):0,status:ec2>500?'amber':'green'},
+    {name:'ECS / Fargate',monthly:ecs,perReq:ecs/requests,pct:totalMonthly>0?(ecs/totalMonthly*100):0,status:'green'},
+    {name:'Lambda',monthly:lambda,perReq:lambda/requests,pct:totalMonthly>0?(lambda/totalMonthly*100):0,status:'green'},
+    {name:'Networking',monthly:network,perReq:network/requests,pct:totalMonthly>0?(network/totalMonthly*100):0,status:network>200?'amber':'green'},
+    {name:'Database (RDS)',monthly:rds,perReq:rds/requests,pct:totalMonthly>0?(rds/totalMonthly*100):0,status:'green'},
+    {name:'Storage (S3)',monthly:s3,perReq:s3/requests,pct:totalMonthly>0?(s3/totalMonthly*100):0,status:'green'},
+    {name:'LLM input tokens',monthly:llmIn,perReq:(avgIn/1000000)*inPrice*tierMult,pct:totalMonthly>0?(llmIn/totalMonthly*100):0,status:llmIn>awsTotal?'red':'green'},
+    {name:'LLM output tokens',monthly:llmOut,perReq:(avgOut/1000000)*outPrice*tierMult,pct:totalMonthly>0?(llmOut/totalMonthly*100):0,status:llmOut>awsTotal?'red':'green'},
+    {name:'Overhead',monthly:overhead,perReq:overheadPerReq,pct:totalMonthly>0?(overhead/totalMonthly*100):0,status:'green'},
+  ];
+
+  document.getElementById('tco-table').innerHTML=layers.map(l=>{
+    const sc=l.status==='red'?'r2':l.status==='amber'?'a':'g';
+    const badge=l.status==='red'?'badge-amber':l.status==='amber'?'badge-amber':'badge-green';
+    const label=l.status==='red'?'HIGH':l.status==='amber'?'REVIEW':'OK';
+    return `<tr>
+      <td>${l.name}</td>
+      <td class="r">$${fmt(l.monthly)}</td>
+      <td class="r ${sc}">$${l.perReq.toFixed(6)}</td>
+      <td class="r">${l.pct.toFixed(1)}%</td>
+      <td class="r"><span class="badge ${badge}">${label}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Recommendations
+  const recs=[];
+  if(llmOut>llmIn*2) recs.push({icon:'◈',title:'High output token ratio',desc:'Output tokens cost '+(outPrice/inPrice).toFixed(1)+'× more than input. Consider prompt engineering to reduce output length or switch to a model with lower output pricing.',tag:'LLM cost','saving':fmt(llmOut*0.3)});
+  if(ec2>llmTotal) recs.push({icon:'◉',title:'Infrastructure dominates LLM cost',desc:'Your AWS EC2 cost ($'+fmt(ec2)+') exceeds your LLM spend. Consider rightsizing instances or moving to Fargate/Lambda for variable workloads.',tag:'Infrastructure','saving':fmt(ec2*0.2)});
+  if(network>aws_total*0.1) recs.push({icon:'◎',title:'High networking cost',desc:'Data transfer is '+(network/(ec2+ecs+lambda+network+rds+s3)*100).toFixed(0)+'% of your AWS bill. Check for cross-AZ traffic and consider VPC endpoints for S3/DynamoDB.',tag:'Networking','saving':fmt(network*0.25)});
+  recs.push({icon:'◧',title:'Switch to batch for non-realtime requests',desc:'Any requests that can tolerate 24h latency (data enrichment, eval runs) qualify for 50% off LLM pricing via batch API.',tag:'Quick win','saving':fmt(llmTotal*0.15)});
+
+  document.getElementById('recommendations').innerHTML=recs.length?recs.map((r,i)=>`
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;${i>0?'border-top:1px solid var(--bd2)':''}">
+      <div style="font-size:18px;opacity:0.5;flex-shrink:0;margin-top:2px">${r.icon}</div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:14px;color:var(--ink);margin-bottom:4px">${r.title}</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:8px">${r.desc}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-blue">${r.tag}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--emerald)">Est. savings: $${r.saving}/mo</span>
+        </div>
+      </div>
+    </div>`).join(''):'<div style="text-align:center;padding:24px;font-family:DM Mono,monospace;font-size:11px;color:var(--mid)">Enter cost data to generate recommendations</div>';
+
+  // Charts
+  renderTCOCharts(awsTotal,llmTotal,overhead,requests);
+  renderLLMChart(llmIn,llmOut);
+}
+
+// Dummy variable to avoid ref error in recs
+var aws_total=0;
+
+function renderTCOCharts(infra,llm,overhead,requests){
+  aws_total=infra;
+  if(tcoPie) tcoPie.destroy();
+  tcoPie=new Chart(document.getElementById('tco-pie'),{
+    type:'doughnut',
+    data:{
+      labels:['Infrastructure','LLM tokens','Overhead'],
+      datasets:[{data:[infra,llm,overhead],backgroundColor:['#1d4ed8','#7c3aed','#059669'],borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#5a6170',font:{size:11},boxWidth:12,padding:12}}}}
+  });
+
+  const months=['Jan','Feb','Mar','Apr','May','Jun'];
+  if(tcoBar) tcoBar.destroy();
+  tcoBar=new Chart(document.getElementById('tco-bar'),{
+    type:'bar',
+    data:{
+      labels:months,
+      datasets:[
+        {label:'Infrastructure',data:months.map((_,i)=>parseFloat((infra*(1+i*0.03)).toFixed(2))),backgroundColor:'#1d4ed8',borderRadius:2},
+        {label:'LLM tokens',data:months.map((_,i)=>parseFloat((llm*(1+i*0.08)).toFixed(2))),backgroundColor:'#7c3aed',borderRadius:2},
+        {label:'Overhead',data:months.map((_,i)=>parseFloat((overhead*(1+i*0.03)).toFixed(2))),backgroundColor:'#059669',borderRadius:2},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#5a6170',font:{size:10},boxWidth:10}}},scales:{x:{ticks:{color:'#5a6170',font:{size:10}},grid:{display:false},stacked:true},y:{ticks:{color:'#5a6170',font:{size:10},callback:v=>'$'+v},grid:{color:'rgba(15,17,23,0.05)'},stacked:true,beginAtZero:true}}}
+  });
+}
+
+function renderLLMChart(inCost,outCost){
+  if(llmChart) llmChart.destroy();
+  llmChart=new Chart(document.getElementById('llm-chart'),{
+    type:'doughnut',
+    data:{labels:['Input tokens','Output tokens'],datasets:[{data:[inCost,outCost],backgroundColor:['#1d4ed8','#7c3aed'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#5a6170',font:{size:10},boxWidth:10}}}}
+  });
+}
+
+function fmt(n){
+  if(!n||isNaN(n)) return '0';
+  if(n>=1000000) return (n/1000000).toFixed(1)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  if(n>=1) return n.toFixed(2);
+  return n.toFixed(4);
+}
+
+function exportCSV(){
+  const rows=[['Cost layer','Monthly ($)','Per request ($)','% of TCO']];
+  document.querySelectorAll('#tco-table tr').forEach(tr=>{
+    rows.push([...tr.querySelectorAll('td')].map(td=>td.textContent.trim()).slice(0,4));
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='argovaa-tco-report.csv';a.click();
+}
+
+// Init
+renderAWSChart();
+calcTCO();
+</script>
+</body>
+</html>

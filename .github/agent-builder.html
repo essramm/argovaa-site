@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — Agent Builder</title>
+<meta name="description" content="Build and deploy AI agents connected to your data. 6-step wizard — domain, template, data, model, test, deploy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#e8edf3;--surface3:#dde3ec;
+  --ink:#0d1420;--mid:#4a5568;--faint:#b8c4d4;
+  --accent:#1a56db;--accent-bright:#2563eb;--accent-dim:rgba(26,86,219,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;
+  --bd:rgba(13,20,32,0.1);--bd2:rgba(13,20,32,0.05)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid var(--bd);background:rgba(240,244,248,0.97);backdrop-filter:blur(20px);flex-shrink:0}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ink);text-decoration:none}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-links a{font-size:11px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.2s;padding:0 12px;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.act{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-so{background:transparent;color:var(--mid);padding:6px 14px;font-size:12px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none}
+.btn-so:hover{border-color:var(--ink);color:var(--ink)}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 16px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+
+/* WIZARD SHELL */
+.wizard-shell{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:calc(100vh - 54px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--ink);padding:28px 0;border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto}
+.sidebar-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.3);padding:0 24px;margin-bottom:20px}
+.wizard-steps{display:flex;flex-direction:column;gap:0;flex:1}
+.wstep{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;transition:background 0.15s;position:relative;border-left:3px solid transparent}
+.wstep:hover{background:rgba(255,255,255,0.04)}
+.wstep.active{background:rgba(26,86,219,0.12);border-left-color:var(--accent)}
+.wstep.done{border-left-color:var(--emerald)}
+.wstep-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0;transition:all 0.2s}
+.wstep .wstep-num{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4)}
+.wstep.active .wstep-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.wstep.done .wstep-num{background:var(--emerald);border-color:var(--emerald);color:#fff}
+.wstep-info{}
+.wstep-name{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.4);font-weight:500}
+.wstep.active .wstep-name{color:rgba(255,255,255,0.9)}
+.wstep.done .wstep-name{color:#86efac}
+.wstep-sub{font-size:11px;color:rgba(255,255,255,0.25);margin-top:1px}
+.wstep.active .wstep-sub{color:rgba(255,255,255,0.45)}
+
+/* Agent summary in sidebar */
+.agent-summary{margin:20px 24px 0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:14px}
+.as-title{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-bottom:10px}
+.as-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
+.as-label{color:rgba(255,255,255,0.3)}
+.as-val{color:rgba(255,255,255,0.7);font-family:'DM Mono',monospace;font-size:10px;text-align:right;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* MAIN CONTENT */
+.wizard-main{padding:40px;overflow-y:auto;background:var(--bg)}
+.step-panel{display:none}.step-panel.active{display:block}
+.step-header{margin-bottom:32px}
+.step-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.step-tag::before{content:'';width:16px;height:1px;background:var(--accent)}
+.step-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,40px);letter-spacing:2px;color:var(--ink);margin-bottom:10px}
+.step-title .acc{color:var(--accent)}
+.step-desc{font-size:14px;color:var(--mid);line-height:1.7;max-width:560px;font-weight:300}
+
+/* DOMAIN CARDS */
+.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+.dcard{background:var(--surface);border:1px solid var(--bd);padding:20px;cursor:pointer;transition:all 0.15s;position:relative}
+.dcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.dcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.dcard.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:14px;color:var(--accent);font-weight:700}
+.dcard-icon{font-size:24px;margin-bottom:10px;opacity:0.7}
+.dcard-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:5px}
+.dcard-desc{font-size:12px;color:var(--mid);line-height:1.6}
+
+/* TEMPLATE CARDS */
+.template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px}
+.tcard{background:var(--surface);border:1px solid var(--bd);padding:18px;cursor:pointer;transition:all 0.15s;position:relative}
+.tcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.tcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.tcard.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:13px;color:var(--accent);font-weight:700}
+.tcard-name{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:4px}
+.tcard-desc{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:8px}
+.tcard-tags{display:flex;gap:5px;flex-wrap:wrap}
+.ttag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid var(--bd);color:var(--mid)}
+
+/* FIELDS */
+.field{margin-bottom:16px}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--bd);padding:10px 13px;color:var(--ink);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:100px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7}
+.field-hint{font-size:11px;color:var(--mid);margin-top:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* DATA SOURCE GRID */
+.ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ds-item{background:var(--surface);border:1px solid var(--bd);padding:14px 12px;text-align:center;cursor:pointer;transition:all 0.15s}
+.ds-item:hover{border-color:var(--accent);background:var(--accent-dim)}
+.ds-item.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.ds-icon{font-size:18px;margin-bottom:6px;opacity:0.6}
+.ds-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.3px;color:var(--ink)}
+.ds-connections{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.ds-conn{background:var(--surface);border:1px solid var(--bd);padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px}
+.ds-conn-icon{font-size:14px;flex-shrink:0}
+.ds-conn-input{flex:1;background:transparent;border:none;outline:none;font-size:12px;font-family:'DM Mono',monospace;color:var(--mid)}
+.ds-conn-input::placeholder{color:var(--faint)}
+.ds-conn-remove{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:0}
+
+/* MODEL CARDS */
+.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.mcard{background:var(--surface);border:1px solid var(--bd);padding:16px;cursor:pointer;transition:all 0.15s}
+.mcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.mcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.mcard-name{font-weight:500;font-size:13px;color:var(--ink);margin-bottom:3px}
+.mcard-provider{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;display:inline-block;margin-bottom:7px}
+.mp-openai{background:rgba(5,150,105,0.1);color:var(--emerald);border:1px solid rgba(5,150,105,0.2)}
+.mp-anthropic{background:rgba(220,38,38,0.08);color:var(--red);border:1px solid rgba(220,38,38,0.2)}
+.mp-azure{background:rgba(26,86,219,0.08);color:var(--accent);border:1px solid rgba(26,86,219,0.2)}
+.mp-oss{background:rgba(124,58,237,0.08);color:var(--purple);border:1px solid rgba(124,58,237,0.2)}
+.mcard-stats{display:flex;flex-direction:column;gap:3px}
+.mcard-stat{display:flex;justify-content:space-between;font-size:11px}
+.ms-label{color:var(--mid)}
+.ms-val{font-family:'DM Mono',monospace;color:var(--ink)}
+
+/* CHAT TESTER */
+.chat-tester{background:var(--surface);border:1px solid var(--bd);overflow:hidden;margin-bottom:20px}
+.ct-head{padding:12px 16px;background:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.ct-title{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px}
+.ct-status{font-family:'DM Mono',monospace;font-size:10px;display:flex;align-items:center;gap:5px}
+.ct-dot{width:5px;height:5px;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.ct-msgs{height:280px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.ct-msg{display:flex;gap:8px;align-items:flex-start}
+.ct-av{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:0.5px}
+.ct-bubble{padding:9px 12px;font-size:13px;line-height:1.6;max-width:88%}
+.msg-agent .ct-av{background:rgba(26,86,219,0.1);border:1px solid rgba(26,86,219,0.2);color:var(--accent)}
+.msg-agent .ct-bubble{background:var(--surface2);border:1px solid var(--bd);color:var(--ink)}
+.msg-user .ct-av{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);color:var(--purple)}
+.msg-user .ct-bubble{background:var(--accent-dim);border:1px solid rgba(26,86,219,0.15);color:var(--ink)}
+.msg-user{flex-direction:row-reverse}
+.ct-input-row{display:flex;gap:0;border-top:1px solid var(--bd)}
+.ct-input{flex:1;border:none;outline:none;padding:12px 14px;font-size:13px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--ink)}
+.ct-input::placeholder{color:var(--faint)}
+.ct-send{background:var(--accent);color:#fff;border:none;padding:0 20px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.ct-send:hover{background:var(--accent-bright)}
+.ct-send:disabled{background:var(--faint);cursor:not-allowed}
+.ct-typing{display:flex;gap:4px;align-items:center;padding:8px 12px}
+.ct-typing span{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:typing 1.2s infinite}
+.ct-typing span:nth-child(2){animation-delay:0.2s}
+.ct-typing span:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+
+/* DEPLOY PANEL */
+.deploy-card{background:var(--surface);border:1px solid var(--bd);padding:24px;margin-bottom:16px}
+.deploy-endpoint{background:var(--ink);border:1px solid rgba(255,255,255,0.08);padding:12px 16px;font-family:'DM Mono',monospace;font-size:12px;color:#86efac;display:flex;align-items:center;justify-content:space-between;margin:10px 0}
+.copy-btn{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;transition:color 0.2s}
+.copy-btn:hover{color:var(--accent-bright)}
+.code-block{background:var(--ink);border:1px solid rgba(255,255,255,0.06);overflow:hidden;margin-bottom:14px}
+.code-head{padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.code-body{padding:14px;overflow-x:auto}
+.code-body pre{font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
+.kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3)}.fn{color:#fde68a}.var{color:#d8b4fe}
+
+/* NAV BUTTONS */
+.wizard-nav{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:24px;border-top:1px solid var(--bd)}
+.btn-back{background:transparent;color:var(--mid);padding:11px 24px;font-size:13px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-back:hover{border-color:var(--ink);color:var(--ink)}
+.btn-next{background:var(--accent);color:#fff;padding:11px 28px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:8px}
+.btn-next:hover{background:var(--accent-bright)}
+.btn-next:disabled{background:var(--faint);cursor:not-allowed}
+.btn-deploy{background:var(--emerald);color:#fff;padding:11px 28px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-deploy:hover{background:#047857}
+
+/* SPINNER */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--bd);margin-bottom:32px}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.4s}
+
+/* SUCCESS */
+.success-banner{background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);padding:16px 20px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.success-icon{font-size:20px;flex-shrink:0}
+.success-text{font-size:14px;color:var(--emerald);font-weight:500}
+
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;flex-shrink:0}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flogo em{color:#60a5fa;font-style:normal}
+.flinks{display:flex;gap:18px}
+.flinks a{font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.3px;transition:color 0.2s}
+.flinks a:hover{color:#fff}
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2)}
+
+@media(max-width:900px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .wizard-shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .wizard-main{padding:24px 16px}
+  .domain-grid,.model-grid{grid-template-columns:1fr 1fr}
+  .template-grid,.ds-grid{grid-template-columns:1fr 1fr}
+  footer{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">ARG<em>O</em>VAA</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="agent-builder.html" class="act">Agent builder</a></li>
+    <li><a href="benchmarks.html">Benchmarks</a></li>
+    <li><a href="golden-signals.html">SRE signals</a></li>
+    <li><a href="tco.html">TCO</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
+    <li><a href="analyser.html">GC analyser</a></li>
+    <li><a href="perftest.html">Benchmarking</a></li>
+  </ul>
+  <div class="nav-right">
+    <span id="nav-user" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid)"></span>
+    <a href="login.html" class="btn-so">Sign in</a>
+  </div>
+</nav>
+
+<div class="wizard-shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Build your agent</div>
+    <div class="wizard-steps">
+      <div class="wstep active" id="s1" onclick="goStep(1)">
+        <div class="wstep-num">1</div>
+        <div class="wstep-info"><div class="wstep-name">Domain</div><div class="wstep-sub">Choose your industry</div></div>
+      </div>
+      <div class="wstep" id="s2" onclick="goStep(2)">
+        <div class="wstep-num">2</div>
+        <div class="wstep-info"><div class="wstep-name">Template</div><div class="wstep-sub">Pick a use case</div></div>
+      </div>
+      <div class="wstep" id="s3" onclick="goStep(3)">
+        <div class="wstep-num">3</div>
+        <div class="wstep-info"><div class="wstep-name">Data sources</div><div class="wstep-sub">Connect your data</div></div>
+      </div>
+      <div class="wstep" id="s4" onclick="goStep(4)">
+        <div class="wstep-num">4</div>
+        <div class="wstep-info"><div class="wstep-name">Model & config</div><div class="wstep-sub">Choose LLM + settings</div></div>
+      </div>
+      <div class="wstep" id="s5" onclick="goStep(5)">
+        <div class="wstep-num">5</div>
+        <div class="wstep-info"><div class="wstep-name">Test agent</div><div class="wstep-sub">Try it live</div></div>
+      </div>
+      <div class="wstep" id="s6" onclick="goStep(6)">
+        <div class="wstep-num">6</div>
+        <div class="wstep-info"><div class="wstep-name">Deploy</div><div class="wstep-sub">Get your endpoint</div></div>
+      </div>
+    </div>
+    <div class="agent-summary">
+      <div class="as-title">Agent config</div>
+      <div class="as-row"><span class="as-label">Domain</span><span class="as-val" id="sum-domain">—</span></div>
+      <div class="as-row"><span class="as-label">Template</span><span class="as-val" id="sum-template">—</span></div>
+      <div class="as-row"><span class="as-label">Model</span><span class="as-val" id="sum-model">—</span></div>
+      <div class="as-row"><span class="as-label">Data sources</span><span class="as-val" id="sum-datasources">0 connected</span></div>
+      <div class="as-row"><span class="as-label">Status</span><span class="as-val" id="sum-status" style="color:#fde68a">Draft</span></div>
+    </div>
+  </div>
+
+  <!-- MAIN WIZARD -->
+  <div class="wizard-main">
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:16.6%"></div></div>
+
+    <!-- ── STEP 1: DOMAIN ── -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-header">
+        <div class="step-tag">Step 1 of 6</div>
+        <div class="step-title">CHOOSE YOUR <span class="acc">DOMAIN</span></div>
+        <div class="step-desc">Select the industry vertical your agent will operate in. This loads the right templates, guardrails, and compliance defaults for your use case.</div>
+      </div>
+      <div class="domain-grid">
+        <div class="dcard" onclick="selectDomain(this,'Finance','💼')">
+          <div class="dcard-icon">💼</div>
+          <div class="dcard-name">Finance</div>
+          <div class="dcard-desc">Portfolio analysis, revenue variance, invoice triage, fraud detection, financial Q&amp;A</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'Healthcare','🏥')">
+          <div class="dcard-icon">🏥</div>
+          <div class="dcard-name">Healthcare</div>
+          <div class="dcard-desc">Patient intake, claims review, appointment triage, clinical summarisation</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'Retail','🛒')">
+          <div class="dcard-icon">🛒</div>
+          <div class="dcard-name">Retail</div>
+          <div class="dcard-desc">Personal shopping, inventory forecast, returns assistant, promotions optimizer</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'Technology','⚙')">
+          <div class="dcard-icon">⚙</div>
+          <div class="dcard-name">Technology</div>
+          <div class="dcard-desc">SRE incident copilot, code support, release risk analyst, customer success agent</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'HR & People','👥')">
+          <div class="dcard-icon">👥</div>
+          <div class="dcard-name">HR &amp; People</div>
+          <div class="dcard-desc">HR assistant, onboarding guide, policy Q&amp;A, benefits advisor</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'General Business','◈')">
+          <div class="dcard-icon">◈</div>
+          <div class="dcard-name">General Business</div>
+          <div class="dcard-desc">Sales enablement, knowledge base, contract review, document Q&amp;A</div>
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <div></div>
+        <button class="btn-next" id="next-1" onclick="goStep(2)" disabled>Next: Choose template →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: TEMPLATE ── -->
+    <div class="step-panel" id="step-2">
+      <div class="step-header">
+        <div class="step-tag">Step 2 of 6</div>
+        <div class="step-title">SELECT A <span class="acc">TEMPLATE</span></div>
+        <div class="step-desc">Pick a pre-built agent template or start from scratch. Templates include system prompts, suggested data sources, and guardrails.</div>
+      </div>
+      <div class="template-grid" id="template-grid">
+        <!-- Filled by JS based on domain selection -->
+      </div>
+
+      <div style="margin-top:8px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">Or customise your agent</div>
+        <div class="field">
+          <label>Agent name</label>
+          <input type="text" id="agent-name" placeholder="e.g. Cost Analyst, Support Bot, Document QA..." oninput="updateSummary()">
+        </div>
+        <div class="field">
+          <label>System prompt</label>
+          <textarea id="system-prompt" placeholder="You are a helpful AI agent that...&#10;&#10;Your job is to...&#10;&#10;Always respond with..."></textarea>
+          <div class="field-hint">Defines how your agent behaves. Templates fill this automatically.</div>
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" id="next-2" onclick="goStep(3)" disabled>Next: Connect data →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: DATA SOURCES ── -->
+    <div class="step-panel" id="step-3">
+      <div class="step-header">
+        <div class="step-tag">Step 3 of 6</div>
+        <div class="step-title">CONNECT YOUR <span class="acc">DATA</span></div>
+        <div class="step-desc">Point your agent to any data source. It will index your data and know how to query it in context. You can connect multiple sources.</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:10px">Choose data sources to connect</div>
+      <div class="ds-grid">
+        <div class="ds-item" onclick="toggleDS(this,'s3','☁','AWS S3')"><div class="ds-icon">☁</div><div class="ds-name">AWS S3</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'pg','🗄','PostgreSQL')"><div class="ds-icon">🗄</div><div class="ds-name">PostgreSQL</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'mysql','⚡','MySQL')"><div class="ds-icon">⚡</div><div class="ds-name">MySQL</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'mongo','🍃','MongoDB')"><div class="ds-icon">🍃</div><div class="ds-name">MongoDB</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'pdf','📄','PDF / Docs')"><div class="ds-icon">📄</div><div class="ds-name">PDF / Docs</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'sheets','📋','Google Sheets')"><div class="ds-icon">📋</div><div class="ds-name">Google Sheets</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'api','🔗','REST API')"><div class="ds-icon">🔗</div><div class="ds-name">REST API</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'slack','💬','Slack')"><div class="ds-icon">💬</div><div class="ds-name">Slack</div></div>
+      </div>
+
+      <div class="ds-connections" id="ds-connections">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>
+      </div>
+
+      <div style="margin-top:20px;background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.15);padding:12px 14px;font-size:12px;color:var(--mid)">
+        ✓ You can also skip this step and connect data later — your agent will work with general knowledge until data sources are added.
+      </div>
+
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" onclick="goStep(4)">Next: Model &amp; config →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: MODEL & CONFIG ── -->
+    <div class="step-panel" id="step-4">
+      <div class="step-header">
+        <div class="step-tag">Step 4 of 6</div>
+        <div class="step-title">MODEL &amp; <span class="acc">CONFIGURATION</span></div>
+        <div class="step-desc">Choose the LLM your agent will use, set a fallback model, and configure budget and behaviour policies.</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:10px">Primary model</div>
+      <div class="model-grid">
+        <div class="mcard" onclick="selectModel(this,'claude-3-5-sonnet','Anthropic','$3/$15 per 1M','200K ctx','High quality')">
+          <div class="mcard-name">Claude 3.5 Sonnet</div>
+          <span class="mcard-provider mp-anthropic">Anthropic</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$3/$15 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">200K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Reasoning</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'gpt-4o','OpenAI','$5/$15 per 1M','128K ctx','Multi-modal')">
+          <div class="mcard-name">GPT-4o</div>
+          <span class="mcard-provider mp-openai">OpenAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$5/$15 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Multi-modal</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'claude-3-haiku','Anthropic','$0.25/$1.25 per 1M','200K ctx','Fast & cheap')">
+          <div class="mcard-name">Claude 3 Haiku</div>
+          <span class="mcard-provider mp-anthropic">Anthropic</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.25/$1.25</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">200K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">High volume</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'gpt-4o-mini','OpenAI','$0.15/$0.60 per 1M','128K ctx','Cost efficient')">
+          <div class="mcard-name">GPT-4o mini</div>
+          <span class="mcard-provider mp-openai">OpenAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.15/$0.60</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Scale</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'llama-3-70b','Open source','$0.90/$0.90 per 1M','128K ctx','Open source')">
+          <div class="mcard-name">Llama 3 70B</div>
+          <span class="mcard-provider mp-oss">Open source</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.90/$0.90</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Open source</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'azure-gpt-4','Azure OAI','$10/$30 per 1M','128K ctx','Enterprise')">
+          <div class="mcard-name">Azure GPT-4 Turbo</div>
+          <span class="mcard-provider mp-azure">Azure OAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$10/$30 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Enterprise</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row" style="margin-top:16px">
+        <div class="field">
+          <label>Monthly token budget ($)</label>
+          <input type="number" id="token-budget" value="100" min="0" step="10">
+          <div class="field-hint">Agent pauses if budget is exceeded</div>
+        </div>
+        <div class="field">
+          <label>Max tokens per response</label>
+          <input type="number" id="max-tokens" value="1000" min="100" max="4000" step="100">
+        </div>
+      </div>
+      <div class="field">
+        <label>Guardrails &amp; safety rules</label>
+        <select id="guardrails">
+          <option value="standard">Standard — block harmful content, PII masking</option>
+          <option value="strict">Strict — add HIPAA/finance compliance layer</option>
+          <option value="minimal">Minimal — basic safety only</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Human approval for actions?</label>
+        <select id="human-approval">
+          <option value="no">No — fully autonomous</option>
+          <option value="high-risk">Yes — for high-risk actions only</option>
+          <option value="all">Yes — approve all actions before execution</option>
+        </select>
+      </div>
+
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-next" id="next-4" onclick="goStep(5)" disabled>Next: Test agent →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 5: TEST ── -->
+    <div class="step-panel" id="step-5">
+      <div class="step-header">
+        <div class="step-tag">Step 5 of 6</div>
+        <div class="step-title">TEST YOUR <span class="acc">AGENT</span></div>
+        <div class="step-desc">Try your agent live before deploying. It's running with your system prompt and model configuration — powered by Claude AI.</div>
+      </div>
+
+      <div class="chat-tester">
+        <div class="ct-head">
+          <span class="ct-title" id="ct-agent-name">Your agent</span>
+          <span class="ct-status">
+            <span class="ct-dot" style="background:#86efac"></span>
+            <span style="color:#86efac;font-size:10px">LIVE · Powered by Claude</span>
+          </span>
+        </div>
+        <div class="ct-msgs" id="ct-msgs">
+          <div class="ct-msg msg-agent">
+            <div class="ct-av">AI</div>
+            <div class="ct-bubble" id="ct-welcome">Hi! I'm your agent. Ask me anything — I'm running with your configured system prompt and will respond based on your settings.</div>
+          </div>
+        </div>
+        <div class="ct-input-row">
+          <input class="ct-input" id="ct-input" type="text" placeholder="Type a message to test your agent..." onkeydown="if(event.key==='Enter')sendTest()">
+          <button class="ct-send" id="ct-send" onclick="sendTest()">Send →</button>
+        </div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid var(--bd);padding:14px 16px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">Suggested test prompts</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="test-prompts">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(4)">← Back</button>
+        <button class="btn-next" onclick="goStep(6)">Next: Deploy →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 6: DEPLOY ── -->
+    <div class="step-panel" id="step-6">
+      <div class="step-header">
+        <div class="step-tag">Step 6 of 6</div>
+        <div class="step-title">DEPLOY YOUR <span class="acc">AGENT</span></div>
+        <div class="step-desc">Your agent is ready to deploy. Click Deploy to get a live REST endpoint and embed widget.</div>
+      </div>
+
+      <div id="pre-deploy">
+        <div class="deploy-card">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:16px">DEPLOYMENT SUMMARY</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px" id="deploy-summary"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-deploy" onclick="deployAgent()" id="deploy-btn" style="display:flex;align-items:center;gap:8px">
+              <span id="deploy-spinner" class="spinner" style="display:none"></span>
+              <span id="deploy-text">🚀 Deploy agent</span>
+            </button>
+            <button class="btn-back" onclick="goStep(5)">← Test more</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="post-deploy" style="display:none">
+        <div class="success-banner">
+          <div class="success-icon">✅</div>
+          <div><div class="success-text">Agent deployed successfully!</div><div style="font-size:12px;color:var(--mid);margin-top:2px">Your agent is live at the endpoint below</div></div>
+        </div>
+
+        <div class="deploy-card">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">REST API endpoint</div>
+          <div class="deploy-endpoint">
+            <span id="endpoint-url">https://agents.argovaa.com/v1/—</span>
+            <button class="copy-btn" onclick="copyEndpoint()">Copy</button>
+          </div>
+
+          <div class="code-block">
+            <div class="code-head"><span class="code-lang">cURL — test your deployed agent</span><button class="copy-btn" style="color:var(--accent)" onclick="copyCurl()">Copy</button></div>
+            <div class="code-body"><pre id="curl-code"><span class="fn">curl</span> -X POST <span class="str">"https://agents.argovaa.com/v1/ask"</span> \
+  -H <span class="str">"Authorization: Bearer arg_live_xxxx"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"agent_id":"<span id="agent-id-curl">agent_xxxx</span>","question":"Hello!"}'</span></pre></div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-head"><span class="code-lang">Embed widget — one line of HTML</span><button class="copy-btn" style="color:var(--accent)" onclick="copyWidget()">Copy</button></div>
+            <div class="code-body"><pre id="widget-code"><span class="kw">&lt;script</span>
+  src=<span class="str">"https://cdn.argovaa.com/widget.js"</span>
+  data-agent=<span class="str">"<span id="agent-id-widget">agent_xxxx</span>"</span>
+  data-theme=<span class="str">"light"</span>
+  data-title=<span class="str">"<span id="agent-name-widget">My agent</span>"</span>
+<span class="kw">&gt;&lt;/script&gt;</span></pre></div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a href="golden-signals.html" style="background:var(--accent);color:#fff;padding:10px 20px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Monitor golden signals →</a>
+            <a href="tco.html" style="background:transparent;color:var(--mid);padding:10px 20px;font-size:13px;border:1px solid var(--bd);font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Track TCO →</a>
+            <button onclick="resetWizard()" style="background:transparent;color:var(--mid);padding:10px 20px;font-size:13px;border:1px solid var(--bd);font-family:'DM Sans',sans-serif;cursor:pointer">Build another agent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /wizard-main -->
+</div><!-- /wizard-shell -->
+
+<footer>
+  <a href="index.html" class="flogo">ARG<em>O</em>VAA</a>
+  <div class="flinks">
+    <a href="index.html">Home</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="golden-signals.html">SRE signals</a>
+    <a href="tco.html">TCO</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="analyser.html">GC analyser</a>
+  </div>
+  <div class="fcopy">© 2025 ARGOVAA.COM · seeth.gudetee@gmail.com</div>
+</footer>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+const state = {
+  step: 1,
+  domain: '',
+  domainIcon: '',
+  template: '',
+  templatePrompt: '',
+  agentName: '',
+  systemPrompt: '',
+  model: '',
+  dataSources: [],
+  agentId: '',
+};
+
+// ── Templates per domain ──────────────────────────────────────────────────────
+const TEMPLATES = {
+  'Finance': [
+    {name:'Portfolio Assistant',desc:'Answers questions about portfolio performance, allocation, and risk based on your data.',prompt:'You are a financial portfolio assistant. Analyse portfolio data, explain performance metrics, and provide clear investment summaries. Always cite data sources. Never provide investment advice or recommendations — only analysis.',tags:['CSV data','Bloomberg','Postgres']},
+    {name:'Revenue Variance Analyst',desc:'Explains revenue variances vs plan, identifies drivers, and summarises findings.',prompt:'You are a revenue analytics agent. When asked about revenue variances, query the connected data, identify the top 3-5 drivers, and explain them clearly with numbers.',tags:['Snowflake','Salesforce','ERP']},
+    {name:'Invoice Triage Agent',desc:'Reviews and categorises incoming invoices, flags anomalies, and suggests approval routing.',prompt:'You are an invoice processing agent. Review invoice data, flag duplicates or anomalies, and suggest approval workflows based on amount thresholds and vendor history.',tags:['ERP','PostgreSQL','Email']},
+    {name:'Fraud Analyst',desc:'Scans transaction data for unusual patterns and flags potential fraud cases.',prompt:'You are a fraud detection agent. Analyse transactions for anomalies, unusual patterns, or policy violations. Flag suspicious items with reasoning and confidence score.',tags:['Postgres','S3 logs','Real-time stream']},
+  ],
+  'Healthcare': [
+    {name:'Patient Intake Assistant',desc:'Collects patient information, checks eligibility, and prepares intake summaries for clinicians.',prompt:'You are a patient intake assistant. Collect and validate patient information, check insurance eligibility, and create structured intake summaries. Always protect PHI. Never provide medical diagnoses.',tags:['EHR','CRM','Forms']},
+    {name:'Claims Review Agent',desc:'Reviews insurance claims for completeness, flags missing info, and tracks status.',prompt:'You are a healthcare claims agent. Review claims for completeness and accuracy, identify missing documentation, and summarise claim status. Flag anything requiring clinical review.',tags:['Claims system','PostgreSQL','S3']},
+    {name:'Appointment Triage',desc:'Prioritises appointment requests and routes urgent cases appropriately.',prompt:'You are an appointment triage agent. Evaluate appointment requests, assess urgency based on symptoms described, and recommend scheduling priority. Always escalate potential emergencies immediately.',tags:['EHR','Scheduler','SMS']},
+    {name:'Clinical Summarizer',desc:'Generates concise summaries from clinical notes and records for handoffs.',prompt:'You are a clinical documentation agent. Summarise clinical notes clearly and accurately for care team handoffs. Never infer diagnoses not explicitly stated in records.',tags:['EHR','HL7','FHIR']},
+  ],
+  'Retail': [
+    {name:'Personal Shopping Agent',desc:'Recommends products based on customer preferences, history, and inventory.',prompt:'You are a personal shopping assistant. Use customer purchase history and preferences to make relevant product recommendations. Be conversational, helpful, and never pushy.',tags:['Product catalog','Order history','CRM']},
+    {name:'Inventory Forecast',desc:'Analyses sales velocity and recommends reorder quantities and timing.',prompt:'You are an inventory forecasting agent. Analyse sales velocity, seasonal patterns, and lead times to recommend reorder points and quantities. Flag stockout risks proactively.',tags:['ERP','POS system','S3']},
+    {name:'Returns Assistant',desc:'Handles returns requests, checks eligibility, and initiates processes.',prompt:'You are a returns processing agent. Check return eligibility based on purchase date and policy, guide customers through the process, and initiate approved returns automatically.',tags:['Order system','Policy docs','CRM']},
+    {name:'Promotion Optimizer',desc:'Analyses promotion performance and recommends targeting and offer improvements.',prompt:'You are a promotions analytics agent. Analyse campaign performance data, identify what offers drove the best conversion and margin, and suggest optimisations for future campaigns.',tags:['Analytics','Pricing DB','Customer segments']},
+  ],
+  'Technology': [
+    {name:'SRE Incident Copilot',desc:'Investigates incidents using logs and metrics to suggest root cause and next steps.',prompt:'You are an SRE incident investigation agent. When an incident is reported, query the connected log and metrics data, identify anomalies in the timeframe, suggest likely root causes, and recommend immediate mitigation steps. Be concise and technical.',tags:['CloudWatch','Datadog','K8s logs']},
+    {name:'Code Support Agent',desc:'Answers questions about the codebase, explains patterns, and helps debug issues.',prompt:'You are a code support agent connected to the engineering knowledge base. Answer questions about code, explain architectural decisions, suggest debugging approaches, and link to relevant documentation.',tags:['GitHub','Confluence','Jira']},
+    {name:'Release Risk Analyst',desc:'Evaluates deployment plans and flags risk areas before releases.',prompt:'You are a release risk analysis agent. Review deployment plans, recent changes, and service dependencies to identify risks. Flag high-risk areas and suggest mitigation steps or rollback triggers.',tags:['CI/CD','GitHub','Runbooks']},
+    {name:'Customer Success Agent',desc:'Tracks customer health signals and recommends proactive interventions.',prompt:'You are a customer success agent. Monitor usage data, support tickets, and NPS signals to identify at-risk customers. Recommend specific outreach actions and escalation paths.',tags:['Salesforce','Product analytics','Support']},
+  ],
+  'HR & People': [
+    {name:'HR Assistant',desc:'Answers employee questions about policies, benefits, and processes.',prompt:'You are an HR assistant. Answer employee questions accurately using connected HR policy documents and benefit guides. Be empathetic, clear, and always recommend speaking with HR directly for sensitive personal matters.',tags:['Policy docs','HRIS','Benefits portal']},
+    {name:'Onboarding Guide',desc:'Guides new employees through onboarding tasks and answers first-week questions.',prompt:'You are a new employee onboarding assistant. Guide new hires through setup tasks, answer questions about company policies and culture, and help them find the right people and resources.',tags:['HRIS','Docs','Slack']},
+    {name:'Policy Q&A Agent',desc:'Answers questions about company policies from connected HR documents.',prompt:'You are an HR policy agent. Answer questions about company policies by referencing the connected policy documents. Always cite the specific policy and section. Never speculate about policies.',tags:['Policy PDF','SharePoint','Confluence']},
+  ],
+  'General Business': [
+    {name:'Knowledge Base Agent',desc:'Answers questions from your connected knowledge base or document library.',prompt:'You are a knowledge base assistant. Answer questions using the connected documents and knowledge base. Always cite your source. If the answer is not in the knowledge base, say so clearly.',tags:['Confluence','S3 docs','Notion']},
+    {name:'Sales Enablement Agent',desc:'Helps sales reps with competitive positioning, objection handling, and product info.',prompt:'You are a sales enablement agent. Help sales representatives with accurate product information, competitive analysis, objection handling guides, and proposal templates from the connected sales knowledge base.',tags:['CRM','Playbooks','Competitive intel']},
+    {name:'Document Q&A',desc:'Reads and answers questions across large document libraries and PDFs.',prompt:'You are a document analysis agent. Read and answer questions across the connected document library. Quote relevant sections, cite source documents, and summarise complex topics clearly.',tags:['PDF library','S3','SharePoint']},
+    {name:'Contract Review',desc:'Reviews contracts for key terms, risks, and missing clauses.',prompt:'You are a contract review agent. Review contracts for key terms, unusual clauses, missing standard provisions, and potential risks. Provide a structured summary with risk ratings. Always recommend legal review before signing.',tags:['PDF uploads','Contract DB','Legal docs']},
+  ],
+};
+
+const TEST_PROMPTS = {
+  'Finance':['What was our revenue last quarter?','Show me the top 5 variances vs budget','Any unusual transactions this week?'],
+  'Healthcare':['Summarise the last 3 patient intake forms','Are there any pending claims over 30 days?','What appointments are scheduled for tomorrow?'],
+  'Retail':['What products should I reorder this week?','Show me our best-performing promotions last month','Which customers are most likely to churn?'],
+  'Technology':['We have an incident on the payments service — what do the logs show?','What changed in the last deployment?','Which customers have high support ticket volume?'],
+  'HR & People':['What is our remote work policy?','How many PTO days do I have?','Walk me through the onboarding checklist'],
+  'General Business':['Summarise our Q3 strategy document','What are our top 3 competitive differentiators?','Find the latest version of the product roadmap'],
+};
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function goStep(n) {
+  // Validate before advancing
+  if(n > state.step) {
+    if(state.step === 1 && !state.domain) return;
+    if(state.step === 2 && !document.getElementById('agent-name').value.trim()) return;
+    if(state.step === 4 && !state.model) return;
+  }
+
+  state.step = n;
+
+  // Update sidebar
+  document.querySelectorAll('.wstep').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if(i+1 === n) s.classList.add('active');
+    if(i+1 < n)  s.classList.add('done');
+  });
+
+  // Update panels
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+
+  // Update progress
+  document.getElementById('progress').style.width = (n/6*100)+'%';
+
+  // Step-specific setup
+  if(n === 2) renderTemplates();
+  if(n === 5) setupTester();
+  if(n === 6) renderDeploySummary();
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Step 1: Domain ────────────────────────────────────────────────────────────
+function selectDomain(el, name, icon) {
+  document.querySelectorAll('.dcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.domain = name;
+  state.domainIcon = icon;
+  document.getElementById('sum-domain').textContent = name;
+  document.getElementById('next-1').disabled = false;
+  updateWelcomeMsg();
+}
+
+// ── Step 2: Templates ─────────────────────────────────────────────────────────
+function renderTemplates() {
+  const templates = TEMPLATES[state.domain] || TEMPLATES['General Business'];
+  const grid = document.getElementById('template-grid');
+  grid.innerHTML = templates.map((t,i) => `
+    <div class="tcard" onclick="selectTemplate(this,'${t.name}',${i})">
+      <div class="tcard-name">${t.name}</div>
+      <div class="tcard-desc">${t.desc}</div>
+      <div class="tcard-tags">${t.tags.map(tag=>`<span class="ttag">${tag}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function selectTemplate(el, name, idx) {
+  document.querySelectorAll('.tcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.template = name;
+  const templates = TEMPLATES[state.domain] || TEMPLATES['General Business'];
+  const t = templates[idx];
+  state.templatePrompt = t.prompt;
+  document.getElementById('agent-name').value = name;
+  document.getElementById('system-prompt').value = t.prompt;
+  document.getElementById('sum-template').textContent = name;
+  document.getElementById('next-2').disabled = false;
+  updateSummary();
+}
+
+function updateSummary() {
+  const name = document.getElementById('agent-name').value.trim();
+  state.agentName = name;
+  state.systemPrompt = document.getElementById('system-prompt').value.trim();
+  if(name) document.getElementById('next-2').disabled = false;
+}
+
+// ── Step 3: Data sources ──────────────────────────────────────────────────────
+const DS_PLACEHOLDERS = {
+  's3':'s3://your-bucket/data/',
+  'pg':'postgresql://user:pass@host:5432/dbname',
+  'mysql':'mysql://user:pass@host:3306/dbname',
+  'mongo':'mongodb://user:pass@host:27017/dbname',
+  'pdf':'Upload PDF files or paste URL',
+  'sheets':'https://docs.google.com/spreadsheets/d/...',
+  'api':'https://api.yourservice.com/v1/endpoint',
+  'slack':'xoxb-your-slack-bot-token',
+};
+
+function toggleDS(el, type, icon, label) {
+  el.classList.toggle('selected');
+  const isSelected = el.classList.contains('selected');
+  const conns = document.getElementById('ds-connections');
+
+  if(isSelected) {
+    state.dataSources.push(type);
+    const row = document.createElement('div');
+    row.className = 'ds-conn';
+    row.id = 'conn-'+type;
+    row.innerHTML = `<span class="ds-conn-icon">${icon}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink);min-width:80px">${label}</span>
+      <input class="ds-conn-input" placeholder="${DS_PLACEHOLDERS[type]||'Connection string...'}" oninput="state.dataSources.includes('${type}') || state.dataSources.push('${type}')">
+      <button class="ds-conn-remove" onclick="removeDS('${type}',this.closest('.ds-conn'),document.querySelector('[onclick*=\\'${type}\\']'))">✕</button>`;
+    // Remove placeholder if present
+    const placeholder = conns.querySelector('div[style]');
+    if(placeholder) placeholder.remove();
+    conns.appendChild(row);
+  } else {
+    removeDS(type, document.getElementById('conn-'+type), el);
+  }
+  document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
+}
+
+function removeDS(type, row, card) {
+  state.dataSources = state.dataSources.filter(d => d !== type);
+  if(row) row.remove();
+  if(card) card.classList.remove('selected');
+  const conns = document.getElementById('ds-connections');
+  if(conns.children.length === 0) {
+    conns.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>';
+  }
+  document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
+}
+
+// ── Step 4: Model ─────────────────────────────────────────────────────────────
+function selectModel(el, name, provider, cost, ctx, bestFor) {
+  document.querySelectorAll('.mcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.model = name;
+  document.getElementById('sum-model').textContent = name;
+  document.getElementById('next-4').disabled = false;
+}
+
+// ── Step 5: Test ──────────────────────────────────────────────────────────────
+function setupTester() {
+  const name = state.agentName || 'Your agent';
+  document.getElementById('ct-agent-name').textContent = name;
+  document.getElementById('ct-welcome').textContent = `Hi! I'm ${name}. ${state.template ? 'I\'m configured as a ' + state.template + '.' : ''} Ask me anything to test how I respond.`;
+
+  // Test prompts
+  const prompts = TEST_PROMPTS[state.domain] || ['Hello, what can you help me with?', 'Give me a summary of recent activity', 'What data do you have access to?'];
+  document.getElementById('test-prompts').innerHTML = prompts.map(p =>
+    `<button onclick="document.getElementById('ct-input').value='${p}';sendTest()" style="background:var(--surface);border:1px solid var(--bd);padding:6px 12px;font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;color:var(--mid);transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--mid)'">${p}</button>`
+  ).join('');
+}
+
+async function sendTest() {
+  const inp = document.getElementById('ct-input');
+  const msg = inp.value.trim();
+  if(!msg) return;
+
+  const msgs = document.getElementById('ct-msgs');
+  inp.value = '';
+
+  // Add user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'ct-msg msg-user';
+  userDiv.innerHTML = `<div class="ct-av">You</div><div class="ct-bubble">${msg}</div>`;
+  msgs.appendChild(userDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ct-msg msg-agent';
+  typingDiv.id = 'ct-typing';
+  typingDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble"><div class="ct-typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  document.getElementById('ct-send').disabled = true;
+
+  // Build system prompt with agent config
+  const sysPrompt = state.systemPrompt ||
+    `You are ${state.agentName || 'an AI assistant'} built on Argovaa. Domain: ${state.domain || 'General'}. ${state.template ? 'Role: ' + state.template + '.' : ''} Be helpful, accurate, and concise.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sysPrompt,
+        messages: [{role:'user', content: msg}]
+      })
+    });
+
+    const data = await res.json();
+    const answer = data.content?.[0]?.text || 'I couldn\'t process that request.';
+    typingDiv.remove();
+
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ct-msg msg-agent';
+    botDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble">${answer.replace(/\n/g,'<br>')}</div>`;
+    msgs.appendChild(botDiv);
+
+  } catch(e) {
+    typingDiv.remove();
+    // Fallback local response
+    const fallback = generateFallback(msg, state.domain, state.template, state.agentName);
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ct-msg msg-agent';
+    botDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble">${fallback}</div>`;
+    msgs.appendChild(botDiv);
+  }
+
+  document.getElementById('ct-send').disabled = false;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function generateFallback(msg, domain, template, name) {
+  const ml = msg.toLowerCase();
+  if(ml.includes('hello') || ml.includes('hi')) return `Hi! I'm ${name || 'your AI agent'} — a ${template || domain} assistant. I'm ready to help. What would you like to know?`;
+  if(ml.includes('what can you') || ml.includes('help')) return `I'm configured as a <strong>${template || domain + ' agent'}</strong>. I can answer questions, analyse data from your connected sources, and help with ${domain}-specific tasks. What would you like to explore?`;
+  if(ml.includes('data') || ml.includes('source')) return `I have access to ${state.dataSources.length > 0 ? state.dataSources.join(', ') : 'the data sources you configured'}. Once connected, I can query them in real time to answer your questions accurately.`;
+  return `As your ${template || domain} agent, I'd typically query your connected data sources to answer that. Once deployed with live data connections, I'll give you accurate, real-time answers based on your actual data.`;
+}
+
+// ── Step 6: Deploy ────────────────────────────────────────────────────────────
+function renderDeploySummary() {
+  const items = [
+    {label:'Agent name', val: state.agentName || '—'},
+    {label:'Domain', val: state.domain || '—'},
+    {label:'Template', val: state.template || 'Custom'},
+    {label:'Model', val: state.model || '—'},
+    {label:'Data sources', val: state.dataSources.length + ' connected'},
+    {label:'Budget', val: '$' + (document.getElementById('token-budget')?.value || '100') + '/mo'},
+    {label:'Guardrails', val: document.getElementById('guardrails')?.value || 'standard'},
+    {label:'Human approval', val: document.getElementById('human-approval')?.value || 'no'},
+  ];
+  document.getElementById('deploy-summary').innerHTML = items.map(i =>
+    `<div style="background:var(--surface);padding:12px 16px"><div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px">${i.label}</div><div style="font-size:13px;font-weight:500;color:var(--ink)">${i.val}</div></div>`
+  ).join('');
+}
+
+async function deployAgent() {
+  const btn = document.getElementById('deploy-btn');
+  const spinner = document.getElementById('deploy-spinner');
+  const text = document.getElementById('deploy-text');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  text.textContent = 'Deploying...';
+
+  // Simulate deployment
+  await new Promise(r => setTimeout(r, 2000));
+
+  // Generate agent ID
+  state.agentId = 'agent_' + Math.random().toString(36).substr(2,8);
+  const agentName = (state.agentName||'agent').toLowerCase().replace(/\s+/g,'-');
+
+  // Show post-deploy
+  document.getElementById('pre-deploy').style.display = 'none';
+  document.getElementById('post-deploy').style.display = 'block';
+
+  const endpoint = `https://agents.argovaa.com/v1/${state.agentId}`;
+  document.getElementById('endpoint-url').textContent = endpoint;
+  document.getElementById('agent-id-curl').textContent = state.agentId;
+  document.getElementById('agent-id-widget').textContent = state.agentId;
+  document.getElementById('agent-name-widget').textContent = state.agentName || 'My agent';
+
+  // Update sidebar
+  document.getElementById('sum-status').textContent = 'Live ✓';
+  document.getElementById('sum-status').style.color = '#86efac';
+  document.querySelectorAll('.wstep').forEach(s => s.classList.add('done'));
+  document.querySelector('#s6').classList.remove('done');
+  document.querySelector('#s6').classList.add('active');
+}
+
+function copyEndpoint() {
+  navigator.clipboard.writeText(document.getElementById('endpoint-url').textContent);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+function copyCurl() {
+  navigator.clipboard.writeText(document.getElementById('curl-code').innerText);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+function copyWidget() {
+  navigator.clipboard.writeText(document.getElementById('widget-code').innerText);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+
+function resetWizard() {
+  Object.assign(state, {step:1,domain:'',template:'',agentName:'',systemPrompt:'',model:'',dataSources:[],agentId:''});
+  document.querySelectorAll('.dcard,.tcard,.mcard,.ds-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('sum-domain').textContent = '—';
+  document.getElementById('sum-template').textContent = '—';
+  document.getElementById('sum-model').textContent = '—';
+  document.getElementById('sum-datasources').textContent = '0 connected';
+  document.getElementById('sum-status').textContent = 'Draft';
+  document.getElementById('sum-status').style.color = '#fde68a';
+  document.getElementById('pre-deploy').style.display = 'block';
+  document.getElementById('post-deploy').style.display = 'none';
+  document.getElementById('ds-connections').innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>';
+  goStep(1);
+}
+
+function updateWelcomeMsg() {}
+
+// Read domain from URL param
+const urlParams = new URLSearchParams(window.location.search);
+const domainParam = urlParams.get('domain');
+if(domainParam) {
+  const domainMap = {finance:'Finance',healthcare:'Healthcare',retail:'Retail',technology:'Technology',general:'General Business'};
+  const mapped = domainMap[domainParam.toLowerCase()];
+  if(mapped) {
+    setTimeout(() => {
+      const cards = document.querySelectorAll('.dcard');
+      cards.forEach(c => { if(c.querySelector('.dcard-name').textContent===mapped) { c.click(); } });
+    }, 300);
+  }
+}
+
+// Session
+try {
+  const s = JSON.parse(localStorage.getItem('argovaa_session')||'{}');
+  if(s.name) document.getElementById('nav-user').textContent = '👤 '+s.name;
+} catch(e){}
+</script>
+</body>
+</html>

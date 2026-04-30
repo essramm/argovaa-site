@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — AI Agentic Business Platform</title>
+<meta name="description" content="Argovaa — Build, benchmark, deploy, and operate AI agents with the best price-performance for agentic workloads.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#e8edf3;--surface3:#dde3ec;
+  --ink:#0d1420;--mid:#4a5568;--faint:#b8c4d4;
+  --accent:#1a56db;--accent-bright:#2563eb;--accent-dim:rgba(26,86,219,0.08);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;--teal:#0891b2;
+  --bd:rgba(13,20,32,0.1);--bd2:rgba(13,20,32,0.05);
+  --ink-inv:#fff
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid var(--bd);background:rgba(240,244,248,0.97);backdrop-filter:blur(20px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:3px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:6px}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-links a{font-size:11px;color:var(--mid);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.2s;padding:0 14px;height:56px;display:flex;align-items:center;border-bottom:2px solid transparent}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.act{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-news-badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;background:rgba(220,38,38,0.08);color:var(--red);border:1px solid rgba(220,38,38,0.2);letter-spacing:0.5px;animation:newsblink 3s infinite}
+@keyframes newsblink{0%,90%,100%{opacity:1}95%{opacity:0.5}}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(26,86,219,0.4)}50%{opacity:0.6;box-shadow:0 0 0 4px transparent}}
+.btn-signin{background:transparent;color:var(--mid);padding:6px 14px;font-size:12px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-signin:hover{border-color:var(--ink);color:var(--ink)}
+.btn-cta{background:var(--accent);color:#fff;padding:7px 18px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;text-decoration:none;display:inline-block}
+.btn-cta:hover{background:var(--accent-bright)}
+
+.max{max-width:1140px;margin:0 auto;width:100%;padding:0 40px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 40px 60px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d1420 0%,#1a2744 50%,#1e3a5f 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:48px 48px}
+.hero-bar{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent) 30%,#60a5fa 70%,transparent);opacity:0.8}
+.hero-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 400px;gap:48px;align-items:center;position:relative;z-index:1;width:100%}
+.hero-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-tag::before{content:'';width:20px;height:1px;background:#93c5fd}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,7vw,80px);letter-spacing:2px;line-height:0.9;color:#fff;margin-bottom:20px}
+h1 .acc{color:#60a5fa}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.55);line-height:1.75;font-weight:300;margin-bottom:36px;max-width:500px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:48px}
+.btn-hero-pri{background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-hero-pri:hover{background:var(--accent-bright);transform:translateY(-1px)}
+.btn-hero-sec{background:transparent;color:rgba(255,255,255,0.7);padding:13px 28px;font-size:14px;border:1px solid rgba(255,255,255,0.2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-hero-sec:hover{border-color:rgba(255,255,255,0.5);color:#fff}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);max-width:600px}
+.hstat{padding:16px 18px;border-right:1px solid rgba(255,255,255,0.06)}
+.hstat:last-child{border-right:none}
+.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#60a5fa;line-height:1;margin-bottom:3px}
+.hstat-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+
+/* NEWS FEED WIDGET */
+.news-widget{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);overflow:hidden}
+.news-head{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.news-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.5)}
+.news-live{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--red)}
+.news-items{display:flex;flex-direction:column;gap:0;max-height:320px;overflow-y:auto}
+.news-item{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:background 0.15s}
+.news-item:hover{background:rgba(255,255,255,0.05)}
+.news-item:last-child{border-bottom:none}
+.news-cat{font-family:'DM Mono',monospace;font-size:9px;padding:1px 6px;margin-bottom:4px;display:inline-block;letter-spacing:0.3px}
+.nc-model{background:rgba(26,86,219,0.2);color:#93c5fd;border:1px solid rgba(26,86,219,0.3)}
+.nc-cost{background:rgba(5,150,105,0.15);color:#6ee7b7;border:1px solid rgba(5,150,105,0.25)}
+.nc-infra{background:rgba(217,119,6,0.15);color:#fcd34d;border:1px solid rgba(217,119,6,0.25)}
+.nc-agent{background:rgba(124,58,237,0.15);color:#c4b5fd;border:1px solid rgba(124,58,237,0.25)}
+.news-headline{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:3px}
+.news-meta{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3)}
+
+/* 5-LAYER CAKE */
+.cake-section{padding:80px 0;background:var(--surface);border-top:1px solid var(--bd)}
+.cake-wrap{max-width:1140px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.cake-visual{display:flex;flex-direction:column;gap:0;position:relative}
+.cake-layer{display:flex;align-items:center;gap:0;cursor:pointer;transition:all 0.2s}
+.cake-layer:hover .cl-label{transform:translateX(4px)}
+.cl-block{padding:18px 24px;flex:1;position:relative;overflow:hidden;transition:filter 0.2s}
+.cake-layer:hover .cl-block{filter:brightness(1.05)}
+.cl-num{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;opacity:0.6;margin-bottom:4px}
+.cl-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;margin-bottom:3px}
+.cl-desc{font-size:11px;opacity:0.75;line-height:1.5}
+.cl-label{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;margin-left:8px;flex-shrink:0;transition:transform 0.2s;white-space:nowrap}
+.layer1{background:linear-gradient(135deg,#1a2744,#1e3a5f);color:#fff}
+.layer2{background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff}
+.layer3{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff}
+.layer4{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+.layer5{background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff}
+
+/* SECTION SHARED */
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);letter-spacing:2px;line-height:0.95;color:var(--ink);margin-bottom:14px}
+.sec-h .acc{color:var(--accent)}
+.sec-p{font-size:15px;color:var(--mid);max-width:520px;line-height:1.75;font-weight:300;margin-bottom:44px}
+
+/* PRODUCTS */
+.products-section{padding:80px 0;background:var(--bg);border-top:1px solid var(--bd)}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
+.pcard{background:var(--surface);padding:28px 24px;position:relative;overflow:hidden;transition:background 0.2s;text-decoration:none;display:block;color:inherit}
+.pcard:hover{background:var(--surface2)}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s}
+.pcard:hover::before{transform:scaleY(1)}
+.pcard-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-bottom:18px}
+.pcard-icon{font-size:20px;margin-bottom:12px;opacity:0.5}
+.pcard-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--ink);margin-bottom:8px}
+.pcard-desc{font-size:13px;color:var(--mid);line-height:1.65;margin-bottom:14px}
+.pcard-tags{display:flex;gap:5px;flex-wrap:wrap}
+.ptag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border:1px solid var(--bd);color:var(--mid)}
+.ptag.new{border-color:rgba(26,86,219,0.3);color:var(--accent);background:var(--accent-dim)}
+.ptag.live{border-color:rgba(5,150,105,0.3);color:var(--emerald);background:rgba(5,150,105,0.06)}
+
+/* PRICING SECTION */
+.pricing-section{padding:80px 0;background:var(--surface);border-top:1px solid var(--bd)}
+.pricing-tabs{display:flex;gap:6px;margin-bottom:32px;flex-wrap:wrap}
+.ptab{font-family:'DM Mono',monospace;font-size:11px;padding:7px 16px;border:1px solid var(--bd);color:var(--mid);cursor:pointer;background:transparent;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.5px}
+.ptab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ptab:hover:not(.on){border-color:var(--ink);color:var(--ink)}
+.pricing-panel{display:none}.pricing-panel.on{display:block}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.plan{background:var(--surface);border:1px solid var(--bd);padding:24px;position:relative;transition:all 0.2s}
+.plan:hover{border-color:var(--accent);transform:translateY(-2px)}
+.plan.feat{border:2px solid var(--accent);background:var(--accent-dim)}
+.plan-badge-wrap{height:20px;margin-bottom:12px}
+.plan-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;background:var(--accent);color:#fff;letter-spacing:0.5px;display:inline-block}
+.plan-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:4px}
+.plan-price{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;color:var(--ink);line-height:1;margin-bottom:4px}
+.plan-price-sub{font-size:12px;color:var(--mid);margin-bottom:20px;font-family:'DM Mono',monospace}
+.plan-features{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.plan-feature{font-size:12px;color:var(--mid);display:flex;gap:7px;align-items:flex-start}
+.plan-feature .ck{color:var(--emerald);flex-shrink:0;font-weight:700}
+.plan-btn{display:block;width:100%;padding:10px;text-align:center;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;border:1px solid var(--bd);color:var(--ink);background:transparent;cursor:pointer;transition:all 0.2s}
+.plan.feat .plan-btn{background:var(--accent);border-color:var(--accent);color:#fff}
+.plan-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* AGENT BUILDER */
+.agent-section{padding:80px 0;background:var(--bg);border-top:1px solid var(--bd)}
+.domain-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:32px}
+.domain-card{background:var(--surface);padding:18px 14px;text-align:center;cursor:pointer;transition:all 0.2s}
+.domain-card:hover,.domain-card.active{background:var(--accent-dim);border:1px solid rgba(26,86,219,0.2)}
+.domain-icon{font-size:22px;margin-bottom:8px;opacity:0.6}
+.domain-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--ink);margin-bottom:3px}
+.domain-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid)}
+
+/* GOLDEN SIGNALS */
+.signals-section{padding:80px 0;background:var(--ink);border-top:1px solid rgba(255,255,255,0.07)}
+.signals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);margin-bottom:32px}
+.signal-card{background:rgba(255,255,255,0.02);padding:20px;text-align:center;border-bottom:3px solid transparent;transition:all 0.2s}
+.signal-card.active{border-bottom-color:var(--accent);background:rgba(255,255,255,0.05)}
+.signal-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.signal-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.4);margin-bottom:4px}
+.signal-trend{font-size:11px;color:rgba(255,255,255,0.35)}
+.snippet-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);overflow:hidden}
+.snippet-head{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.snippet-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.snippet-locked{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3)}
+.snippet-body{padding:14px 16px}
+.snippet-body pre{font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.6);white-space:pre;overflow-x:auto;filter:blur(3px);user-select:none}
+.snippet-login-overlay{background:rgba(13,20,32,0.85);padding:20px;text-align:center;margin-top:8px;border:1px solid rgba(255,255,255,0.08)}
+
+/* TCO */
+.tco-section{padding:80px 0;background:var(--surface);border-top:1px solid var(--bd)}
+.tco-formula{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:28px}
+.tco-layer{background:var(--surface);padding:20px;position:relative;overflow:hidden}
+.tco-layer::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:3px}
+.tco-layer.infra::after{background:var(--accent)}
+.tco-layer.llm::after{background:var(--purple)}
+.tco-layer.overhead::after{background:var(--emerald)}
+.tco-layer-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:6px}
+.tco-layer-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--ink);margin-bottom:5px}
+.tco-layer-desc{font-size:12px;color:var(--mid);line-height:1.6}
+
+/* BENCHMARK */
+.bench-section{padding:80px 0;background:var(--bg);border-top:1px solid var(--bd)}
+
+/* CONTACT */
+.contact-section{padding:80px 0;background:var(--surface);border-top:1px solid var(--bd)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.form-field{margin-bottom:14px}
+.form-field label{display:block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:6px}
+.form-field input,.form-field select,.form-field textarea{width:100%;background:var(--surface2);border:1px solid var(--bd);padding:10px 13px;color:var(--ink);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
+.form-field textarea{min-height:90px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* CHAT WIDGET */
+.chat-widget{position:fixed;bottom:24px;right:24px;z-index:400}
+.chat-bubble{width:52px;height:52px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(26,86,219,0.4);font-size:20px;transition:transform 0.2s}
+.chat-bubble:hover{transform:scale(1.1)}
+.chat-window{position:absolute;bottom:64px;right:0;width:320px;background:var(--surface);border:1px solid var(--bd);box-shadow:0 8px 32px rgba(13,20,32,0.15);display:none;overflow:hidden}
+.chat-window.open{display:block}
+.chat-win-head{padding:12px 16px;background:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.chat-win-title{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px}
+.chat-close{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:14px;padding:0}
+.chat-msgs{height:240px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.cmsg{font-size:12px;line-height:1.6;padding:8px 11px;max-width:88%}
+.cmsg.bot{background:var(--surface2);color:var(--ink);border-radius:0 8px 8px 8px}
+.cmsg.user{background:var(--accent);color:#fff;margin-left:auto;border-radius:8px 0 8px 8px}
+.chat-input-row{display:flex;gap:0;border-top:1px solid var(--bd)}
+.chat-input{flex:1;border:none;outline:none;padding:10px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--ink)}
+.chat-send{background:var(--accent);color:#fff;border:none;padding:0 14px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.chat-send:hover{background:var(--accent-bright)}
+
+/* CTA BAND */
+.cta-section{background:linear-gradient(135deg,#0d1420,#1a2744);padding:80px 0;border-top:1px solid rgba(255,255,255,0.06)}
+.cta-inner{max-width:1140px;margin:0 auto;padding:0 40px;text-align:center}
+.cta-inner h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:2px;color:#fff;line-height:0.9;margin-bottom:16px}
+.cta-inner p{font-size:15px;color:rgba(255,255,255,0.55);margin-bottom:32px;font-weight:300}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-b1{background:var(--accent);color:#fff;padding:14px 32px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:background 0.2s}
+.cta-b1:hover{background:var(--accent-bright)}
+.cta-b2{background:transparent;color:rgba(255,255,255,0.75);padding:14px 32px;font-size:14px;border:1px solid rgba(255,255,255,0.25);cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:all 0.2s}
+.cta-b2:hover{background:rgba(255,255,255,0.08)}
+
+/* FOOTER */
+footer{background:#0a0f1c;border-top:1px solid rgba(255,255,255,0.06);padding:40px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px}
+.fblock-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:14px}
+.flinks-col{display:flex;flex-direction:column;gap:8px}
+.flinks-col a{font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s;font-family:'DM Mono',monospace}
+.flinks-col a:hover{color:rgba(255,255,255,0.75)}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#fff;text-decoration:none}
+.flogo em{color:#60a5fa;font-style:normal}
+.fcopy{font-size:11px;color:rgba(255,255,255,0.2);font-family:'DM Mono',monospace;margin-top:8px}
+.femail a{color:#93c5fd;text-decoration:none;font-family:'DM Mono',monospace;font-size:11px}
+
+@media(max-width:900px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .hero{padding:80px 16px 48px}.hero-inner{grid-template-columns:1fr;gap:32px}
+  .max{padding:0 16px}
+  .cake-wrap{grid-template-columns:1fr}
+  .products-grid,.signals-grid,.domain-grid{grid-template-columns:1fr 1fr}
+  .pricing-grid,.tco-formula{grid-template-columns:1fr}
+  .contact-grid,.form-row{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr 1fr;padding:24px 16px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">ARG<em>O</em>VAA</a>
+  <ul class="nav-links">
+    <li><a href="#platform" class="act">Platform</a></li>
+    <li><a href="#agent-builder">Agent builder</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
+    <li><a href="#golden-signals">SRE signals</a></li>
+    <li><a href="#tco">TCO</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-news-badge">● AI NEWS</span>
+    <a href="login.html" class="btn-signin">Sign in</a>
+    <a href="login.html" class="btn-cta">Get started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="platform">
+  <div class="hero-grid"></div>
+  <div class="hero-bar"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">AI Agentic Business Platform</div>
+      <h1>BEST PRICE-<br>PERFORMANCE<br>FOR <span class="acc">AGENTIC</span><br>WORKLOADS.</h1>
+      <p class="hero-sub">Build, benchmark, deploy, and operate AI agents with full-stack observability, true cost visibility, and the tools to make every business an AI agentic business.</p>
+      <div class="hero-btns">
+        <a href="agent-builder.html" class="btn-hero-pri">Start building agents →</a>
+        <a href="#platform" class="btn-hero-sec">Explore the platform</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-val">360+</div><div class="hstat-lbl">Models tracked</div></div>
+        <div class="hstat"><div class="hstat-val">5</div><div class="hstat-lbl">GPU platforms</div></div>
+        <div class="hstat"><div class="hstat-val">20+</div><div class="hstat-lbl">Data connectors</div></div>
+        <div class="hstat"><div class="hstat-val">5min</div><div class="hstat-lbl">To first agent</div></div>
+      </div>
+    </div>
+
+    <!-- NEWS FEED WIDGET -->
+    <div class="news-widget">
+      <div class="news-head">
+        <span class="news-title">AI industry news</span>
+        <span class="news-live"><span style="width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block;animation:newsblink 2s infinite"></span>Live</span>
+      </div>
+      <div class="news-items" id="news-feed">
+        <div class="news-item"><span class="news-cat nc-model">Model</span><div class="news-headline">GPT-4o achieves new throughput record on H200 SXM — 4,820 tokens/sec in MLPerf v4.1</div><div class="news-meta">2h ago · mlperf.org</div></div>
+        <div class="news-item"><span class="news-cat nc-cost">Cost</span><div class="news-headline">Anthropic cuts Claude 3 Haiku pricing by 25% — now $0.25/1M input tokens</div><div class="news-meta">4h ago · anthropic.com</div></div>
+        <div class="news-item"><span class="news-cat nc-agent">Agent</span><div class="news-headline">OpenAI launches Assistants v2 with 128K context and multi-agent orchestration support</div><div class="news-meta">6h ago · openai.com</div></div>
+        <div class="news-item"><span class="news-cat nc-infra">Infra</span><div class="news-headline">AMD MI300X outperforms H100 on long-context inference at 32K tokens — 192GB HBM3 advantage</div><div class="news-meta">8h ago · amd.com</div></div>
+        <div class="news-item"><span class="news-cat nc-cost">Cost</span><div class="news-headline">AWS announces AI-optimised EC2 instances P5en with 800Gbps networking for LLM workloads</div><div class="news-meta">12h ago · aws.amazon.com</div></div>
+        <div class="news-item"><span class="news-cat nc-model">Model</span><div class="news-headline">Meta releases Llama 3.1 405B — largest open-source model with 128K context window</div><div class="news-meta">1d ago · ai.meta.com</div></div>
+        <div class="news-item"><span class="news-cat nc-agent">Agent</span><div class="news-headline">Google DeepMind's Gemini 1.5 Pro sets new benchmark on long-document reasoning tasks</div><div class="news-meta">1d ago · deepmind.google</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5-LAYER CAKE -->
+<section class="cake-section">
+  <div class="cake-wrap">
+    <div>
+      <div class="sec-tag">Platform architecture</div>
+      <div class="sec-h">THE FULL<br>AI <span class="acc">AGENTIC STACK</span></div>
+      <p style="font-size:15px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px">Five layers — from business use case to model selection, data integration, governance, monitoring, and cost visibility. Argovaa covers the whole stack.</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)"><div style="width:10px;height:10px;background:linear-gradient(135deg,#1a2744,#1e3a5f);flex-shrink:0"></div>Agent Builder — domain templates, wizard flow, deploy</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)"><div style="width:10px;height:10px;background:linear-gradient(135deg,#1a56db,#2563eb);flex-shrink:0"></div>Benchmark Studio — model, latency, cost, quality</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)"><div style="width:10px;height:10px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);flex-shrink:0"></div>Reliability Suite — golden signals, SRE observability</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)"><div style="width:10px;height:10px;background:linear-gradient(135deg,#059669,#10b981);flex-shrink:0"></div>Tokenomics &amp; TCO — true cost per AI request</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)"><div style="width:10px;height:10px;background:linear-gradient(135deg,#0891b2,#06b6d4);flex-shrink:0"></div>Customer Snippet Hub — telemetry, dashboards, integrations</div>
+      </div>
+    </div>
+    <div class="cake-visual">
+      <div class="cake-layer" onclick="window.location.href='agent-builder.html'" style="cursor:pointer"><div class="cl-block layer1"><div class="cl-num">LAYER 01</div><div class="cl-name">AGENT BUILDER</div><div class="cl-desc">Finance · Healthcare · Retail · Technology · HR · Sales</div></div><span class="cl-label" style="background:rgba(26,86,219,0.1);color:var(--accent);border:1px solid rgba(26,86,219,0.2)">Build →</span></div>
+      <div class="cake-layer" onclick="window.location.href='benchmarks.html'" style="cursor:pointer"><div class="cl-block layer2"><div class="cl-num">LAYER 02</div><div class="cl-name">BENCHMARK STUDIO</div><div class="cl-desc">Model · Agent · Infra · Workload · Cost comparison</div></div><span class="cl-label" style="background:rgba(26,86,219,0.1);color:var(--accent);border:1px solid rgba(26,86,219,0.2)">Compare →</span></div>
+      <div class="cake-layer" onclick="window.location.href='golden-signals.html'" style="cursor:pointer"><div class="cl-block layer3"><div class="cl-num">LAYER 03</div><div class="cl-name">RELIABILITY SUITE</div><div class="cl-desc">Throughput · Availability · Latency · Error rate</div></div><span class="cl-label" style="background:rgba(124,58,237,0.08);color:var(--purple);border:1px solid rgba(124,58,237,0.2)">Monitor →</span></div>
+      <div class="cake-layer" onclick="window.location.href='tco.html'" style="cursor:pointer"><div class="cl-block layer4"><div class="cl-num">LAYER 04</div><div class="cl-name">TOKENOMICS &amp; TCO</div><div class="cl-desc">AWS CPU/GPU · LLM tokens · Service overhead</div></div><span class="cl-label" style="background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.2)">Cost →</span></div>
+      <div class="cake-layer" onclick="window.location.href='analyser.html'" style="cursor:pointer"><div class="cl-block layer5"><div class="cl-num">LAYER 05</div><div class="cl-name">SNIPPET HUB</div><div class="cl-desc">JS · Node.js · Python telemetry · Dashboard plugins</div></div><span class="cl-label" style="background:rgba(8,145,178,0.08);color:var(--teal);border:1px solid rgba(8,145,178,0.2)">Integrate →</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="max">
+    <div class="sec-tag">Platform modules</div>
+    <div class="sec-h">EVERYTHING YOU NEED<br>TO BECOME AN <span class="acc">AI BUSINESS</span></div>
+    <p class="sec-p">Five integrated modules — from building your first agent to benchmarking model performance, monitoring reliability, tracking true cost, and embedding telemetry into your stack.</p>
+    <div class="products-grid">
+      <a class="pcard" href="agent-builder.html"><div class="pcard-n">01 —</div><div class="pcard-icon">◈</div><div class="pcard-name">AGENT BUILDER</div><div class="pcard-desc">Build domain-specific AI agents using templates, tools, memory, workflow actions, governance, and deployment controls. Finance, healthcare, retail, technology, and more.</div><div class="pcard-tags"><span class="ptag new">New</span><span class="ptag">20+ templates</span><span class="ptag">5min deploy</span></div></a>
+      <a class="pcard" href="benchmarks.html"><div class="pcard-n">02 —</div><div class="pcard-icon">◉</div><div class="pcard-name">BENCHMARK STUDIO</div><div class="pcard-desc">Compare models, prompts, tools, and infrastructure for latency, quality, cost, and reliability. 360+ models across NVIDIA, AMD, and Intel GPUs. MLPerf v4.1 data.</div><div class="pcard-tags"><span class="ptag live">Live data</span><span class="ptag">360+ models</span><span class="ptag">MLPerf v4.1</span></div></a>
+      <a class="pcard" href="golden-signals.html"><div class="pcard-n">03 —</div><div class="pcard-icon">◎</div><div class="pcard-name">RELIABILITY SUITE</div><div class="pcard-desc">Monitor golden signals across agent runtime, model calls, tools, integrations, data pipelines, and user-facing workflows. Throughput, availability, latency, errors.</div><div class="pcard-tags"><span class="ptag new">SRE</span><span class="ptag">4 golden signals</span><span class="ptag">Alerts</span></div></a>
+      <a class="pcard" href="tco.html"><div class="pcard-n">04 —</div><div class="pcard-icon">◧</div><div class="pcard-name">TOKENOMICS &amp; TCO</div><div class="pcard-desc">Understand the real cost of every AI request across model tokens, retries, tools, AWS CPU/GPU infrastructure and services. True cost per request, not just token spend.</div><div class="pcard-tags"><span class="ptag">AWS CUR</span><span class="ptag">LLM tokens</span><span class="ptag">True TCO</span></div></a>
+      <a class="pcard" href="analyser.html"><div class="pcard-n">05 —</div><div class="pcard-icon">◫</div><div class="pcard-name">CUSTOMER SNIPPET HUB</div><div class="pcard-desc">Let customers plug telemetry snippets into their applications and instantly populate Argovaa dashboards. JS, Node.js, and Python. Log in to access production code.</div><div class="pcard-tags"><span class="ptag">JS · Node · Python</span><span class="ptag">Login required</span></div></a>
+      <a class="pcard" href="tokenomics.html"><div class="pcard-n">06 —</div><div class="pcard-icon">◬</div><div class="pcard-name">PRICING INTELLIGENCE</div><div class="pcard-desc">On-demand, provisioned throughput, and batch tier modelling. Compare cost across all pricing tiers and find your break-even before committing to capacity.</div><div class="pcard-tags"><span class="ptag">3 tier types</span><span class="ptag">Break-even calc</span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="max">
+    <div class="sec-tag">Pricing</div>
+    <div class="sec-h">TRANSPARENT<br><span class="acc">PRICING</span> PER MODULE</div>
+    <p class="sec-p">Each module priced independently. Mix and match what you need. Enterprise bundles available for full-stack access.</p>
+    <div class="pricing-tabs">
+      <button class="ptab on" onclick="showPricing('agent',this)">Agent builder</button>
+      <button class="ptab" onclick="showPricing('bench',this)">Benchmark studio</button>
+      <button class="ptab" onclick="showPricing('sre',this)">Reliability suite</button>
+      <button class="ptab" onclick="showPricing('tco',this)">Tokenomics &amp; TCO</button>
+      <button class="ptab" onclick="showPricing('bundle',this)">Full platform</button>
+    </div>
+
+    <!-- AGENT BUILDER PRICING -->
+    <div class="pricing-panel on" id="pp-agent">
+      <div class="pricing-grid">
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Starter</div><div class="plan-price">$79</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>3 agents</div><div class="plan-feature"><span class="ck">✓</span>5 data connectors</div><div class="plan-feature"><span class="ck">✓</span>10K queries/month</div><div class="plan-feature"><span class="ck">✓</span>REST API + widget embed</div><div class="plan-feature"><span class="ck">✓</span>14-day free trial</div></div><a href="login.html" class="plan-btn">Start free trial</a></div>
+        <div class="plan feat"><div class="plan-badge-wrap"><span class="plan-badge">MOST POPULAR</span></div><div class="plan-name">Growth</div><div class="plan-price">$299</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Unlimited agents</div><div class="plan-feature"><span class="ck">✓</span>All 20+ connectors</div><div class="plan-feature"><span class="ck">✓</span>100K queries/month</div><div class="plan-feature"><span class="ck">✓</span>Multi-tenant support</div><div class="plan-feature"><span class="ck">✓</span>Custom branding</div><div class="plan-feature"><span class="ck">✓</span>Priority support</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan"><div class="plan-badge-wrap"><span class="plan-badge" style="background:var(--purple)">WHITE-LABEL</span></div><div class="plan-name">Platform</div><div class="plan-price">$999</div><div class="plan-price-sub">per month · resell to customers</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Everything in Growth</div><div class="plan-feature"><span class="ck">✓</span>Your own domain &amp; brand</div><div class="plan-feature"><span class="ck">✓</span>Customer billing mgmt</div><div class="plan-feature"><span class="ck">✓</span>Revenue share model</div><div class="plan-feature"><span class="ck">✓</span>Dedicated SLA</div></div><a href="mailto:seeth.gudetee@gmail.com" class="plan-btn">Contact us</a></div>
+      </div>
+    </div>
+
+    <!-- BENCHMARK PRICING -->
+    <div class="pricing-panel" id="pp-bench">
+      <div class="pricing-grid">
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Free</div><div class="plan-price">$0</div><div class="plan-price-sub">forever</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Public leaderboard access</div><div class="plan-feature"><span class="ck">✓</span>Top 10 models visible</div><div class="plan-feature"><span class="ck">✓</span>Basic GPU comparison</div><div class="plan-feature"><span class="ck">✓</span>Context window filters</div></div><a href="benchmarks.html" class="plan-btn">View benchmarks</a></div>
+        <div class="plan feat"><div class="plan-badge-wrap"><span class="plan-badge">MOST POPULAR</span></div><div class="plan-name">Pro</div><div class="plan-price">$49</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Full 360+ model leaderboard</div><div class="plan-feature"><span class="ck">✓</span>CSV/JSON export</div><div class="plan-feature"><span class="ck">✓</span>Custom benchmark runs*</div><div class="plan-feature"><span class="ck">✓</span>API access to benchmark data</div><div class="plan-feature"><span class="ck">✓</span>Methodology reports</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Enterprise</div><div class="plan-price">$299</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Everything in Pro</div><div class="plan-feature"><span class="ck">✓</span>Custom model benchmarks</div><div class="plan-feature"><span class="ck">✓</span>Private benchmark data</div><div class="plan-feature"><span class="ck">✓</span>White-label reports</div><div class="plan-feature"><span class="ck">✓</span>SLA + dedicated support</div></div><a href="mailto:seeth.gudetee@gmail.com" class="plan-btn">Contact us</a></div>
+      </div>
+      <p style="font-size:11px;color:var(--mid);margin-top:12px;font-family:'DM Mono',monospace">* Benchmark data marked with asterisk (✱) indicates internally generated or synthetic data. <a href="#" style="color:var(--accent)">View methodology →</a></p>
+    </div>
+
+    <!-- SRE PRICING -->
+    <div class="pricing-panel" id="pp-sre">
+      <div class="pricing-grid">
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Observe</div><div class="plan-price">$99</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>4 golden signals dashboard</div><div class="plan-feature"><span class="ck">✓</span>5 agents monitored</div><div class="plan-feature"><span class="ck">✓</span>7-day retention</div><div class="plan-feature"><span class="ck">✓</span>Email alerts</div><div class="plan-feature"><span class="ck">✓</span>JS + Python snippets</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan feat"><div class="plan-badge-wrap"><span class="plan-badge">MOST POPULAR</span></div><div class="plan-name">Operate</div><div class="plan-price">$349</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Unlimited agents</div><div class="plan-feature"><span class="ck">✓</span>30-day retention</div><div class="plan-feature"><span class="ck">✓</span>PagerDuty + Slack alerts</div><div class="plan-feature"><span class="ck">✓</span>Multi-tenant golden signals</div><div class="plan-feature"><span class="ck">✓</span>P99 latency tracking</div><div class="plan-feature"><span class="ck">✓</span>Custom alert thresholds</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Enterprise</div><div class="plan-price">$999</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Everything in Operate</div><div class="plan-feature"><span class="ck">✓</span>90-day retention</div><div class="plan-feature"><span class="ck">✓</span>RBAC + audit logs</div><div class="plan-feature"><span class="ck">✓</span>SLA 99.9%</div><div class="plan-feature"><span class="ck">✓</span>Custom integrations</div></div><a href="mailto:seeth.gudetee@gmail.com" class="plan-btn">Contact us</a></div>
+      </div>
+    </div>
+
+    <!-- TCO PRICING -->
+    <div class="pricing-panel" id="pp-tco">
+      <div class="pricing-grid">
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Developer</div><div class="plan-price">$49</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>1 service instrumented</div><div class="plan-feature"><span class="ck">✓</span>AWS CUR upload</div><div class="plan-feature"><span class="ck">✓</span>LLM cost blending</div><div class="plan-feature"><span class="ck">✓</span>TCO dashboard</div><div class="plan-feature"><span class="ck">✓</span>30-day history</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan feat"><div class="plan-badge-wrap"><span class="plan-badge">MOST POPULAR</span></div><div class="plan-name">Team</div><div class="plan-price">$199</div><div class="plan-price-sub">per month</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Up to 10 services</div><div class="plan-feature"><span class="ck">✓</span>Multi-tenant attribution</div><div class="plan-feature"><span class="ck">✓</span>Automated S3 CUR sync</div><div class="plan-feature"><span class="ck">✓</span>Slack + email alerts</div><div class="plan-feature"><span class="ck">✓</span>90-day history + exports</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan"><div class="plan-badge-wrap"><span class="plan-badge" style="background:var(--purple)">WHITE-LABEL</span></div><div class="plan-name">Platform</div><div class="plan-price">$999</div><div class="plan-price-sub">per month · resell</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Unlimited services</div><div class="plan-feature"><span class="ck">✓</span>Your brand + domain</div><div class="plan-feature"><span class="ck">✓</span>Customer billing</div><div class="plan-feature"><span class="ck">✓</span>Revenue share</div><div class="plan-feature"><span class="ck">✓</span>Custom SLA</div></div><a href="mailto:seeth.gudetee@gmail.com" class="plan-btn">Contact us</a></div>
+      </div>
+    </div>
+
+    <!-- FULL BUNDLE -->
+    <div class="pricing-panel" id="pp-bundle">
+      <div class="pricing-grid">
+        <div class="plan"><div class="plan-badge-wrap"></div><div class="plan-name">Startup Bundle</div><div class="plan-price">$299</div><div class="plan-price-sub">per month · save 40%</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Agent Builder Starter</div><div class="plan-feature"><span class="ck">✓</span>Benchmark Studio Pro</div><div class="plan-feature"><span class="ck">✓</span>Reliability Observe</div><div class="plan-feature"><span class="ck">✓</span>TCO Developer</div><div class="plan-feature"><span class="ck">✓</span>Snippet Hub</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan feat"><div class="plan-badge-wrap"><span class="plan-badge">BEST VALUE</span></div><div class="plan-name">Scale Bundle</div><div class="plan-price">$799</div><div class="plan-price-sub">per month · save 50%</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>Agent Builder Growth</div><div class="plan-feature"><span class="ck">✓</span>Benchmark Enterprise</div><div class="plan-feature"><span class="ck">✓</span>Reliability Operate</div><div class="plan-feature"><span class="ck">✓</span>TCO Team</div><div class="plan-feature"><span class="ck">✓</span>Snippet Hub + API</div><div class="plan-feature"><span class="ck">✓</span>Priority support</div></div><a href="login.html" class="plan-btn">Get started</a></div>
+        <div class="plan"><div class="plan-badge-wrap"><span class="plan-badge" style="background:var(--purple)">ENTERPRISE</span></div><div class="plan-name">Full Platform</div><div class="plan-price">Custom</div><div class="plan-price-sub">contact us for pricing</div><div class="plan-features"><div class="plan-feature"><span class="ck">✓</span>All modules — unlimited</div><div class="plan-feature"><span class="ck">✓</span>White-label for resale</div><div class="plan-feature"><span class="ck">✓</span>Dedicated infrastructure</div><div class="plan-feature"><span class="ck">✓</span>Custom integrations</div><div class="plan-feature"><span class="ck">✓</span>SLA 99.9% + support</div></div><a href="mailto:seeth.gudetee@gmail.com" class="plan-btn">Contact us</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT BUILDER -->
+<section class="agent-section" id="agent-builder">
+  <div class="max">
+    <div class="sec-tag">Agent builder</div>
+    <div class="sec-h">BUILD AGENTS FOR<br>ANY <span class="acc">DOMAIN</span></div>
+    <p class="sec-p">Pick a domain and use case. The wizard guides you through data connections, model selection, guardrails, and deployment. No ML expertise required.</p>
+    <div class="domain-grid">
+      <div class="domain-card active" onclick="goDomain('finance')"><div class="domain-icon">💼</div><div class="domain-name">Finance</div><div class="domain-count">5 templates</div></div>
+      <div class="domain-card" onclick="goDomain('healthcare')"><div class="domain-icon">🏥</div><div class="domain-name">Healthcare</div><div class="domain-count">4 templates</div></div>
+      <div class="domain-card" onclick="goDomain('retail')"><div class="domain-icon">🛒</div><div class="domain-name">Retail</div><div class="domain-count">4 templates</div></div>
+      <div class="domain-card" onclick="goDomain('technology')"><div class="domain-icon">⚙</div><div class="domain-name">Technology</div><div class="domain-count">4 templates</div></div>
+      <div class="domain-card" onclick="goDomain('general')"><div class="domain-icon">◈</div><div class="domain-name">General Biz</div><div class="domain-count">5 templates</div></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--bd);padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:5px">READY TO BUILD YOUR FIRST AGENT?</div>
+        <p style="font-size:13px;color:var(--mid)">Sign in to access templates, data connectors, deployment controls, and production code.</p>
+      </div>
+      <a href="login.html" class="btn-cta" style="padding:12px 24px;font-size:13px">Sign in to build →</a>
+    </div>
+  </div>
+</section>
+
+<!-- GOLDEN SIGNALS -->
+<section class="signals-section" id="golden-signals">
+  <div class="max">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1px;background:#93c5fd"></span>SRE reliability suite</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);letter-spacing:2px;line-height:0.95;color:#fff;margin-bottom:14px">GOLDEN SIGNALS FOR<br><span style="color:#93c5fd">AI AGENTS</span></div>
+    <p style="font-size:15px;color:rgba(255,255,255,0.5);max-width:520px;line-height:1.75;font-weight:300;margin-bottom:32px">Four primary signals — throughput, availability, latency, and errors — across every agent, model call, tool, and integration in your stack.</p>
+    <div class="signals-grid">
+      <div class="signal-card active"><div class="signal-val" style="color:#60a5fa">2,840</div><div class="signal-name">Throughput</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#93c5fd;margin-bottom:3px">req/min</div><div class="signal-trend">↑ 12% vs last hour</div></div>
+      <div class="signal-card"><div class="signal-val" style="color:#86efac">99.94%</div><div class="signal-name">Availability</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#86efac;margin-bottom:3px">last 30 days</div><div class="signal-trend">SLA target: 99.9%</div></div>
+      <div class="signal-card"><div class="signal-val" style="color:#fde68a">284ms</div><div class="signal-name">Latency P95</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#fde68a;margin-bottom:3px">end-to-end</div><div class="signal-trend">TTFT avg: 128ms</div></div>
+      <div class="signal-card"><div class="signal-val" style="color:#fca5a5">0.06%</div><div class="signal-name">Error rate</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#86efac;margin-bottom:3px">below threshold</div><div class="signal-trend">Alert: &gt;1%</div></div>
+    </div>
+
+    <!-- SNIPPETS (locked) -->
+    <div id="snippets" style="margin-top:24px">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-bottom:12px">Telemetry snippets — <span style="color:var(--red)">sign in to access production code</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="snippet-card">
+          <div class="snippet-head">
+            <span class="snippet-lang">JavaScript browser</span>
+            <span class="snippet-locked">🔒 Login required</span>
+          </div>
+          <div class="snippet-body">
+            <pre>window.ArgovaaConfig = {
+  apiKey: "YOUR_PUBLIC_CLIENT_KEY",
+  service: "customer-agent-app",
+  environment: "production",
+  dashboardId: "golden-signals"
+};
+
+// Tracks throughput, latency, errors
+// automatically on every agent call</pre>
+          </div>
+          <div class="snippet-login-overlay">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:10px">🔒 Log in to view implementation code</div>
+            <a href="login.html" style="background:var(--accent);color:#fff;padding:8px 20px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Sign in to unlock</a>
+          </div>
+        </div>
+        <div class="snippet-card">
+          <div class="snippet-head">
+            <span class="snippet-lang">Python API</span>
+            <span class="snippet-locked">🔒 Login required</span>
+          </div>
+          <div class="snippet-body">
+            <pre>from argovaa.telemetry import ArgovaaTelemetry
+
+argovaa = ArgovaaTelemetry(
+    api_key=os.environ["ARGOVAA_API_KEY"],
+    service="agent-runtime-api",
+    environment="production"
+)
+
+def run_agent(request):
+    with argovaa.trace("agent_request") as t:
+        # traces throughput, latency, errors</pre>
+          </div>
+          <div class="snippet-login-overlay">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:10px">🔒 Log in to view implementation code</div>
+            <a href="login.html" style="background:var(--accent);color:#fff;padding:8px 20px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Sign in to unlock</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TCO -->
+<section class="tco-section" id="tco">
+  <div class="max">
+    <div class="sec-tag">Tokenomics &amp; true cost</div>
+    <div class="sec-h">KNOW YOUR TRUE COST<br>PER <span class="acc">AI REQUEST</span></div>
+    <p class="sec-p">Blend AWS CPU/GPU Infrastructure and Services costs, LLM token spend, and service overhead into one number — the real cost of every agent call.</p>
+    <div class="tco-formula">
+      <div class="tco-layer infra"><div class="tco-layer-num" style="color:var(--accent)">$0.00031</div><div class="tco-layer-name">AWS CPU/GPU infrastructure &amp; services</div><div class="tco-layer-desc">EC2 · ECS · Lambda · RDS · S3 · Networking — from your AWS CUR file, attributed per request.</div></div>
+      <div class="tco-layer llm"><div class="tco-layer-num" style="color:var(--purple)">$0.00048</div><div class="tco-layer-name">LLM token cost</div><div class="tco-layer-desc">Input + output tokens · model rate · pricing tier (on-demand, provisioned, batch).</div></div>
+      <div class="tco-layer overhead"><div class="tco-layer-num" style="color:var(--emerald)">$0.00008</div><div class="tco-layer-name">Service overhead</div><div class="tco-layer-desc">Storage · observability · retries · tool calls · data pipeline costs per request.</div></div>
+    </div>
+    <div style="background:var(--ink);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px">
+      <div><div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.4);margin-bottom:4px">True cost per request</div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;color:#86efac">$0.00087</div></div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45);max-width:400px;line-height:1.65">This is what one AI agent request actually costs your business — not just the LLM token fee. Run the full TCO calculator with your own AWS CUR file and usage data.</div>
+      <a href="tco.html" style="background:var(--accent);color:#fff;padding:12px 24px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap">Open TCO dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="max">
+    <div class="contact-grid">
+      <div>
+        <div class="sec-tag">Contact us</div>
+        <div class="sec-h">LET'S BUILD<br><span class="acc">TOGETHER</span></div>
+        <p style="font-size:15px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px">Tell us about your use case and we'll help you get started with the right modules. Enterprise, white-label, and custom integration inquiries welcome.</p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:12px;align-items:flex-start"><div style="width:32px;height:32px;background:var(--accent-dim);border:1px solid rgba(26,86,219,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✉</div><div><div style="font-weight:500;font-size:14px;margin-bottom:2px">Email us directly</div><a href="mailto:seeth.gudetee@gmail.com" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);text-decoration:none">seeth.gudetee@gmail.com</a></div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start"><div style="width:32px;height:32px;background:var(--accent-dim);border:1px solid rgba(26,86,219,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">◈</div><div><div style="font-weight:500;font-size:14px;margin-bottom:2px">Response time</div><div style="font-size:13px;color:var(--mid)">Within 24 hours for all inquiries</div></div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start"><div style="width:32px;height:32px;background:var(--accent-dim);border:1px solid rgba(26,86,219,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">◉</div><div><div style="font-weight:500;font-size:14px;margin-bottom:2px">Based in</div><div style="font-size:13px;color:var(--mid)">San Ramon, California</div></div></div>
+        </div>
+      </div>
+      <div>
+        <form onsubmit="submitContact(event)">
+          <div class="form-row">
+            <div class="form-field"><label>Name</label><input type="text" placeholder="Your name" required></div>
+            <div class="form-field"><label>Company</label><input type="text" placeholder="Company name"></div>
+          </div>
+          <div class="form-field"><label>Email</label><input type="email" placeholder="you@company.com" required></div>
+          <div class="form-row">
+            <div class="form-field"><label>Domain / industry</label><select><option>Technology</option><option>Finance</option><option>Healthcare</option><option>Retail</option><option>Other</option></select></div>
+            <div class="form-field"><label>Use case</label><select><option>Agent builder</option><option>Benchmarking</option><option>TCO / cost</option><option>SRE / reliability</option><option>Full platform</option><option>White-label</option></select></div>
+          </div>
+          <div class="form-field"><label>Message</label><textarea placeholder="Tell us what you're building or what you need help with..."></textarea></div>
+          <div class="form-field"><label>Preferred meeting time</label><input type="text" placeholder="e.g. Weekdays 9am–5pm PST"></div>
+          <button type="submit" style="width:100%;background:var(--accent);color:#fff;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s">Send message →</button>
+          <div id="contact-success" style="display:none;margin-top:12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);padding:10px 14px;font-size:13px;color:var(--emerald);font-family:'DM Mono',monospace;text-align:center">Message sent! We'll respond within 24 hours.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>MAKE YOUR BUSINESS<br>AN AI AGENTIC BUSINESS.</h2>
+    <p>Best price-performance for agentic workloads. Start free. Scale when you're ready.</p>
+    <div class="cta-btns">
+      <a href="login.html" class="cta-b1">Start building free →</a>
+      <a href="mailto:seeth.gudetee@gmail.com" class="cta-b2">Talk to us</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <a href="#" class="flogo">ARG<em>O</em>VAA</a>
+    <div class="fcopy" style="margin-top:8px">© 2025 Argovaa.com<br>San Ramon, California</div>
+    <div class="femail" style="margin-top:8px"><a href="mailto:seeth.gudetee@gmail.com">seeth.gudetee@gmail.com</a></div>
+  </div>
+  <div>
+    <div class="fblock-title">Platform</div>
+    <div class="flinks-col">
+      <a href="agent-builder.html">Agent builder</a>
+      <a href="benchmarks.html">Benchmark studio</a>
+      <a href="#golden-signals">Reliability suite</a>
+      <a href="tco.html">Tokenomics &amp; TCO</a>
+      <a href="#snippets">Snippet hub</a>
+    </div>
+  </div>
+  <div>
+    <div class="fblock-title">Resources</div>
+    <div class="flinks-col">
+      <a href="analyser.html">GC analyser</a>
+      <a href="tokenomics.html">Pricing intelligence</a>
+      <a href="benchmarks.html">Performance benchmarking</a>
+      <a href="login.html">Sign in</a>
+    </div>
+  </div>
+  <div>
+    <div class="fblock-title">Company</div>
+    <div class="flinks-col">
+      <a href="#contact">Contact us</a>
+      <a href="mailto:seeth.gudetee@gmail.com">Support</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CHAT WIDGET -->
+<div class="chat-widget">
+  <div class="chat-window" id="chat-win">
+    <div class="chat-win-head">
+      <span class="chat-win-title">Argovaa assistant</span>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="cmsg bot">Hi! I'm the Argovaa assistant. Ask me about our platform, pricing, agent builder, or how to get started.</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-inp" type="text" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+  <div class="chat-bubble" onclick="toggleChat()">💬</div>
+</div>
+
+<script>
+// Domain navigation
+function goDomain(domain){
+  document.querySelectorAll('.domain-card').forEach(d=>d.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  // Short delay so user sees the selection before navigating
+  setTimeout(()=>{
+    window.location.href='agent-builder.html?domain='+domain;
+  },200);
+}
+
+// Pricing tabs
+function showPricing(id,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.pricing-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pp-'+id).classList.add('on');
+}
+
+// Contact form
+function submitContact(e){
+  e.preventDefault();
+  document.getElementById('contact-success').style.display='block';
+  e.target.reset();
+  setTimeout(()=>document.getElementById('contact-success').style.display='none',5000);
+}
+
+// Chat widget
+function toggleChat(){
+  document.getElementById('chat-win').classList.toggle('open');
+}
+
+const CHAT_RESPONSES={
+  'pricing':'Our pricing starts at $49/mo for individual modules. Full platform bundles from $299/mo. Check the Pricing section on this page or email seeth.gudetee@gmail.com for enterprise pricing.',
+  'agent':'The Agent Builder lets you create AI agents for any domain — finance, healthcare, retail, technology — in 5 minutes. No ML expertise needed. Sign in to access templates and deploy.',
+  'benchmark':'Our Benchmark Studio tracks 360+ AI models across 5 GPU platforms with MLPerf v4.1 data. Free tier shows top 10 models. Pro plan ($49/mo) gives full access.',
+  'tco':'The TCO dashboard blends AWS CPU/GPU infrastructure costs, LLM token spend, and service overhead into a true cost per request. Upload your AWS CUR file to get started.',
+  'sre':'The Reliability Suite monitors 4 golden signals — throughput, availability, latency, errors — across every agent in your stack. Plans from $99/mo.',
+  'default':'Thanks for reaching out! For detailed questions, email seeth.gudetee@gmail.com or use the contact form on this page. I can also answer questions about pricing, the agent builder, benchmarks, TCO, or SRE reliability.'
+};
+
+function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  const msg=inp.value.trim();if(!msg)return;
+  const msgs=document.getElementById('chat-msgs');
+  const userDiv=document.createElement('div');userDiv.className='cmsg user';userDiv.textContent=msg;msgs.appendChild(userDiv);
+  inp.value='';msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    const ml=msg.toLowerCase();
+    let resp=CHAT_RESPONSES.default;
+    if(ml.includes('pric')||ml.includes('cost')&&!ml.includes('tco')) resp=CHAT_RESPONSES.pricing;
+    else if(ml.includes('agent')||ml.includes('build')||ml.includes('template')) resp=CHAT_RESPONSES.agent;
+    else if(ml.includes('bench')||ml.includes('model')||ml.includes('gpu')) resp=CHAT_RESPONSES.benchmark;
+    else if(ml.includes('tco')||ml.includes('cur')||ml.includes('aws')||ml.includes('token')) resp=CHAT_RESPONSES.tco;
+    else if(ml.includes('sre')||ml.includes('reliab')||ml.includes('signal')||ml.includes('latency')) resp=CHAT_RESPONSES.sre;
+    const botDiv=document.createElement('div');botDiv.className='cmsg bot';botDiv.textContent=resp;msgs.appendChild(botDiv);
+    msgs.scrollTop=msgs.scrollHeight;
+  },600);
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+</script>
+</body>
+</html>
