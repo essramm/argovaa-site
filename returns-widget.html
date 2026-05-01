@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa Returns Assistant — Embed Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Demo page styles ─────────────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:#0d1420;min-height:100vh}
+.demo-page{max-width:900px;margin:0 auto;padding:48px 24px 120px}
+.demo-header{text-align:center;margin-bottom:48px}
+.demo-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#1a56db;margin-bottom:10px}
+.demo-title{font-size:32px;font-weight:500;color:#0d1420;margin-bottom:10px}
+.demo-sub{font-size:15px;color:#4a5568;font-weight:300}
+.demo-products{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.product-card{background:#fff;border:1px solid rgba(13,20,32,0.1);padding:20px;border-radius:4px}
+.product-icon{font-size:32px;margin-bottom:10px}
+.product-name{font-weight:500;font-size:14px;color:#0d1420;margin-bottom:4px}
+.product-price{font-family:'DM Mono',monospace;font-size:13px;color:#1a56db;margin-bottom:4px}
+.product-order{font-family:'DM Mono',monospace;font-size:11px;color:#4a5568}
+.demo-notice{background:#fff;border:1px solid rgba(26,86,219,0.2);border-left:3px solid #1a56db;padding:16px 20px;margin-bottom:32px;font-size:13px;color:#4a5568}
+.demo-notice strong{color:#0d1420}
+.embed-code-section{background:#0d1420;border-radius:4px;padding:20px;margin-bottom:32px}
+.embed-code-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:12px}
+.embed-code{font-family:'DM Mono',monospace;font-size:12px;color:#86efac;line-height:1.8;white-space:pre}
+.copy-embed-btn{margin-top:12px;background:#1a56db;color:#fff;border:none;padding:8px 16px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.copy-embed-btn:hover{background:#2563eb}
+
+/* ── WIDGET STYLES ────────────────────────────────────────────────────────── */
+#argovaa-widget-container{position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'DM Sans',sans-serif}
+
+/* Bubble */
+.aw-bubble{width:56px;height:56px;background:#1a56db;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(26,86,219,0.4);transition:transform 0.2s,box-shadow 0.2s;position:relative}
+.aw-bubble:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(26,86,219,0.5)}
+.aw-bubble-icon{width:26px;height:26px;transition:opacity 0.2s}
+.aw-bubble-close{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;font-size:20px;color:#fff;transition:opacity 0.2s}
+.aw-bubble.open .aw-bubble-icon{opacity:0}
+.aw-bubble.open .aw-bubble-close{opacity:1}
+.aw-notif{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#dc2626;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;animation:notif-pulse 2s infinite}
+@keyframes notif-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+/* Window */
+.aw-window{position:absolute;bottom:68px;right:0;width:360px;background:#fff;border:1px solid rgba(13,20,32,0.1);box-shadow:0 8px 40px rgba(13,20,32,0.15);display:flex;flex-direction:column;overflow:hidden;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);transform-origin:bottom right}
+.aw-window.closed{opacity:0;transform:scale(0.9) translateY(10px);pointer-events:none}
+.aw-window.open{opacity:1;transform:scale(1) translateY(0)}
+
+/* Header */
+.aw-header{background:#0d1420;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.aw-header-left{display:flex;align-items:center;gap:10px}
+.aw-avatar{width:32px;height:32px;background:rgba(26,86,219,0.3);border:1px solid rgba(26,86,219,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:#93c5fd;font-weight:500}
+.aw-header-info{}
+.aw-header-name{font-weight:500;font-size:13px;color:#fff}
+.aw-header-status{font-size:11px;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:4px;margin-top:1px}
+.aw-status-dot{width:5px;height:5px;border-radius:50%;background:#10b981;animation:status-pulse 2s infinite;flex-shrink:0}
+@keyframes status-pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.aw-header-right{display:flex;gap:6px}
+.aw-header-btn{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:14px;padding:4px;transition:color 0.2s;line-height:1}
+.aw-header-btn:hover{color:rgba(255,255,255,0.8)}
+.aw-powered{font-family:'DM Mono',monospace;font-size:9px;background:rgba(26,86,219,0.2);border:1px solid rgba(26,86,219,0.3);color:#93c5fd;padding:2px 6px;letter-spacing:0.3px}
+
+/* Quick actions */
+.aw-quick{padding:12px;background:#f0f4f8;border-bottom:1px solid rgba(13,20,32,0.08);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.aw-qbtn{font-family:'DM Mono',monospace;font-size:10px;background:#fff;border:1px solid rgba(13,20,32,0.12);color:#4a5568;padding:5px 10px;cursor:pointer;transition:all 0.15s;letter-spacing:0.2px}
+.aw-qbtn:hover{background:#1a56db;border-color:#1a56db;color:#fff}
+
+/* Messages */
+.aw-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:240px;max-height:320px}
+.aw-msgs::-webkit-scrollbar{width:4px}
+.aw-msgs::-webkit-scrollbar-track{background:transparent}
+.aw-msgs::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:2px}
+.aw-msg{display:flex;gap:8px;align-items:flex-start;animation:msg-in 0.25s ease forwards}
+@keyframes msg-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.aw-msg-av{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:500}
+.aw-msg.bot .aw-msg-av{background:rgba(26,86,219,0.1);border:1px solid rgba(26,86,219,0.2);color:#1a56db;border-radius:50%}
+.aw-msg.user .aw-msg-av{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);color:#7c3aed;border-radius:50%}
+.aw-msg.user{flex-direction:row-reverse}
+.aw-bubble-msg{padding:9px 12px;font-size:13px;line-height:1.6;max-width:85%}
+.aw-msg.bot .aw-bubble-msg{background:#f0f4f8;border:1px solid rgba(13,20,32,0.08);color:#0d1420;border-radius:0 8px 8px 8px}
+.aw-msg.user .aw-bubble-msg{background:#1a56db;color:#fff;border-radius:8px 0 8px 8px}
+.aw-typing{display:flex;gap:4px;align-items:center;padding:8px 12px;background:#f0f4f8;border:1px solid rgba(13,20,32,0.08);width:fit-content;border-radius:0 8px 8px 8px}
+.aw-typing span{width:5px;height:5px;border-radius:50%;background:#94a3b8;animation:typing 1.2s infinite}
+.aw-typing span:nth-child(2){animation-delay:0.2s}
+.aw-typing span:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,80%,100%{opacity:0.3;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+
+/* Status chips */
+.aw-chip{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;margin:1px 2px;border-radius:2px}
+.chip-green{background:rgba(5,150,105,0.1);color:#059669;border:1px solid rgba(5,150,105,0.2)}
+.chip-red{background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.2)}
+.chip-amber{background:rgba(217,119,6,0.08);color:#d97706;border:1px solid rgba(217,119,6,0.2)}
+.chip-blue{background:rgba(26,86,219,0.08);color:#1a56db;border:1px solid rgba(26,86,219,0.2)}
+
+/* Input */
+.aw-input-wrap{border-top:1px solid rgba(13,20,32,0.08);display:flex;gap:0;flex-shrink:0}
+.aw-input{flex:1;border:none;outline:none;padding:11px 14px;font-size:13px;font-family:'DM Sans',sans-serif;color:#0d1420;background:#fff}
+.aw-input::placeholder{color:#b8c4d4}
+.aw-send{background:#1a56db;color:#fff;border:none;padding:0 16px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;transition:background 0.2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.aw-send:hover{background:#2563eb}
+.aw-send:disabled{background:#b8c4d4;cursor:not-allowed}
+.aw-send-spinner{width:12px;height:12px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer */
+.aw-footer{padding:7px 14px;border-top:1px solid rgba(13,20,32,0.06);display:flex;align-items:center;justify-content:space-between;background:#fafafa;flex-shrink:0}
+.aw-footer-brand{font-family:'DM Mono',monospace;font-size:9px;color:#b8c4d4;text-decoration:none;letter-spacing:0.3px}
+.aw-footer-brand:hover{color:#1a56db}
+.aw-footer-policy{font-family:'DM Mono',monospace;font-size:9px;color:#b8c4d4;cursor:pointer;transition:color 0.2s}
+.aw-footer-policy:hover{color:#1a56db}
+</style>
+</head>
+<body>
+
+<!-- Demo page content -->
+<div class="demo-page">
+  <div class="demo-header">
+    <div class="demo-tag">Argovaa Agent Builder</div>
+    <div class="demo-title">Returns Assistant — Live Demo</div>
+    <div class="demo-sub">Your agent is embedded in this page. Click the blue button in the bottom-right corner to start.</div>
+  </div>
+
+  <div class="demo-notice">
+    <strong>Agent ID:</strong> agent_jj39spuu &nbsp;·&nbsp;
+    <strong>Domain:</strong> Retail &nbsp;·&nbsp;
+    <strong>Template:</strong> Returns Processing Agent &nbsp;·&nbsp;
+    <strong>Status:</strong> <span style="color:#059669;font-weight:500">● Live</span>
+  </div>
+
+  <div class="demo-products">
+    <div class="product-card">
+      <div class="product-icon">👟</div>
+      <div class="product-name">Men's Running Shoes</div>
+      <div class="product-price">$89.99</div>
+      <div class="product-order">ORD-20001 · 3 days ago</div>
+    </div>
+    <div class="product-card">
+      <div class="product-icon">🎧</div>
+      <div class="product-name">Wireless Headphones</div>
+      <div class="product-price">$149.99</div>
+      <div class="product-order">ORD-20003 · 45 days ago</div>
+    </div>
+    <div class="product-card">
+      <div class="product-icon">⌚</div>
+      <div class="product-name">Smart Fitness Watch</div>
+      <div class="product-price">$299.99</div>
+      <div class="product-order">ORD-20006 · 60 days ago (defective)</div>
+    </div>
+  </div>
+
+  <div class="embed-code-section">
+    <div class="embed-code-title">Embed this widget on any page — copy &amp; paste</div>
+    <div class="embed-code" id="embed-code">&lt;!-- Argovaa Returns Agent Widget --&gt;
+&lt;script
+  src="https://cdn.argovaa.com/widget.js"
+  data-agent="agent_jj39spuu"
+  data-theme="light"
+  data-title="Returns Assistant"
+  data-welcome="Hi! I can help you with returns, exchanges, and refunds."
+&gt;&lt;/script&gt;</div>
+    <button class="copy-embed-btn" onclick="copyEmbed()">Copy embed code</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- WIDGET                                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="argovaa-widget-container">
+
+  <!-- Chat window -->
+  <div class="aw-window closed" id="aw-window">
+    <div class="aw-header">
+      <div class="aw-header-left">
+        <div class="aw-avatar">AI</div>
+        <div class="aw-header-info">
+          <div class="aw-header-name">Returns Assistant</div>
+          <div class="aw-header-status">
+            <span class="aw-status-dot"></span>
+            <span>Online · Powered by Claude</span>
+          </div>
+        </div>
+      </div>
+      <div class="aw-header-right">
+        <span class="aw-powered">ARGOVAA</span>
+        <button class="aw-header-btn" onclick="toggleWidget()" title="Close">✕</button>
+      </div>
+    </div>
+
+    <!-- Quick action chips -->
+    <div class="aw-quick">
+      <button class="aw-qbtn" onclick="quickAsk('I want to start a return')">Start a return</button>
+      <button class="aw-qbtn" onclick="quickAsk('Check my return status')">Check status</button>
+      <button class="aw-qbtn" onclick="quickAsk('My item is defective')">Defective item</button>
+      <button class="aw-qbtn" onclick="quickAsk('What is your return policy?')">Return policy</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="aw-msgs" id="aw-msgs">
+      <div class="aw-msg bot">
+        <div class="aw-msg-av">AI</div>
+        <div class="aw-bubble-msg">Hi! 👋 I'm your <strong>Returns Assistant</strong>. I can help you with:<br><br>
+          • Check if your item is eligible for return<br>
+          • Start a return or exchange<br>
+          • Track your refund status<br>
+          • Handle defective or damaged items<br><br>
+          What can I help you with today?
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="aw-input-wrap">
+      <input class="aw-input" id="aw-input" type="text"
+        placeholder="Describe your return request..."
+        onkeydown="if(event.key==='Enter')sendMessage()">
+      <button class="aw-send" id="aw-send" onclick="sendMessage()">
+        <span class="aw-send-spinner" id="aw-spinner"></span>
+        <span id="aw-send-text">Send →</span>
+      </button>
+    </div>
+
+    <div class="aw-footer">
+      <a class="aw-footer-brand" href="https://argovaa.com" target="_blank">Powered by Argovaa</a>
+      <span class="aw-footer-policy" onclick="quickAsk('What is your full return policy?')">View policy</span>
+    </div>
+  </div>
+
+  <!-- Bubble button -->
+  <div class="aw-bubble" id="aw-bubble" onclick="toggleWidget()">
+    <svg class="aw-bubble-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <div class="aw-bubble-close">✕</div>
+    <div class="aw-notif" id="aw-notif">1</div>
+  </div>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const AGENT_CONFIG = {
+  agentId:   'agent_jj39spuu',
+  agentName: 'Returns Assistant',
+  domain:    'Retail',
+  systemPrompt: `You are a Returns Processing Agent for an online retail store. Your job is to:
+
+1. CHECK return eligibility based on purchase date and return policy
+2. GUIDE customers through the return process step by step
+3. INITIATE approved returns automatically
+4. HANDLE defective/damaged items with priority
+
+RETURN POLICY:
+- Apparel, Footwear, Bags, Outdoor, Accessories, Home, Fitness, Kitchen: 30-day return window
+- Electronics (headphones, watches, keyboards, projectors, earbuds): 15-day return window
+- Beauty/perfume products: 14-day return window, UNOPENED ONLY
+- ALL defective items: 90-day window regardless of category
+- Items damaged in transit: 30-day window with photo evidence required
+- Opened beauty/hygiene products: NOT eligible (hygiene policy)
+- Worn shoes or apparel: NOT eligible
+- Electronics without proof of purchase: ON HOLD pending verification
+
+WHAT TO DO IN EACH CASE:
+- ELIGIBLE: Confirm approval, tell them a prepaid return label will be emailed within 5 minutes, refund in 3-5 business days
+- INELIGIBLE (outside window): Apologise, explain the window has passed, mention the purchase date
+- DEFECTIVE: Express urgency, offer replacement or full refund, prioritise handling
+- DAMAGED IN TRANSIT: Ask for photos, arrange immediate replacement or refund
+- WRONG ITEM: Apologise for our error, arrange free collection and dispatch correct item same day
+- GIFT RETURN: Offer store credit or exchange (not cash refund)
+- CANCELLED ORDER: Check refund status, explain no return needed for cancelled orders
+
+TONE: Warm, empathetic, efficient. Always acknowledge the customer's frustration if returning. Be specific about timelines.
+
+When a customer provides an order ID or product name, acknowledge it. If they mention how many days ago they purchased, calculate eligibility immediately and give a clear YES or NO answer before explaining next steps.
+
+Always end your response with a clear next step or question to move the process forward.`,
+};
+
+let isOpen = false;
+let isBusy = false;
+let msgHistory = [];
+
+// ── Toggle widget ─────────────────────────────────────────────────────────────
+function toggleWidget() {
+  isOpen = !isOpen;
+  const win    = document.getElementById('aw-window');
+  const bubble = document.getElementById('aw-bubble');
+  const notif  = document.getElementById('aw-notif');
+
+  win.className    = 'aw-window ' + (isOpen ? 'open' : 'closed');
+  bubble.className = 'aw-bubble ' + (isOpen ? 'open' : '');
+  notif.style.display = 'none';
+
+  if(isOpen) {
+    setTimeout(() => document.getElementById('aw-input').focus(), 300);
+  }
+}
+
+// ── Quick ask ─────────────────────────────────────────────────────────────────
+function quickAsk(text) {
+  document.getElementById('aw-input').value = text;
+  sendMessage();
+}
+
+// ── Add message to chat ───────────────────────────────────────────────────────
+function addMessage(role, html) {
+  const msgs = document.getElementById('aw-msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'aw-msg ' + role;
+  wrap.innerHTML = `
+    <div class="aw-msg-av">${role === 'bot' ? 'AI' : 'You'}</div>
+    <div class="aw-bubble-msg">${html}</div>`;
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('aw-msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'aw-msg bot';
+  wrap.id = 'aw-typing';
+  wrap.innerHTML = `
+    <div class="aw-msg-av">AI</div>
+    <div class="aw-typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('aw-typing');
+  if(t) t.remove();
+}
+
+// ── Format response ───────────────────────────────────────────────────────────
+function formatResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>')
+    .replace(/✅/g, '<span class="aw-chip chip-green">✓ APPROVED</span>')
+    .replace(/❌/g, '<span class="aw-chip chip-red">✗ REJECTED</span>')
+    .replace(/⚠️/g, '<span class="aw-chip chip-amber">⚠ REVIEW</span>')
+    .replace(/🔄/g, '<span class="aw-chip chip-blue">↻ PROCESSING</span>');
+}
+
+// ── Send message ──────────────────────────────────────────────────────────────
+async function sendMessage() {
+  if(isBusy) return;
+  const input = document.getElementById('aw-input');
+  const msg   = input.value.trim();
+  if(!msg) return;
+
+  input.value = '';
+  isBusy = true;
+  document.getElementById('aw-send').disabled = true;
+  document.getElementById('aw-spinner').style.display = 'block';
+  document.getElementById('aw-send-text').textContent = '...';
+
+  addMessage('user', msg);
+  showTyping();
+
+  // Build conversation history
+  msgHistory.push({ role: 'user', content: msg });
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model:      'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system:     AGENT_CONFIG.systemPrompt,
+        messages:   msgHistory,
+      })
+    });
+
+    const data   = await res.json();
+    const answer = data.content?.[0]?.text || "I'm having trouble processing that. Please try again.";
+
+    // Keep history for multi-turn conversation
+    msgHistory.push({ role: 'assistant', content: answer });
+
+    removeTyping();
+    addMessage('bot', formatResponse(answer));
+
+  } catch(e) {
+    removeTyping();
+    const fallback = getSmartFallback(msg);
+    msgHistory.push({ role: 'assistant', content: fallback });
+    addMessage('bot', formatResponse(fallback));
+  }
+
+  isBusy = false;
+  document.getElementById('aw-send').disabled = false;
+  document.getElementById('aw-spinner').style.display = 'none';
+  document.getElementById('aw-send-text').textContent = 'Send →';
+  document.getElementById('aw-input').focus();
+}
+
+// ── Smart fallback ─────────────────────────────────────────────────────────────
+function getSmartFallback(msg) {
+  const m = msg.toLowerCase();
+
+  if(m.includes('policy') || m.includes('how long') || m.includes('window')) {
+    return `Our return policy windows are:<br><br>
+      <span class="aw-chip chip-blue">30 DAYS</span> Apparel, Footwear, Bags, Home, Fitness, Kitchen, Accessories<br>
+      <span class="aw-chip chip-amber">15 DAYS</span> Electronics (headphones, watches, keyboards)<br>
+      <span class="aw-chip chip-amber">14 DAYS</span> Beauty products — <strong>unopened only</strong><br>
+      <span class="aw-chip chip-green">90 DAYS</span> All defective items regardless of category<br><br>
+      Would you like to check if a specific order is eligible?`;
+  }
+
+  if(m.match(/defect|broken|not work|faulty|malfunction/)) {
+    return `I'm sorry to hear your item is defective! <span class="aw-chip chip-green">✓ APPROVED</span><br><br>
+      <strong>Defective items are covered for 90 days</strong> under our quality guarantee — regardless of the standard return window.<br><br>
+      To process this quickly:<br>
+      1. What is your order number?<br>
+      2. What exactly is wrong with the item?<br><br>
+      I'll arrange an immediate replacement or full refund for you.`;
+  }
+
+  if(m.match(/damage|transit|arrived broken|shipping/)) {
+    return `I'm so sorry your order arrived damaged! <span class="aw-chip chip-green">✓ APPROVED</span><br><br>
+      This is our priority to fix. Please:<br>
+      1. Take photos of the damaged item and packaging<br>
+      2. Share your order number<br><br>
+      I'll arrange an immediate replacement or full refund — no need to return the damaged item.`;
+  }
+
+  if(m.match(/wrong item|wrong product|incorrect/)) {
+    return `I sincerely apologise — we sent you the wrong item! <span class="aw-chip chip-green">✓ APPROVED</span><br><br>
+      Since this is our error:<br>
+      • <strong>Free collection</strong> will be arranged<br>
+      • <strong>Correct item dispatched</strong> today at no extra cost<br>
+      • No need to pay for return shipping<br><br>
+      Please share your order number and I'll get this sorted immediately.`;
+  }
+
+  if(m.match(/gift|present|recipient/)) {
+    return `No problem with gift returns! 🎁<br><br>
+      For gift returns we offer:<br>
+      • <strong>Store credit</strong> for the full purchase amount<br>
+      • <strong>Exchange</strong> for a different item<br><br>
+      Note: Cash refunds for gifts go back to the original payment method only.<br><br>
+      Do you have the order number or the gift receipt? I can look up the order to check eligibility.`;
+  }
+
+  if(m.match(/status|where|track|refund/)) {
+    return `Let me check your return status! <span class="aw-chip chip-blue">↻ PROCESSING</span><br><br>
+      Please provide your:<br>
+      • <strong>Order number</strong> (e.g. ORD-20001)<br>
+      • Or the <strong>email address</strong> used to place the order<br><br>
+      I'll pull up your return and refund status right away.`;
+  }
+
+  if(m.match(/\d+\s*day|how many|when|eligible|can i/)) {
+    const daysMatch = m.match(/(\d+)\s*day/);
+    if(daysMatch) {
+      const days = parseInt(daysMatch[1]);
+      let eligible = days <= 30;
+      let window_  = 30;
+      if(m.includes('electron') || m.includes('headphone') || m.includes('watch') || m.includes('laptop')) {
+        eligible = days <= 15; window_ = 15;
+      }
+      if(m.includes('beauty') || m.includes('perfume') || m.includes('cosmetic')) {
+        eligible = days <= 14; window_ = 14;
+      }
+      if(m.includes('defect') || m.includes('broken')) {
+        eligible = days <= 90; window_ = 90;
+      }
+      if(eligible) {
+        return `<span class="aw-chip chip-green">✓ ELIGIBLE</span> Your purchase is within the <strong>${window_}-day return window</strong>!<br><br>
+          I can process your return right now. Please confirm:<br>
+          1. Your <strong>order number</strong><br>
+          2. The <strong>reason for returning</strong><br>
+          3. Whether you'd prefer a <strong>refund or exchange</strong><br><br>
+          Once confirmed I'll email your prepaid return label within 5 minutes.`;
+      } else {
+        return `<span class="aw-chip chip-red">✗ OUTSIDE WINDOW</span> Unfortunately your purchase was <strong>${days} days ago</strong>, which is past our ${window_}-day return window.<br><br>
+          However, I'd like to help. Is there a specific issue with the item?<br>
+          • If it's <strong>defective</strong>, we have a 90-day quality guarantee<br>
+          • If it <strong>arrived damaged</strong>, we can still process a claim<br><br>
+          Can you tell me more about why you'd like to return it?`;
+      }
+    }
+  }
+
+  return `I'm here to help with your return! To get started, could you tell me:<br><br>
+    1. Your <strong>order number</strong> (e.g. ORD-20001)<br>
+    2. What item you'd like to return<br>
+    3. The reason for the return<br><br>
+    I'll check eligibility and process it right away. 😊`;
+}
+
+// ── Copy embed code ───────────────────────────────────────────────────────────
+function copyEmbed() {
+  const code = document.getElementById('embed-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.copy-embed-btn');
+    btn.textContent = 'Copied! ✓';
+    setTimeout(() => btn.textContent = 'Copy embed code', 2000);
+  });
+}
+
+// Show notification after 3 seconds
+setTimeout(() => {
+  if(!isOpen) {
+    document.getElementById('aw-notif').style.display = 'flex';
+  }
+}, 3000);
+</script>
+</body>
+</html>
