@@ -12,7 +12,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f5f3ee;--ink:#0f0f0d;--mid:#5a5a52;--faint:#c8c5bb;
+  --bg:#060d1f;--ink:#e8efff;--mid:#7a8fae;--faint:#1e2d4a;
   --green:#0f6e56;--green-lt:#e2f5eb;
   --amber:#854f0b;--amber-lt:#fdf0d8;
   --red:#993c1d;--red-lt:#fde8e4;
@@ -21,7 +21,7 @@
   --bd:rgba(15,15,13,0.1);--bd2:rgba(15,15,13,0.06)
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+body{background:#060d1f;color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
 
 /* NAV */
 nav{background:var(--ink);padding:0 48px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -56,10 +56,10 @@ h1 em{font-style:normal;color:#00e5a0}
 .loading-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--mid);text-transform:uppercase;letter-spacing:1px}
 
 /* FILTERS */
-.filter-bar{padding:14px 48px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90}
+.filter-bar{padding:14px 48px;background:#08111f;border-bottom:1px solid rgba(59,111,255,0.1);display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90}
 .filter-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 .fbtn{background:transparent;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.3px;transition:all 0.15s}
-.fbtn:hover{border-color:var(--ink);color:var(--ink)}
+.fbtn:hover{border-color:rgba(59,111,255,0.4);color:#e8efff}
 .fbtn.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .fbtn.openai.on{background:#10a37f;border-color:#10a37f;color:#fff}
 .fbtn.anthropic.on{background:#c25b3e;border-color:#c25b3e;color:#fff}
@@ -72,7 +72,7 @@ h1 em{font-style:normal;color:#00e5a0}
 
 /* SUMMARY CARDS */
 .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
-.scard{background:#fff;border:1px solid var(--bd);padding:16px 18px}
+.scard{background:#0b1528;border:1px solid rgba(59,111,255,0.12);padding:16px 18px}
 .scard-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:6px}
 .scard-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px}
 .scard-val.g{color:var(--green)}
@@ -83,7 +83,7 @@ h1 em{font-style:normal;color:#00e5a0}
 
 /* GPU SELECTOR */
 .gpu-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.gpu-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:11px;padding:6px 12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.gpu-btn{background:#0b1528;border:1px solid rgba(59,111,255,0.15);color:#7a8fae;font-size:11px;padding:6px 12px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
 .gpu-btn:hover{border-color:var(--ink);color:var(--ink)}
 .gpu-btn.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:700}
 
@@ -91,36 +91,36 @@ h1 em{font-style:normal;color:#00e5a0}
 .ctx-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .ctx-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 .ctx-btns{display:flex;gap:4px}
-.ctx-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.ctx-btn{background:#0b1528;border:1px solid rgba(59,111,255,0.15);color:#7a8fae;font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
 .ctx-btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
 
 /* SORT BAR */
 .sort-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .sort-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 .sort-btns{display:flex;gap:4px}
-.sort-btn{background:#fff;border:1px solid var(--bd);color:var(--mid);font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
+.sort-btn{background:#0b1528;border:1px solid rgba(59,111,255,0.15);color:#7a8fae;font-size:10px;padding:4px 9px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.15s}
 .sort-btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
 
 /* LEADERBOARD TABLE */
-.lb-wrap{background:#fff;border:1px solid var(--bd);margin-bottom:24px;overflow:hidden}
+.lb-wrap{background:#0b1528;border:1px solid rgba(59,111,255,0.12);margin-bottom:24px;overflow:hidden}
 .lb-header{display:grid;grid-template-columns:32px 1fr 80px 80px 90px 90px 90px 70px;gap:0;border-bottom:2px solid var(--ink)}
 .lb-header div,.lb-cell{padding:10px 12px;border-right:1px solid var(--bd2);font-size:11px}
 .lb-header div{font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 .lb-header div:last-child,.lb-cell:last-child{border-right:none}
 .lb-row{display:grid;grid-template-columns:32px 1fr 80px 80px 90px 90px 90px 70px;gap:0;border-bottom:1px solid var(--bd2);cursor:pointer;transition:background 0.15s}
 .lb-row:last-child{border-bottom:none}
-.lb-row:hover{background:#fafaf8}
-.lb-row.top-row{background:#fffdf5}
-.lb-row.top-row:hover{background:#fffbea}
+.lb-row:hover{background:#0f1e3a}
+.lb-row.top-row{background:rgba(59,111,255,0.06)}
+.lb-row.top-row:hover{background:rgba(59,111,255,0.12)}
 .lb-cell{display:flex;align-items:center;font-size:12px}
 .rank-cell{justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--mid)}
 .rank-cell.gold{color:var(--amber);font-weight:700}
 .model-cell{flex-direction:column;align-items:flex-start;gap:3px}
 .model-name{font-weight:700;font-size:13px}
 .model-provider{display:inline-block;font-size:9px;padding:2px 6px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:0.3px;margin-top:2px}
-.mp-openai{background:#d1fae5;color:#065f46}
-.mp-anthropic{background:#fee2e2;color:#991b1b}
-.mp-azure{background:#dbeafe;color:#1e40af}
+.mp-openai{background:rgba(16,185,129,0.12);color:#6ee7b7}
+.mp-anthropic{background:rgba(239,68,68,0.1);color:#fca5a5}
+.mp-azure{background:rgba(59,111,255,0.12);color:#93c5fd}
 .mp-oss,.mp-meta-llama,.mp-mistralai,.mp-default{background:#ede9fe;color:#5b21b6}
 .mp-google{background:#fce7f3;color:#9d174d}
 .tps-cell{flex-direction:column;gap:3px}
@@ -146,14 +146,14 @@ h1 em{font-style:normal;color:#00e5a0}
 .detail-panel.show{display:block}
 .detail-title{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:14px}
 .detail-gpu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
-.dgpu-card{background:#fff;border:1px solid var(--bd);padding:12px 14px}
+.dgpu-card{background:#0b1528;border:1px solid var(--bd);padding:12px 14px}
 .dgpu-name{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:5px}
 .dgpu-tps{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px}
 .dgpu-meta{font-size:11px;color:var(--mid)}
 
 /* CHARTS */
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-.chart-card{background:#fff;border:1px solid var(--bd);padding:18px}
+.chart-card{background:#0b1528;border:1px solid var(--bd);padding:18px}
 .chart-head{margin-bottom:4px}
 .chart-title{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
 .chart-subtitle{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-top:3px;margin-bottom:12px}
@@ -162,14 +162,36 @@ h1 em{font-style:normal;color:#00e5a0}
 .leg-swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
 /* DATA SOURCE BANNER */
-.source-banner{background:var(--ink);padding:20px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.source-text{color:rgba(255,255,255,0.55);font-size:12px;line-height:1.6;max-width:600px}
-.source-text strong{color:#fff}
-.source-badges{display:flex;gap:8px;flex-wrap:wrap}
+.source-banner{background:#040b1a;padding:32px 48px;border-top:1px solid rgba(255,255,255,0.07)}
+.source-banner-title{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.source-banner-title::before{content:'';width:20px;height:1px;background:#00e5a0}
+.source-banner-title::after{content:'Auto-refreshed daily at 06:00 UTC';margin-left:auto;color:rgba(255,255,255,0.2);font-size:9px}
+.source-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.source-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:16px;transition:background 0.2s}
+.source-card:hover{background:rgba(255,255,255,0.07)}
+.sc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sc-name{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#fff;letter-spacing:0.3px}
+.sc-live{font-family:'Space Mono',monospace;font-size:9px;padding:2px 6px;background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.25);color:#00e5a0;letter-spacing:0.3px}
+.sc-live.static{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.35)}
+.sc-desc{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:10px}
+.sc-fields{display:flex;flex-direction:column;gap:4px}
+.sc-field{display:flex;justify-content:space-between;font-size:10px}
+.sc-field-label{color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace}
+.sc-field-val{color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;text-align:right}
+.sc-url{font-family:'Space Mono',monospace;font-size:9px;color:#00e5a0;margin-top:8px;opacity:0.7;word-break:break-all}
+.source-methodology{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:14px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.sm-icon{font-size:16px;flex-shrink:0;margin-top:1px;opacity:0.6}
+.sm-text{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.65}
+.sm-text strong{color:rgba(255,255,255,0.65)}
+.sm-text a{color:#00e5a0;text-decoration:none}
+.sm-text a:hover{text-decoration:underline}
+.source-footer-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.source-updated{font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:6px}
 .src-badge{font-family:'Space Mono',monospace;font-size:10px;border:1px solid rgba(0,229,160,0.25);color:#00e5a0;padding:4px 10px}
+.source-badges{display:flex;gap:6px;flex-wrap:wrap}
 
 /* FOOTER */
-footer{background:#fff;border-top:1px solid var(--bd);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer{background:#0b1528;border-top:1px solid var(--bd);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
 .flogo{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;color:var(--ink);text-decoration:none}
 .flogo span{color:var(--green)}
 .flinks{display:flex;gap:20px}
@@ -187,7 +209,8 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:28px 48px;display:
   .lb-header,.lb-row{grid-template-columns:24px 1fr 70px 70px 80px}
   .lb-header div:nth-child(n+6),.lb-cell:nth-child(n+6){display:none}
   footer{padding:20px 16px;flex-direction:column;align-items:flex-start}
-  .source-banner{padding:16px}
+  .source-banner{padding:24px 16px}
+  .source-cards{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -307,12 +330,99 @@ footer{background:#fff;border-top:1px solid var(--bd);padding:28px 48px;display:
 </div>
 
 <div class="source-banner">
-  <div class="source-text"><strong>Data sources:</strong> Benchmark data is automatically refreshed daily from OpenRouter (live model pricing & specs), Artificial Analysis (independent throughput benchmarks), Together AI (open source models), and MLPerf v4.1 official results. GPU hardware data from vendor specifications.</div>
-  <div class="source-badges">
-    <span class="src-badge">OpenRouter API</span>
-    <span class="src-badge">Artificial Analysis</span>
-    <span class="src-badge">MLPerf v4.1</span>
-    <span class="src-badge">Together AI</span>
+  <div class="source-banner-title">Data sources &amp; methodology</div>
+
+  <div class="source-cards">
+
+    <!-- OpenRouter -->
+    <div class="source-card">
+      <div class="sc-header">
+        <span class="sc-name">OpenRouter API</span>
+        <span class="sc-live">● LIVE</span>
+      </div>
+      <div class="sc-desc">Real-time model pricing, availability, context lengths, and provider metadata across 360+ models.</div>
+      <div class="sc-fields">
+        <div class="sc-field"><span class="sc-field-label">Data type</span><span class="sc-field-val">Pricing, specs</span></div>
+        <div class="sc-field"><span class="sc-field-label">Refresh</span><span class="sc-field-val">Daily · 06:00 UTC</span></div>
+        <div class="sc-field"><span class="sc-field-label">Coverage</span><span class="sc-field-val">360+ models</span></div>
+        <div class="sc-field"><span class="sc-field-label">Method</span><span class="sc-field-val">REST API</span></div>
+      </div>
+      <div class="sc-url">openrouter.ai/api/v1/models</div>
+    </div>
+
+    <!-- Artificial Analysis -->
+    <div class="source-card">
+      <div class="sc-header">
+        <span class="sc-name">Artificial Analysis</span>
+        <span class="sc-live">● LIVE</span>
+      </div>
+      <div class="sc-desc">Independent throughput, latency, and TTFT benchmarks measured from real API calls across providers.</div>
+      <div class="sc-fields">
+        <div class="sc-field"><span class="sc-field-label">Data type</span><span class="sc-field-val">Tokens/s, TTFT, latency</span></div>
+        <div class="sc-field"><span class="sc-field-label">Refresh</span><span class="sc-field-val">Daily · 06:00 UTC</span></div>
+        <div class="sc-field"><span class="sc-field-label">Methodology</span><span class="sc-field-val">Live API calls</span></div>
+        <div class="sc-field"><span class="sc-field-label">Independence</span><span class="sc-field-val">3rd party verified</span></div>
+      </div>
+      <div class="sc-url">artificialanalysis.ai</div>
+    </div>
+
+    <!-- MLPerf -->
+    <div class="source-card">
+      <div class="sc-header">
+        <span class="sc-name">MLPerf v4.1</span>
+        <span class="sc-live static">PERIODIC</span>
+      </div>
+      <div class="sc-desc">Official MLCommons inference benchmark results for H100, H200, A100, and MI300X GPU hardware.</div>
+      <div class="sc-fields">
+        <div class="sc-field"><span class="sc-field-label">Data type</span><span class="sc-field-val">GPU throughput</span></div>
+        <div class="sc-field"><span class="sc-field-label">Round</span><span class="sc-field-val">v4.1 (latest)</span></div>
+        <div class="sc-field"><span class="sc-field-label">GPU coverage</span><span class="sc-field-val">H200, H100, A100, MI300X</span></div>
+        <div class="sc-field"><span class="sc-field-label">Verified by</span><span class="sc-field-val">MLCommons</span></div>
+      </div>
+      <div class="sc-url">mlcommons.org/benchmarks/inference</div>
+    </div>
+
+    <!-- Together AI -->
+    <div class="source-card">
+      <div class="sc-header">
+        <span class="sc-name">Together AI</span>
+        <span class="sc-live">● LIVE</span>
+      </div>
+      <div class="sc-desc">Open source model performance data including Llama, Mistral, and other community models on cloud GPU infrastructure.</div>
+      <div class="sc-fields">
+        <div class="sc-field"><span class="sc-field-label">Data type</span><span class="sc-field-val">OSS model benchmarks</span></div>
+        <div class="sc-field"><span class="sc-field-label">Refresh</span><span class="sc-field-val">Daily · 06:00 UTC</span></div>
+        <div class="sc-field"><span class="sc-field-label">Focus</span><span class="sc-field-val">Open source models</span></div>
+        <div class="sc-field"><span class="sc-field-label">Method</span><span class="sc-field-val">REST API</span></div>
+      </div>
+      <div class="sc-url">api.together.xyz</div>
+    </div>
+
+  </div>
+
+  <div class="source-methodology">
+    <div class="sm-icon">⚠</div>
+    <div class="sm-text">
+      <strong>Methodology note:</strong> Throughput figures (tokens/sec) are measured under controlled load conditions and may vary in production based on concurrent requests, prompt complexity, and provider infrastructure. Pricing data reflects list rates and may not include enterprise discounts.
+      Rows marked <strong>✱</strong> indicate internally generated or synthetic benchmark data used to fill gaps where third-party measurements are unavailable — these should be treated as estimates.
+      Context degradation curves are modelled from available data points. GPU specs sourced from vendor datasheets.
+      For full methodology see <a href="mailto:seeth.gudetee@gmail.com">seeth.gudetee@gmail.com</a>.
+    </div>
+  </div>
+
+  <div class="source-footer-row">
+    <div class="source-updated">
+      <span style="width:6px;height:6px;border-radius:50%;background:#00e5a0;display:inline-block;animation:pulse 2s infinite"></span>
+      Last updated: <span id="source-updated-time">loading...</span>
+      &nbsp;·&nbsp; Next refresh: 06:00 UTC tomorrow
+      &nbsp;·&nbsp; Auto-updated by <strong style="color:rgba(255,255,255,0.5)">argovaa-benchmark-bot</strong>
+    </div>
+    <div class="source-badges">
+      <span class="src-badge">OpenRouter API</span>
+      <span class="src-badge">Artificial Analysis</span>
+      <span class="src-badge">MLPerf v4.1</span>
+      <span class="src-badge">Together AI</span>
+    </div>
   </div>
 </div>
 
@@ -415,7 +525,10 @@ async function loadData() {
     // Update timestamp
     if (data.updated_at) {
       const d = new Date(data.updated_at);
-      document.getElementById('update-badge').textContent = 'Updated: ' + d.toLocaleDateString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const fmt = d.toLocaleDateString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      document.getElementById('update-badge').textContent = 'Updated: ' + fmt;
+      const st = document.getElementById('source-updated-time');
+      if(st) st.textContent = fmt;
     }
 
     console.log('Live benchmark data loaded:', data.summary);
