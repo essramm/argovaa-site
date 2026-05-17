@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // Paste same config as login.html
+  const firebaseConfig = {
+    apiKey: "PASTE_YOUR_API_KEY_HERE",
+    authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
+    projectId: "PASTE_YOUR_PROJECT_ID_HERE",
+    storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
+    messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
+    appId: "PASTE_YOUR_APP_ID_HERE"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    // Populate user info
+    const name  = user.displayName || localStorage.getItem("argovaa_name") || "there";
+    const email = user.email;
+    const photo = user.photoURL;
+    document.getElementById("user-name").textContent  = name.split(" ")[0];
+    document.getElementById("user-email").textContent = email;
+    document.getElementById("user-full").textContent  = name;
+    if (photo) {
+      document.getElementById("user-avatar").src = photo;
+      document.getElementById("user-avatar").style.display = "block";
+      document.getElementById("user-initials").style.display = "none";
+    } else {
+      document.getElementById("user-initials").textContent = name[0].toUpperCase();
+    }
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+  });
+
+  window.handleSignOut = async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  };
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#060912;--surface:#0d1117;--surface2:#131a24;--white:#f0f4ff;--mid:#8892a4;--faint:#2a3548;--accent:#3b6fff;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--bd:rgba(255,255,255,0.07)}
+body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh}
+
+/* NAV */
+nav{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--bd);background:rgba(6,9,18,0.95);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;color:var(--white);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:4px}
+.nav-link{font-size:12px;color:var(--mid);text-decoration:none;padding:5px 10px;transition:color 0.15s}
+.nav-link:hover,.nav-link.active{color:var(--white)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.user-chip{display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--surface2);border:1px solid var(--bd);cursor:pointer;transition:border-color 0.2s;position:relative}
+.user-chip:hover{border-color:rgba(255,255,255,0.15)}
+.user-avatar-wrap{width:24px;height:24px;border-radius:50%;overflow:hidden;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+img#user-avatar{width:100%;height:100%;object-fit:cover;display:none}
+#user-initials{color:#fff}
+.user-name-chip{font-size:13px;font-weight:500;color:var(--white)}
+.signout-btn{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);background:none;border:1px solid var(--bd);padding:5px 12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
+.signout-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--white)}
+
+/* MAIN */
+.main{max-width:1200px;margin:0 auto;padding:32px}
+.welcome-bar{margin-bottom:28px}
+.welcome-bar h1{font-size:22px;font-weight:600;letter-spacing:-0.3px;margin-bottom:4px}
+.welcome-bar p{font-size:14px;color:var(--mid)}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--bd);padding:20px}
+.card-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:8px}
+.card-val{font-size:26px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
+.card-val.g{color:var(--green)}.card-val.b{color:var(--accent)}.card-val.a{color:var(--amber)}
+.card-trend{font-size:12px;color:var(--mid)}
+.trend-up{color:var(--green)}
+
+/* MODULES */
+.modules-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:14px}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.module{background:var(--surface);border:1px solid var(--bd);padding:22px;text-decoration:none;color:inherit;transition:all 0.2s;display:block;position:relative;overflow:hidden}
+.module:hover{border-color:rgba(59,111,255,0.35);transform:translateY(-1px)}
+.module::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s}
+.module:hover::before{transform:scaleY(1)}
+.module-icon{font-size:20px;margin-bottom:12px;opacity:0.7}
+.module-name{font-size:15px;font-weight:600;color:var(--white);margin-bottom:5px;letter-spacing:-0.2px}
+.module-desc{font-size:12px;color:var(--mid);line-height:1.6}
+.module-arrow{position:absolute;top:18px;right:18px;font-size:12px;color:var(--faint);transition:color 0.2s}
+.module:hover .module-arrow{color:var(--accent)}
+
+/* GETTING STARTED */
+.started{background:var(--surface);border:1px solid var(--bd);padding:24px}
+.started-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:16px}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--surface2);border:1px solid var(--bd);transition:border-color 0.2s;cursor:pointer;text-decoration:none}
+.step:hover{border-color:rgba(59,111,255,0.3)}
+.step-num{width:24px;height:24px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#fff;flex-shrink:0}
+.step-text{flex:1}
+.step-title{font-size:13px;font-weight:500;color:var(--white);margin-bottom:2px}
+.step-sub{font-size:12px;color:var(--mid)}
+.step-done{font-size:14px;color:var(--green)}
+
+/* LOADING */
+#loading{display:flex;align-items:center;justify-content:center;min-height:60vh;font-family:'DM Mono',monospace;font-size:12px;color:var(--mid)}
+#dashboard{display:none}
+
+@media(max-width:768px){
+  .cards,.modules{grid-template-columns:1fr 1fr}
+  .main{padding:20px}
+  nav{padding:0 16px}.nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="loading">Loading your dashboard...</div>
+
+<div id="dashboard">
+  <nav>
+    <a href="index.html" class="nav-logo">argovaa<span>.</span></a>
+    <div class="nav-links">
+      <a href="benchmarks.html" class="nav-link">Benchmarks</a>
+      <a href="golden-signals.html" class="nav-link">SRE signals</a>
+      <a href="tco.html" class="nav-link">TCO</a>
+      <a href="agent-builder.html" class="nav-link">Agent builder</a>
+      <a href="tokenomics.html" class="nav-link">Tokenomics</a>
+    </div>
+    <div class="nav-right">
+      <div class="user-chip">
+        <div class="user-avatar-wrap">
+          <img id="user-avatar" alt="Avatar">
+          <span id="user-initials"></span>
+        </div>
+        <span class="user-name-chip" id="user-name"></span>
+      </div>
+      <button class="signout-btn" onclick="handleSignOut()">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="welcome-bar">
+      <h1>Welcome back, <span id="user-full"></span> 👋</h1>
+      <p>Here's your AI infrastructure overview · <span id="user-email"></span></p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-lbl">Cost / request</div>
+        <div class="card-val b">$0.00087</div>
+        <div class="card-trend"><span class="trend-up">↓ 18%</span> vs last week</div>
+      </div>
+      <div class="card">
+        <div class="card-lbl">Availability</div>
+        <div class="card-val g">99.94%</div>
+        <div class="card-trend"><span class="trend-up">Above SLA</span> target</div>
+      </div>
+      <div class="card">
+        <div class="card-lbl">P95 Latency</div>
+        <div class="card-val a">284ms</div>
+        <div class="card-trend">TTFT avg: 94ms</div>
+      </div>
+      <div class="card">
+        <div class="card-lbl">Error rate</div>
+        <div class="card-val g">0.06%</div>
+        <div class="card-trend"><span class="trend-up">Below</span> 1% threshold</div>
+      </div>
+    </div>
+
+    <div class="modules-title">Platform modules</div>
+    <div class="modules">
+      <a class="module" href="benchmarks.html">
+        <div class="module-icon">📊</div>
+        <div class="module-name">Benchmark Studio</div>
+        <div class="module-desc">Compare 360+ models on throughput, latency, and cost across real GPU hardware.</div>
+        <span class="module-arrow">→</span>
+      </a>
+      <a class="module" href="golden-signals.html">
+        <div class="module-icon">🔭</div>
+        <div class="module-name">Golden Signals</div>
+        <div class="module-desc">Monitor throughput, availability, latency P95, and error rate in real time.</div>
+        <span class="module-arrow">→</span>
+      </a>
+      <a class="module" href="tco.html">
+        <div class="module-icon">💰</div>
+        <div class="module-name">TCO Dashboard</div>
+        <div class="module-desc">Blend AWS CUR + LLM tokens into true cost per request. Upload your CUR file.</div>
+        <span class="module-arrow">→</span>
+      </a>
+      <a class="module" href="agent-builder.html">
+        <div class="module-icon">🏗</div>
+        <div class="module-name">Agent Builder</div>
+        <div class="module-desc">Build and deploy AI agents for any domain in 5 minutes. 20+ templates.</div>
+        <span class="module-arrow">→</span>
+      </a>
+      <a class="module" href="tokenomics.html">
+        <div class="module-icon">📈</div>
+        <div class="module-name">Tokenomics</div>
+        <div class="module-desc">Model pricing tiers — on-demand, provisioned, batch. Find your break-even.</div>
+        <span class="module-arrow">→</span>
+      </a>
+      <a class="module" href="analyser.html">
+        <div class="module-icon">🔬</div>
+        <div class="module-name">GC Analyser</div>
+        <div class="module-desc">Upload GC logs and thread dumps for AI-powered JVM diagnostics.</div>
+        <span class="module-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="started">
+      <div class="started-title">Get started checklist</div>
+      <div class="steps">
+        <a class="step" href="benchmarks.html">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-title">Explore the benchmark leaderboard</div><div class="step-sub">Compare 360+ models on cost, throughput, and latency</div></div>
+          <span class="step-done">→</span>
+        </a>
+        <a class="step" href="agent-builder.html">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-title">Build your first AI agent</div><div class="step-sub">Pick a domain template and deploy in 5 minutes</div></div>
+          <span class="step-done">→</span>
+        </a>
+        <a class="step" href="tco.html">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-title">Upload your AWS CUR file</div><div class="step-sub">Get your true cost per AI request across infra + tokens</div></div>
+          <span class="step-done">→</span>
+        </a>
+        <a class="step" href="golden-signals.html">
+          <div class="step-num">4</div>
+          <div class="step-text"><div class="step-title">Add telemetry to your service</div><div class="step-sub">Copy one snippet and start monitoring golden signals</div></div>
+          <span class="step-done">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
