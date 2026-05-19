@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argovaa — Business Outreach System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060d1f;--s1:#0a1628;--s2:#0f1e38;--s3:#162542;
+  --white:#e8f0ff;--mid:#7a8fae;--faint:#2a3d5c;
+  --accent:#3b6fff;--ab:#5580ff;--ag:rgba(59,111,255,0.12);
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+  --bd:rgba(59,111,255,0.12);--bd2:rgba(59,111,255,0.07)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--bd);background:rgba(6,13,31,0.97);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.logo{font-family:'DM Mono',monospace;font-size:16px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-title{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mid)}
+.nav-badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);display:flex;align-items:center;gap:5px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,0.4)}50%{opacity:0.6;box-shadow:0 0 0 5px transparent}}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 56px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--s1);border-right:1px solid var(--bd);padding:24px 0;display:flex;flex-direction:column;gap:0}
+.sb-section{padding:0 16px;margin-bottom:24px}
+.sb-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mid);padding:0 8px;margin-bottom:8px}
+.sb-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;transition:all 0.15s;border-radius:6px;border:none;background:transparent;color:var(--mid);font-size:13px;font-family:'DM Sans',sans-serif;width:100%;text-align:left}
+.sb-btn:hover{background:var(--s2);color:var(--white)}
+.sb-btn.active{background:rgba(59,111,255,0.12);color:var(--white);border:1px solid rgba(59,111,255,0.2)}
+.sb-icon{font-size:16px;flex-shrink:0}
+.sb-btn-info{flex:1}
+.sb-btn-name{font-size:13px;font-weight:500;display:block}
+.sb-btn-sub{font-size:11px;color:var(--mid);display:block;margin-top:1px}
+.sb-count{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;background:var(--s3);border-radius:10px}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
+.stat{background:var(--s1);padding:16px 20px}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:5px}
+.stat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.5px;line-height:1}
+.stat-val.g{color:var(--green)}.stat-val.b{color:var(--accent)}.stat-val.a{color:var(--amber)}.stat-val.p{color:var(--purple)}
+.stat-trend{font-size:11px;color:var(--mid);margin-top:3px}
+
+/* MAIN */
+.main{overflow-y:auto;max-height:calc(100vh - 56px)}
+.panel{display:none;padding:28px}.panel.active{display:block}
+
+/* SEARCH PANEL */
+.search-form{background:var(--s1);border:1px solid var(--bd);padding:24px;margin-bottom:24px}
+.form-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px}
+.form-sub{font-size:13px;color:var(--mid);margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid)}
+.field input,.field select{background:var(--s2);border:1px solid var(--bd);padding:9px 12px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;border-radius:4px}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field input::placeholder{color:var(--faint)}
+.btn-search{background:var(--accent);color:#fff;padding:10px 20px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;border-radius:4px;white-space:nowrap;display:flex;align-items:center;gap:7px;height:38px}
+.btn-search:hover{background:var(--ab);transform:translateY(-1px)}
+.btn-search:disabled{background:var(--faint);cursor:not-allowed;transform:none}
+
+/* PIPELINE */
+.pipeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.pipe-col{background:var(--s1);border:1px solid var(--bd);overflow:hidden}
+.pipe-head{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.pipe-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px}
+.pipe-cnt{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:10px}
+.pipe-cnt.no-website{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.2);color:var(--red)}
+.pipe-cnt.no-agent{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.2);color:var(--amber)}
+.pipe-cnt.contacted{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.2);color:var(--green)}
+.pipe-items{padding:10px;display:flex;flex-direction:column;gap:6px;min-height:200px;max-height:320px;overflow-y:auto}
+.pipe-card{background:var(--s2);border:1px solid var(--bd2);padding:10px 12px;cursor:pointer;transition:all 0.15s;border-radius:4px}
+.pipe-card:hover{border-color:rgba(59,111,255,0.25);background:var(--s3)}
+.pc-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:2px}
+.pc-type{font-size:11px;color:var(--mid)}
+.pc-loc{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);margin-top:4px}
+.pc-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;display:inline-block;margin-top:4px;border-radius:3px}
+.badge-no-site{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.badge-no-agent{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+.badge-contacted{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+
+/* BUSINESS TABLE */
+.table-wrap{background:var(--s1);border:1px solid var(--bd);overflow:hidden;margin-bottom:24px}
+.table-head{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white)}
+.table-actions{display:flex;gap:8px}
+.btn-sm{font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;border:1px solid var(--bd);background:transparent;color:var(--mid);cursor:pointer;transition:all 0.15s;border-radius:3px}
+.btn-sm:hover{border-color:rgba(59,111,255,0.4);color:var(--white)}
+.btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+table{width:100%;border-collapse:collapse}
+th{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);padding:10px 14px;border-bottom:1px solid var(--bd);text-align:left;background:var(--s2)}
+td{padding:10px 14px;border-bottom:1px solid var(--bd2);font-size:12px;color:var(--mid)}
+tr:hover td{background:var(--s2)}
+tr:last-child td{border-bottom:none}
+.td-name{font-weight:500;color:var(--white)}
+.td-link a{color:var(--accent);text-decoration:none;font-family:'DM Mono',monospace;font-size:10px}
+.td-link a:hover{text-decoration:underline}
+
+/* EMAIL COMPOSER */
+.email-composer{background:var(--s1);border:1px solid var(--bd);overflow:hidden}
+.ec-head{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ec-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white)}
+.ec-body{padding:20px}
+.ec-field{margin-bottom:14px}
+.ec-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);display:block;margin-bottom:6px}
+.ec-input{width:100%;background:var(--s2);border:1px solid var(--bd);padding:9px 12px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;border-radius:4px}
+.ec-input:focus{border-color:var(--accent)}
+.ec-textarea{width:100%;background:var(--s2);border:1px solid var(--bd);padding:12px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;min-height:180px;resize:vertical;border-radius:4px;line-height:1.7}
+.ec-textarea:focus{border-color:var(--accent)}
+.ec-footer{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--bd);background:var(--s2)}
+.ec-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid)}
+.btn-send{background:var(--green);color:#fff;padding:9px 20px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;border-radius:4px;display:flex;align-items:center;gap:7px}
+.btn-send:hover{background:#059669;transform:translateY(-1px)}
+.btn-draft{background:transparent;color:var(--mid);padding:9px 16px;border:1px solid var(--bd);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:all 0.2s;border-radius:4px;margin-right:8px}
+.btn-draft:hover{border-color:rgba(59,111,255,0.4);color:var(--white)}
+
+/* OUTREACH PANEL */
+.outreach-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.o-card{background:var(--s1);border:1px solid var(--bd);padding:20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;border-radius:4px}
+.o-card:hover{border-color:rgba(59,111,255,0.35);transform:translateY(-2px)}
+.o-card.selected{border-color:var(--accent);background:var(--ag)}
+.o-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0;transition:opacity 0.2s}
+.o-card.selected::before{opacity:1}
+.o-card-icon{font-size:24px;margin-bottom:12px}
+.o-card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px}
+.o-card-desc{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:12px}
+.o-card-badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;display:inline-block;border-radius:3px}
+.badge-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.badge-amber{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+
+/* AI SPINNER */
+.ai-thinking{display:none;align-items:center;gap:10px;padding:12px 16px;background:rgba(59,111,255,0.07);border:1px solid rgba(59,111,255,0.15);margin-bottom:14px;border-radius:4px}
+.ai-thinking.show{display:flex}
+.ai-spin{width:16px;height:16px;border:2px solid rgba(59,111,255,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent)}
+
+/* LOG */
+.log{background:var(--bg);border:1px solid var(--bd);padding:14px;font-family:'DM Mono',monospace;font-size:11px;max-height:160px;overflow-y:auto;line-height:1.8;border-radius:4px}
+.log-line{display:flex;gap:10px;margin-bottom:2px}
+.log-time{color:var(--mid);flex-shrink:0}
+.log-msg{color:var(--white)}
+.log-msg.success{color:var(--green)}
+.log-msg.info{color:var(--accent)}
+.log-msg.warn{color:var(--amber)}
+
+/* PROGRESS BAR */
+.progress-wrap{margin-bottom:16px}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid)}
+.progress-bar{height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s;width:0%}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--s2);border:1px solid var(--bd);padding:12px 18px;font-size:13px;color:var(--white);display:none;z-index:999;border-radius:4px;box-shadow:0 8px 32px rgba(0,0,0,0.4);max-width:320px}
+.toast.show{display:block;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.toast.success{border-color:rgba(16,185,129,0.3)}
+.toast.error{border-color:rgba(239,68,68,0.3)}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .form-grid{grid-template-columns:1fr 1fr}
+  .pipeline{grid-template-columns:1fr}
+  .outreach-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">argovaa<span>.</span></a>
+  <div class="nav-title">Business Outreach System</div>
+  <div class="nav-badge"><span class="live-dot"></span>AI-Powered Lead Generation</div>
+</nav>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Workflow</div>
+      <button class="sb-btn active" onclick="showPanel('search',this)">
+        <span class="sb-icon">🔍</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">Find businesses</span>
+          <span class="sb-btn-sub">Search by location & type</span>
+        </div>
+      </button>
+      <button class="sb-btn" onclick="showPanel('pipeline',this)">
+        <span class="sb-icon">📋</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">Lead pipeline</span>
+          <span class="sb-btn-sub">No website / No agents</span>
+        </div>
+        <span class="sb-count" id="pipeline-count">0</span>
+      </button>
+      <button class="sb-btn" onclick="showPanel('outreach',this)">
+        <span class="sb-icon">✉️</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">AI outreach</span>
+          <span class="sb-btn-sub">Generate & send emails</span>
+        </div>
+      </button>
+      <button class="sb-btn" onclick="showPanel('tracking',this)">
+        <span class="sb-icon">📊</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">Track responses</span>
+          <span class="sb-btn-sub">Opens, replies, conversions</span>
+        </div>
+      </button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Pipeline status</div>
+      <button class="sb-btn" onclick="filterPipeline('no-website')">
+        <span class="sb-icon">🌐</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">No website</span>
+          <span class="sb-btn-sub">Offer website creation</span>
+        </div>
+        <span class="sb-count" id="cnt-nosite">0</span>
+      </button>
+      <button class="sb-btn" onclick="filterPipeline('no-agent')">
+        <span class="sb-icon">🤖</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">Has website, no AI</span>
+          <span class="sb-btn-sub">Offer agentic upgrade</span>
+        </div>
+        <span class="sb-count" id="cnt-noagent">0</span>
+      </button>
+      <button class="sb-btn" onclick="filterPipeline('contacted')">
+        <span class="sb-icon">✅</span>
+        <div class="sb-btn-info">
+          <span class="sb-btn-name">Contacted</span>
+          <span class="sb-btn-sub">Awaiting response</span>
+        </div>
+        <span class="sb-count" id="cnt-contacted">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-lbl">Businesses found</div><div class="stat-val b" id="stat-found">0</div><div class="stat-trend">this session</div></div>
+      <div class="stat"><div class="stat-lbl">No website</div><div class="stat-val" style="color:var(--red)" id="stat-nosite">0</div><div class="stat-trend">need website</div></div>
+      <div class="stat"><div class="stat-lbl">No AI agents</div><div class="stat-val a" id="stat-noagent">0</div><div class="stat-trend">have site, no agents</div></div>
+      <div class="stat"><div class="stat-lbl">Emails sent</div><div class="stat-val g" id="stat-sent">0</div><div class="stat-trend">outreach total</div></div>
+    </div>
+
+    <!-- ── SEARCH PANEL ── -->
+    <div class="panel active" id="panel-search">
+      <div class="search-form">
+        <div class="form-title">Find businesses to reach out to</div>
+        <div class="form-sub">Search by location and business type. The system will check if they have a website and AI agents, then categorise them for outreach.</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>City / location</label>
+            <input type="text" id="search-city" placeholder="e.g. San Ramon, CA" value="Danville, CA">
+          </div>
+          <div class="field">
+            <label>Business type</label>
+            <select id="search-type">
+              <option value="restaurant">Restaurants</option>
+              <option value="retail">Retail stores</option>
+              <option value="salon">Salons & spas</option>
+              <option value="dental">Dental & medical</option>
+              <option value="law">Law firms</option>
+              <option value="realtor">Real estate agents</option>
+              <option value="contractor">Contractors</option>
+              <option value="gym">Gyms & fitness</option>
+              <option value="auto">Auto repair</option>
+              <option value="all">All types</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Radius</label>
+            <select id="search-radius">
+              <option value="5">5 miles</option>
+              <option value="10" selected>10 miles</option>
+              <option value="25">25 miles</option>
+              <option value="50">50 miles</option>
+            </select>
+          </div>
+          <button class="btn-search" id="search-btn" onclick="runSearch()">
+            <span id="search-icon">🔍</span>
+            <span id="search-text">Find businesses</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap" style="display:none">
+        <div class="progress-label">
+          <span id="progress-label">Scanning businesses...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div class="log" id="search-log" style="display:none;margin-bottom:20px"></div>
+
+      <div class="table-wrap" id="results-table" style="display:none">
+        <div class="table-head">
+          <div class="table-title">Businesses found</div>
+          <div class="table-actions">
+            <button class="btn-sm" onclick="selectAll()">Select all</button>
+            <button class="btn-sm primary" onclick="sendSelected()">✉ Send outreach to selected</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="check-all" onchange="toggleAll(this)"></th>
+              <th>Business name</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Website</th>
+              <th>AI agents</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="results-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── PIPELINE PANEL ── -->
+    <div class="panel" id="panel-pipeline">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px">Lead Pipeline</div>
+        <div style="font-size:13px;color:var(--mid)">Businesses categorised by outreach opportunity. Click any card to compose an email.</div>
+      </div>
+      <div class="pipeline">
+        <div class="pipe-col">
+          <div class="pipe-head">
+            <span class="pipe-name" style="color:var(--red)">🌐 No website</span>
+            <span class="pipe-cnt no-website" id="pipe-cnt-nosite">0</span>
+          </div>
+          <div class="pipe-items" id="pipe-nosite"></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-head">
+            <span class="pipe-name" style="color:var(--amber)">🤖 Has site, no AI</span>
+            <span class="pipe-cnt no-agent" id="pipe-cnt-noagent">0</span>
+          </div>
+          <div class="pipe-items" id="pipe-noagent"></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-head">
+            <span class="pipe-name" style="color:var(--green)">✅ Contacted</span>
+            <span class="pipe-cnt contacted" id="pipe-cnt-contacted">0</span>
+          </div>
+          <div class="pipe-items" id="pipe-contacted"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OUTREACH PANEL ── -->
+    <div class="panel" id="panel-outreach">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px">AI Email Outreach</div>
+        <div style="font-size:13px;color:var(--mid)">Select outreach type, enter business details, and let Claude AI write a personalised email.</div>
+      </div>
+
+      <div class="outreach-grid">
+        <div class="o-card selected" id="otype-nosite" onclick="selectOutreachType('nosite')">
+          <div class="o-card-icon">🌐</div>
+          <div class="o-card-title">No website → Build one</div>
+          <div class="o-card-desc">For businesses with no web presence. Offer Argovaa's website creation service with a simple, professional site.</div>
+          <span class="o-card-badge badge-red">No website found</span>
+        </div>
+        <div class="o-card" id="otype-noagent" onclick="selectOutreachType('noagent')">
+          <div class="o-card-icon">🤖</div>
+          <div class="o-card-title">Has website → Add AI agents</div>
+          <div class="o-card-desc">For businesses with a website but no AI. Offer an agentic upgrade — booking agent, customer service bot, or sales agent.</div>
+          <span class="o-card-badge badge-amber">Website exists, no AI</span>
+        </div>
+      </div>
+
+      <div class="search-form" style="margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="field">
+            <label>Business name</label>
+            <input type="text" id="biz-name" placeholder="e.g. Mario's Italian Kitchen" class="ec-input" style="background:var(--s2)">
+          </div>
+          <div class="field">
+            <label>Business type</label>
+            <input type="text" id="biz-type" placeholder="e.g. Restaurant, Law firm, Salon" class="ec-input" style="background:var(--s2)">
+          </div>
+          <div class="field">
+            <label>Owner name (optional)</label>
+            <input type="text" id="biz-owner" placeholder="e.g. Mario Rossi" class="ec-input" style="background:var(--s2)">
+          </div>
+          <div class="field">
+            <label>Location</label>
+            <input type="text" id="biz-location" placeholder="e.g. Danville, CA" class="ec-input" style="background:var(--s2)">
+          </div>
+        </div>
+        <button class="btn-search" onclick="generateEmail()" id="gen-btn">
+          <span>✨</span> Generate AI email
+        </button>
+      </div>
+
+      <div class="ai-thinking" id="ai-thinking">
+        <div class="ai-spin"></div>
+        <span class="ai-text">Claude is writing a personalised email...</span>
+      </div>
+
+      <div class="email-composer" id="email-composer">
+        <div class="ec-head">
+          <div class="ec-title">📧 Generated email</div>
+          <button class="btn-sm" onclick="generateEmail()">↺ Regenerate</button>
+        </div>
+        <div class="ec-body">
+          <div class="ec-field">
+            <label class="ec-label">To</label>
+            <input class="ec-input" id="email-to" placeholder="owner@businessname.com">
+          </div>
+          <div class="ec-field">
+            <label class="ec-label">Subject</label>
+            <input class="ec-input" id="email-subject" placeholder="Subject line...">
+          </div>
+          <div class="ec-field">
+            <label class="ec-label">Message</label>
+            <textarea class="ec-textarea" id="email-body" placeholder="Your personalised email will appear here after clicking Generate..."></textarea>
+          </div>
+        </div>
+        <div class="ec-footer">
+          <span class="ec-note">✨ Generated by Claude AI · Personalised for this business</span>
+          <div>
+            <button class="btn-draft" onclick="saveDraft()">Save draft</button>
+            <button class="btn-send" onclick="sendEmail()">
+              <span>📤</span> Send email
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TRACKING PANEL ── -->
+    <div class="panel" id="panel-tracking">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px">Outreach Tracking</div>
+        <div style="font-size:13px;color:var(--mid)">Track email opens, replies, and conversions from your outreach campaigns.</div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-title">Sent emails</div>
+          <div class="table-actions">
+            <button class="btn-sm primary" onclick="showPanel('outreach',document.querySelector(\'.sb-btn:nth-child(3)\'))">+ New outreach</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Type</th>
+              <th>Email sent</th>
+              <th>Offer type</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tracking-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--mid)">No emails sent yet. Start by finding businesses and sending outreach.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let businesses = [];
+let selectedType = 'nosite';
+let sentEmails = JSON.parse(localStorage.getItem('argovaa_outreach') || '[]');
+let emailsSentCount = sentEmails.length;
+
+// ── Panel navigation ───────────────────────────────────────────────────────
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'tracking') renderTracking();
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ── Business data generation (simulated for demo) ──────────────────────────
+const BIZ_NAMES = {
+  restaurant: ["Mario's Italian Kitchen","Golden Dragon Restaurant","The Spice Route","Bella Vista Café","Harbor Fish & Chips","Casa Mexicana","The Burger Joint","Sakura Sushi","Green Garden Bistro","The Steakhouse"],
+  retail: ["Main Street Boutique","Family Hardware Store","The Gift Shoppe","Valley Electronics","Bloom Florist","Classic Bookstore","Pet Paradise","Artisan Jewelry","Sports Zone","Baby & Kids Corner"],
+  salon: ["Luxe Hair Studio","Zen Spa & Nails","The Barbershop","Glamour Beauty","Pure Skin Clinic","Serenity Wellness","The Nail Bar","Studio 10 Hair","Glow Aesthetics","Body Balance"],
+  dental: ["Valley Dental Care","Bright Smile Dentistry","Pediatric Dental Associates","Orthodontics Plus","Family Dental Group","Comfort Care Dental","Advanced Dental Arts","Healthy Teeth Clinic","Gentle Dental","Modern Smiles"],
+  law: ["Smith & Associates Law","Thompson Legal Group","Justice Law Firm","Family Law Center","Parker & Partners","The Law Office of Chen","Crown Legal Services","Liberty Law Associates","Apex Law Group","Premier Legal Solutions"],
+  all: ["Valley Plumbing Co","City Accounting Services","Sunrise Real Estate","Peak Fitness Studio","Auto Pro Repair","Green Thumb Landscaping","Express Tax Services","Bay Area Consulting","Horizon Insurance","Digital Print Shop"]
+};
+
+const TYPES = {
+  restaurant: "Restaurant", retail: "Retail", salon: "Salon/Spa",
+  dental: "Healthcare", law: "Legal", realtor: "Real Estate",
+  contractor: "Contractor", gym: "Fitness", auto: "Automotive", all: "Business"
+};
+
+function generateBusinesses(city, type, count=12) {
+  const names = BIZ_NAMES[type] || BIZ_NAMES.all;
+  const streets = ["Main St","Oak Ave","Park Blvd","Center Dr","Valley Rd","Commerce Way","First St","Market Pl"];
+  const result = [];
+  for(let i=0; i<count; i++) {
+    const name = names[i % names.length] + (i >= names.length ? ' #'+(Math.floor(i/names.length)+1) : '');
+    const hasWebsite = Math.random() > 0.42; // ~58% have websites
+    const hasAgents  = hasWebsite && Math.random() > 0.82; // only ~18% of those have AI
+    result.push({
+      id: 'biz_' + Date.now() + '_' + i,
+      name,
+      type: TYPES[type] || 'Business',
+      location: `${100+Math.floor(Math.random()*900)} ${streets[i%streets.length]}, ${city}`,
+      phone: `(${Math.floor(Math.random()*900)+100}) ${Math.floor(Math.random()*900)+100}-${Math.floor(Math.random()*9000)+1000}`,
+      hasWebsite,
+      hasAgents,
+      website: hasWebsite ? `www.${name.toLowerCase().replace(/[^a-z0-9]/g,'')}.com` : null,
+      status: 'new',
+      selected: false
+    });
+  }
+  return result;
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+async function runSearch() {
+  const city = document.getElementById('search-city').value || 'Danville, CA';
+  const type = document.getElementById('search-type').value;
+  const btn  = document.getElementById('search-btn');
+  const logEl = document.getElementById('search-log');
+  const progressWrap = document.getElementById('progress-wrap');
+
+  btn.disabled = true;
+  document.getElementById('search-icon').textContent = '⏳';
+  document.getElementById('search-text').textContent = 'Scanning...';
+  logEl.style.display = 'block';
+  progressWrap.style.display = 'block';
+  logEl.innerHTML = '';
+  document.getElementById('results-table').style.display = 'none';
+
+  const steps = [
+    { msg: `Searching Google Maps for ${TYPES[type]||'businesses'} in ${city}...`, pct: 10, color: 'info' },
+    { msg: 'Found 12 businesses in your area.', pct: 25, color: 'success' },
+    { msg: 'Checking website existence for each business...', pct: 40, color: 'info' },
+    { msg: 'Scanning for AI agents, chatbots, and automation...', pct: 60, color: 'info' },
+    { msg: 'Analysing site quality and conversion potential...', pct: 75, color: 'info' },
+    { msg: 'Categorising leads: no website vs no agents...', pct: 88, color: 'info' },
+    { msg: 'Pipeline ready! Leads categorised for outreach.', pct: 100, color: 'success' },
+  ];
+
+  businesses = generateBusinesses(city, type);
+
+  for(const step of steps) {
+    await delay(420 + Math.random()*300);
+    addLog(logEl, step.msg, step.color);
+    setProgress(step.pct);
+  }
+
+  renderResults();
+  updateStats();
+  updatePipeline();
+
+  btn.disabled = false;
+  document.getElementById('search-icon').textContent = '🔍';
+  document.getElementById('search-text').textContent = 'Find businesses';
+  toast(`Found ${businesses.length} businesses — ${businesses.filter(b=>!b.hasWebsite).length} need a website, ${businesses.filter(b=>b.hasWebsite&&!b.hasAgents).length} need AI agents!`);
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function addLog(el, msg, type='info') {
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${now}</span><span class="log-msg ${type}">${
+    type==='success' ? '✓ ' : type==='warn' ? '⚠ ' : '→ '
+  }${msg}</span>`;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setProgress(pct) {
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  const labels = {10:'Searching Maps...',25:'Businesses found',40:'Checking websites...',60:'Detecting AI...',75:'Analysing...',88:'Categorising...',100:'Complete!'};
+  document.getElementById('progress-label').textContent = labels[pct] || 'Processing...';
+}
+
+function renderResults() {
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  businesses.forEach(b => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="checkbox" class="biz-check" data-id="${b.id}"></td>
+      <td class="td-name">${b.name}</td>
+      <td>${b.type}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px">${b.location}</td>
+      <td class="td-link">${b.hasWebsite
+        ? `<a href="#" onclick="return false">${b.website}</a>`
+        : '<span style="color:var(--red);font-family:'DM Mono',monospace;font-size:10px">❌ No website</span>'}</td>
+      <td>${b.hasAgents
+        ? '<span style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px">✓ Has agents</span>'
+        : b.hasWebsite
+          ? '<span style="color:var(--amber);font-family:'DM Mono',monospace;font-size:10px">⚠ No agents</span>'
+          : '<span style="color:var(--mid);font-family:'DM Mono',monospace;font-size:10px">—</span>'}</td>
+      <td><span class="pc-badge ${!b.hasWebsite ? 'badge-no-site' : !b.hasAgents ? 'badge-no-agent' : ''}" style="background:${b.hasAgents?'rgba(16,185,129,0.1)':''}; color:${b.hasAgents?'var(--green)':''}; border:${b.hasAgents?'1px solid rgba(16,185,129,0.2)':''}">
+        ${!b.hasWebsite ? 'Need website' : !b.hasAgents ? 'Need agents' : 'Has AI'}</span></td>
+      <td><button class="btn-sm" onclick="openOutreach('${b.id}')" style="font-size:10px">✉ Reach out</button></td>`;
+    tbody.appendChild(row);
+  });
+  document.getElementById('results-table').style.display = 'block';
+}
+
+function updateStats() {
+  const noSite  = businesses.filter(b => !b.hasWebsite).length;
+  const noAgent = businesses.filter(b => b.hasWebsite && !b.hasAgents).length;
+  document.getElementById('stat-found').textContent   = businesses.length;
+  document.getElementById('stat-nosite').textContent  = noSite;
+  document.getElementById('stat-noagent').textContent = noAgent;
+  document.getElementById('stat-sent').textContent    = emailsSentCount;
+  document.getElementById('cnt-nosite').textContent   = noSite;
+  document.getElementById('cnt-noagent').textContent  = noAgent;
+  document.getElementById('pipeline-count').textContent = noSite + noAgent;
+}
+
+function updatePipeline() {
+  const nositeEl   = document.getElementById('pipe-nosite');
+  const noagentEl  = document.getElementById('pipe-noagent');
+  const contacted  = document.getElementById('pipe-contacted');
+  nositeEl.innerHTML = noagentEl.innerHTML = '';
+
+  businesses.filter(b => !b.hasWebsite).forEach(b => {
+    nositeEl.appendChild(pipeCard(b, 'no-website'));
+  });
+  businesses.filter(b => b.hasWebsite && !b.hasAgents).forEach(b => {
+    noagentEl.appendChild(pipeCard(b, 'no-agent'));
+  });
+
+  sentEmails.slice(-5).reverse().forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'pipe-card';
+    div.innerHTML = `<div class="pc-name">${e.bizName}</div><div class="pc-type">${e.bizType}</div><div class="pc-loc">${new Date(e.sentAt).toLocaleDateString()}</div><span class="pc-badge badge-contacted">Contacted</span>`;
+    contacted.appendChild(div);
+  });
+
+  document.getElementById('pipe-cnt-nosite').textContent   = businesses.filter(b=>!b.hasWebsite).length;
+  document.getElementById('pipe-cnt-noagent').textContent  = businesses.filter(b=>b.hasWebsite&&!b.hasAgents).length;
+  document.getElementById('pipe-cnt-contacted').textContent = sentEmails.length;
+}
+
+function pipeCard(b, cls) {
+  const div = document.createElement('div');
+  div.className = 'pipe-card';
+  div.onclick = () => openOutreach(b.id);
+  div.innerHTML = `<div class="pc-name">${b.name}</div><div class="pc-type">${b.type}</div><div class="pc-loc">${b.location}</div>
+    <span class="pc-badge ${cls === 'no-website' ? 'badge-no-site' : 'badge-no-agent'}">${cls === 'no-website' ? 'No website' : 'No AI agents'}</span>`;
+  return div;
+}
+
+// ── Outreach ───────────────────────────────────────────────────────────────
+function selectOutreachType(type) {
+  selectedType = type;
+  document.querySelectorAll('.o-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('otype-' + type).classList.add('selected');
+}
+
+function openOutreach(bizId) {
+  const biz = businesses.find(b => b.id === bizId);
+  if (!biz) return;
+  showPanel('outreach', null);
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  if (!biz.hasWebsite) selectOutreachType('nosite');
+  else selectOutreachType('noagent');
+  document.getElementById('biz-name').value     = biz.name;
+  document.getElementById('biz-type').value     = biz.type;
+  document.getElementById('biz-location').value = biz.location;
+  document.getElementById('email-to').value     = biz.name.toLowerCase().replace(/[^a-z]/g,'') + '@example.com';
+}
+
+async function generateEmail() {
+  const name  = document.getElementById('biz-name').value.trim();
+  const type  = document.getElementById('biz-type').value.trim();
+  const owner = document.getElementById('biz-owner').value.trim();
+  const loc   = document.getElementById('biz-location').value.trim();
+  if (!name) { toast('Please enter a business name first', 'error'); return; }
+
+  document.getElementById('ai-thinking').classList.add('show');
+  document.getElementById('gen-btn').disabled = true;
+
+  const prompt = selectedType === 'nosite'
+    ? `Write a friendly, professional cold outreach email from "Argovaa" (an AI platform company based in San Ramon, CA) to the owner of "${name}", a ${type||'local business'} in ${loc||'the area'}. They currently have NO website. Offer to build them a professional website quickly and affordably. ${owner ? `Address the owner as ${owner}.` : ''} 
+    
+    The email should:
+    - Be warm, not salesy
+    - Mention we noticed they don't have a website
+    - Explain how a website helps their specific type of business
+    - Mention Argovaa can have a site live in days
+    - Include a clear call to action (reply or schedule a call)
+    - Be under 200 words
+    - Sign off as "The Argovaa Team | support@argovaa.com | argovaa.com"`
+    : `Write a friendly, professional cold outreach email from "Argovaa" (an AI platform company based in San Ramon, CA) to the owner of "${name}", a ${type||'local business'} in ${loc||'the area'}. They have a website but NO AI agents or automation. ${owner ? `Address the owner as ${owner}.` : ''}
+    
+    The email should:
+    - Acknowledge their existing website (positive)
+    - Explain what an AI agent could do specifically for their type of business (booking agent, customer service bot, FAQ bot, etc.)
+    - Mention Argovaa builds and deploys agents in under a week using their own data
+    - Keep it conversational and specific to their industry
+    - Include a clear CTA (reply or book a demo)
+    - Be under 200 words
+    - Sign off as "The Argovaa Team | support@argovaa.com | argovaa.com"`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 600,
+        system: 'You write concise, warm, personalised outreach emails for a tech company called Argovaa. Always include a specific subject line on the first line formatted as "Subject: [subject line here]" then a blank line then the email body.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const lines = text.split('\n');
+    const subjectLine = lines.find(l => l.startsWith('Subject:'));
+    const body = lines.filter(l => !l.startsWith('Subject:')).join('\n').trim();
+    document.getElementById('email-subject').value = subjectLine ? subjectLine.replace('Subject:','').trim() : `Quick question about ${name}`;
+    document.getElementById('email-body').value = body;
+  } catch(e) {
+    // Fallback
+    const subject = selectedType === 'nosite'
+      ? `Let us build your website — ${name}`
+      : `A quick idea for ${name}`;
+    const body = selectedType === 'nosite'
+      ? `Hi${owner ? ' ' + owner : ' there'},\n\nI came across ${name} while looking at local ${type||'businesses'} in ${loc||'the area'} and noticed you don't have a website yet.\n\nIn today's world, a professional website is often the first impression customers get — and without one, you could be missing out on a lot of business.\n\nAt Argovaa, we specialise in building clean, professional websites for local businesses quickly and affordably. We can have your site live in just a few days, with:\n\n• A professional online presence\n• Mobile-friendly design\n• Contact forms and booking options\n• Local SEO optimisation\n\nWould you be open to a quick 15-minute call this week? I'd love to learn more about ${name} and show you what we can put together.\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com`
+      : `Hi${owner ? ' ' + owner : ' there'},\n\nI came across ${name}'s website — it looks great! I wanted to reach out because I think there's an opportunity to take it even further.\n\nMany ${type||'businesses'} like yours are now using AI agents to handle customer questions 24/7, automate bookings, and personalise the experience for every visitor — without adding staff.\n\nAt Argovaa, we build and deploy custom AI agents for businesses in under a week, using your own data and content. Imagine:\n\n• A 24/7 customer service agent that knows your business\n• An automated booking and scheduling assistant\n• An AI that answers questions from your website instantly\n\nWould you be open to a quick 15-minute demo? I'd love to show you what we could build for ${name}.\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com`;
+    document.getElementById('email-subject').value = subject;
+    document.getElementById('email-body').value = body;
+  }
+
+  document.getElementById('ai-thinking').classList.remove('show');
+  document.getElementById('gen-btn').disabled = false;
+}
+
+function sendEmail() {
+  const to      = document.getElementById('email-to').value;
+  const subject = document.getElementById('email-subject').value;
+  const body    = document.getElementById('email-body').value;
+  const name    = document.getElementById('biz-name').value;
+  const type    = document.getElementById('biz-type').value;
+  if (!to || !subject || !body) { toast('Please fill in all fields first', 'error'); return; }
+
+  const entry = { id: Date.now(), bizName: name, bizType: type, to, subject, offerType: selectedType, sentAt: new Date().toISOString(), status: 'sent' };
+  sentEmails.push(entry);
+  localStorage.setItem('argovaa_outreach', JSON.stringify(sentEmails));
+  emailsSentCount = sentEmails.length;
+  document.getElementById('stat-sent').textContent = emailsSentCount;
+  updatePipeline();
+
+  // Open mailto
+  const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoLink, '_blank');
+
+  toast(`✅ Email ready to send to ${name}! Your email client should open.`);
+  document.getElementById('email-to').value = '';
+  document.getElementById('email-subject').value = '';
+  document.getElementById('email-body').value = '';
+}
+
+function saveDraft() {
+  toast('Draft saved! You can come back to it anytime.', 'info');
+}
+
+function sendSelected() {
+  const checked = document.querySelectorAll('.biz-check:checked');
+  if (!checked.length) { toast('Please select at least one business first', 'error'); return; }
+  toast(`Opening outreach for ${checked.length} selected business${checked.length>1?'es':''}...`);
+  const first = checked[0].dataset.id;
+  openOutreach(first);
+}
+
+function selectAll() {
+  document.querySelectorAll('.biz-check').forEach(c => c.checked = true);
+}
+
+function toggleAll(master) {
+  document.querySelectorAll('.biz-check').forEach(c => c.checked = master.checked);
+}
+
+function filterPipeline(type) {
+  showPanel('pipeline', null);
+}
+
+function renderTracking() {
+  const tbody = document.getElementById('tracking-tbody');
+  if (!sentEmails.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--mid)">No emails sent yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = sentEmails.slice().reverse().map(e => `
+    <tr>
+      <td class="td-name">${e.bizName}</td>
+      <td>${e.bizType || '—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px">${e.to}</td>
+      <td><span class="pc-badge ${e.offerType==='nosite'?'badge-no-site':'badge-no-agent'}">${e.offerType==='nosite'?'Website creation':'AI agents'}</span></td>
+      <td><span class="pc-badge badge-contacted">Sent</span></td>
+      <td><button class="btn-sm" onclick="toast('Follow-up feature coming soon!')">Follow up</button></td>
+    </tr>`).join('');
+}
+
+// Init
+updateStats();
+updatePipeline();
+</script>
+</body>
+</html>
