@@ -549,24 +549,25 @@ function generateBusinesses(city, type, count=12) {
 }
 
 // ── Search ─────────────────────────────────────────────────────────────────
-async function runSearch() {
-  const city = document.getElementById('search-city').value || 'Danville, CA';
-  const type = document.getElementById('search-type').value;
-  const btn  = document.getElementById('search-btn');
-  const logEl = document.getElementById('search-log');
-  const progressWrap = document.getElementById('progress-wrap');
+function runSearch() {
+  var city = document.getElementById('search-city').value || 'Danville, CA';
+  var type = document.getElementById('search-type').value;
+  var btn  = document.getElementById('search-btn');
+  var logEl = document.getElementById('search-log');
 
   btn.disabled = true;
   document.getElementById('search-icon').textContent = '⏳';
   document.getElementById('search-text').textContent = 'Scanning...';
   logEl.style.display = 'block';
-  progressWrap.style.display = 'block';
+  document.getElementById('progress-wrap').style.display = 'block';
   logEl.innerHTML = '';
   document.getElementById('results-table').style.display = 'none';
 
-  const steps = [
-    { msg: `Searching Google Maps for ${TYPES[type]||'businesses'} in ${city}...`, pct: 10, color: 'info' },
-    { msg: 'Found 12 businesses in your area.', pct: 25, color: 'success' },
+  businesses = generateBusinesses(city, type);
+
+  var steps = [
+    { msg: 'Searching for ' + (TYPES[type]||'businesses') + ' in ' + city + '...', pct: 10, color: 'info' },
+    { msg: 'Found ' + businesses.length + ' businesses in your area.', pct: 25, color: 'success' },
     { msg: 'Checking website existence for each business...', pct: 40, color: 'info' },
     { msg: 'Scanning for AI agents, chatbots, and automation...', pct: 60, color: 'info' },
     { msg: 'Analysing site quality and conversion potential...', pct: 75, color: 'info' },
@@ -574,25 +575,27 @@ async function runSearch() {
     { msg: 'Pipeline ready! Leads categorised for outreach.', pct: 100, color: 'success' },
   ];
 
-  businesses = generateBusinesses(city, type);
-
-  for(const step of steps) {
-    await delay(420 + Math.random()*300);
-    addLog(logEl, step.msg, step.color);
-    setProgress(step.pct);
+  var i = 0;
+  function runStep() {
+    if (i < steps.length) {
+      addLog(logEl, steps[i].msg, steps[i].color);
+      setProgress(steps[i].pct);
+      i++;
+      setTimeout(runStep, 400 + Math.floor(Math.random()*300));
+    } else {
+      renderResults();
+      updateStats();
+      updatePipeline();
+      btn.disabled = false;
+      document.getElementById('search-icon').textContent = '🔍';
+      document.getElementById('search-text').textContent = 'Find businesses';
+      var noSite  = businesses.filter(function(b){return !b.hasWebsite;}).length;
+      var noAgent = businesses.filter(function(b){return b.hasWebsite && !b.hasAgents;}).length;
+      toast('Found ' + businesses.length + ' businesses — ' + noSite + ' need a website, ' + noAgent + ' need AI agents!');
+    }
   }
-
-  renderResults();
-  updateStats();
-  updatePipeline();
-
-  btn.disabled = false;
-  document.getElementById('search-icon').textContent = '🔍';
-  document.getElementById('search-text').textContent = 'Find businesses';
-  toast(`Found ${businesses.length} businesses — ${businesses.filter(b=>!b.hasWebsite).length} need a website, ${businesses.filter(b=>b.hasWebsite&&!b.hasAgents).length} need AI agents!`);
+  setTimeout(runStep, 100);
 }
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function addLog(el, msg, type='info') {
   const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -704,11 +707,11 @@ function openOutreach(bizId) {
   document.getElementById('email-to').value     = biz.name.toLowerCase().replace(/[^a-z]/g,'') + '@example.com';
 }
 
-async function generateEmail() {
-  const name  = document.getElementById('biz-name').value.trim();
-  const type  = document.getElementById('biz-type').value.trim();
-  const owner = document.getElementById('biz-owner').value.trim();
-  const loc   = document.getElementById('biz-location').value.trim();
+function generateEmail() {
+  var name  = document.getElementById('biz-name').value.trim();
+  var type  = document.getElementById('biz-type').value.trim();
+  var owner = document.getElementById('biz-owner').value.trim();
+  var loc   = document.getElementById('biz-location').value.trim();
   if (!name) { toast('Please enter a business name first', 'error'); return; }
 
   document.getElementById('ai-thinking').classList.add('show');
@@ -736,38 +739,46 @@ async function generateEmail() {
     - Be under 200 words
     - Sign off as "The Argovaa Team | support@argovaa.com | argovaa.com"`;
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        system: 'You write concise, warm, personalised outreach emails for a tech company called Argovaa. Always include a specific subject line on the first line formatted as "Subject: [subject line here]" then a blank line then the email body.',
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    const lines = text.split('\n');
-    const subjectLine = lines.find(l => l.startsWith('Subject:'));
-    const body = lines.filter(l => !l.startsWith('Subject:')).join('\n').trim();
-    document.getElementById('email-subject').value = subjectLine ? subjectLine.replace('Subject:','').trim() : `Quick question about ${name}`;
-    document.getElementById('email-body').value = body;
-  } catch(e) {
-    // Fallback
-    const subject = selectedType === 'nosite'
-      ? `Let us build your website — ${name}`
-      : `A quick idea for ${name}`;
-    const body = selectedType === 'nosite'
-      ? `Hi${owner ? ' ' + owner : ' there'},\n\nI came across ${name} while looking at local ${type||'businesses'} in ${loc||'the area'} and noticed you don't have a website yet.\n\nIn today's world, a professional website is often the first impression customers get — and without one, you could be missing out on a lot of business.\n\nAt Argovaa, we specialise in building clean, professional websites for local businesses quickly and affordably. We can have your site live in just a few days, with:\n\n• A professional online presence\n• Mobile-friendly design\n• Contact forms and booking options\n• Local SEO optimisation\n\nWould you be open to a quick 15-minute call this week? I'd love to learn more about ${name} and show you what we can put together.\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com`
-      : `Hi${owner ? ' ' + owner : ' there'},\n\nI came across ${name}'s website — it looks great! I wanted to reach out because I think there's an opportunity to take it even further.\n\nMany ${type||'businesses'} like yours are now using AI agents to handle customer questions 24/7, automate bookings, and personalise the experience for every visitor — without adding staff.\n\nAt Argovaa, we build and deploy custom AI agents for businesses in under a week, using your own data and content. Imagine:\n\n• A 24/7 customer service agent that knows your business\n• An automated booking and scheduling assistant\n• An AI that answers questions from your website instantly\n\nWould you be open to a quick 15-minute demo? I'd love to show you what we could build for ${name}.\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com`;
-    document.getElementById('email-subject').value = subject;
-    document.getElementById('email-body').value = body;
+  function done() {
+    document.getElementById('ai-thinking').classList.remove('show');
+    document.getElementById('gen-btn').disabled = false;
   }
 
-  document.getElementById('ai-thinking').classList.remove('show');
-  document.getElementById('gen-btn').disabled = false;
+  function useFallback() {
+    var subject = selectedType === 'nosite'
+      ? 'Let us build your website — ' + name
+      : 'A quick idea for ' + name;
+    var body = selectedType === 'nosite'
+      ? 'Hi' + (owner ? ' ' + owner : ' there') + ',\n\nI came across ' + name + ' while looking at local ' + (type||'businesses') + ' in ' + (loc||'the area') + ' and noticed you don\'t have a website yet.\n\nIn today\'s world, a professional website is often the first impression customers get — and without one, you could be missing out on a lot of business.\n\nAt Argovaa, we specialise in building clean, professional websites for local businesses quickly and affordably. We can have your site live in just a few days, with:\n\n• A professional online presence\n• Mobile-friendly design\n• Contact forms and booking options\n• Local SEO optimisation\n\nWould you be open to a quick 15-minute call this week?\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com'
+      : 'Hi' + (owner ? ' ' + owner : ' there') + ',\n\nI came across ' + name + '\'s website — it looks great! I wanted to reach out because I think there\'s an opportunity to take it even further.\n\nMany ' + (type||'businesses') + ' like yours are now using AI agents to handle customer questions 24/7, automate bookings, and personalise the experience for every visitor — without adding staff.\n\nAt Argovaa, we build and deploy custom AI agents in under a week using your own data. Imagine:\n\n• A 24/7 customer service agent\n• Automated booking and scheduling\n• AI that answers questions instantly\n\nWould you be open to a quick 15-minute demo?\n\nBest,\nThe Argovaa Team\nsupport@argovaa.com | argovaa.com';
+    document.getElementById('email-subject').value = subject;
+    document.getElementById('email-body').value = body;
+    done();
+  }
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 600,
+      system: 'You write concise, warm, personalised outreach emails for a tech company called Argovaa. Always include a specific subject line on the first line formatted as "Subject: [subject line here]" then a blank line then the email body.',
+      messages: [{ role: 'user', content: prompt }]
+    })
+  }).then(function(res) {
+    return res.json();
+  }).then(function(data) {
+    var text = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text : '';
+    var lines = text.split('\n');
+    var subjectLine = null;
+    for (var i=0; i<lines.length; i++) { if (lines[i].indexOf('Subject:') === 0) { subjectLine = lines[i]; break; } }
+    var body = lines.filter(function(l){ return l.indexOf('Subject:') !== 0; }).join('\n').trim();
+    document.getElementById('email-subject').value = subjectLine ? subjectLine.replace('Subject:','').trim() : 'Quick question about ' + name;
+    document.getElementById('email-body').value = body;
+    done();
+  }).catch(function() {
+    useFallback();
+  });
 }
 
 function sendEmail() {
