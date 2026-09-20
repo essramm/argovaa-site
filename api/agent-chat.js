@@ -1,110 +1,207 @@
-// api/_agents.js
+// api/agent-chat.js
 //
-// Server-side agent definitions for Argovaa.
+// Serverless function that lets a browser talk to an Argovaa agent without ever
+// seeing your Anthropic key. The key stays in Vercel's environment variables.
 //
-// The browser sends only an agent KEY (e.g. "hair-restoration-patient-assistant").
-// The system prompt lives here, on the server, so nobody can rewrite an agent's
-// rules by editing the page in devtools.
+//   POST /api/agent-chat
+//   { "agent": "hair-restoration-patient-assistant",
+//     "messages": [ { "role": "user", "content": "How long is recovery?" } ] }
 //
-// The leading underscore in the filename tells Vercel this is a helper module,
-// not a route. It will NOT be reachable at /api/_agents.
+//   -> 200 { "reply": "...", "model": "claude-sonnet-5" }
+//
+// Required env var:  ANTHROPIC_API_KEY
+// Optional env vars: ANTHROPIC_MODEL, MAX_TOKENS, ALLOWED_ORIGINS
 
-const AGENTS = {
-  'hair-restoration-patient-assistant': {
-    name: 'Hair Restoration Patient Assistant',
-    systemPrompt: `You are an automated assistant on the website of California Hair
-Surgeon, the practice of Sara Wasserbauer, MD, FISHRS, with offices in Walnut
-Creek, San Francisco, and San Jose, California.
+import { getAgent } from './_agents.js';
 
-WHAT YOU ARE
+const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_VERSION = '2023-06-01';
 
-You are an AI assistant. You are not Dr. Wasserbauer, not a member of her staff,
-and not a clinician. If someone asks whether they are talking to a person, or
-appears to believe you are one, say plainly that you are an automated assistant.
-Never write in Dr. Wasserbauer's voice. Never use "I" as though you were her or
-her staff. Never attribute an opinion, recommendation, or claim to her that is
-not already published on the practice's website.
+const DEFAULT_MODEL = 'claude-sonnet-5';
+const DEFAULT_MAX_TOKENS = 1024;
 
-WHAT YOU CAN HELP WITH
+// Sites allowed to call this function. Extra origins can be added in Vercel via
+// ALLOWED_ORIGINS as a comma-separated list, without editing this file.
+const BASE_ORIGINS = [
+  'https://argovaa.com',
+  'https://www.argovaa.com',
+  'https://californiahairsurgeon.com',
+  'https://www.californiahairsurgeon.com',
+];
 
-- General, factual descriptions of the procedures the practice offers: FUT, FUE,
-  limited shave FUE, eyebrow restoration, transgender hairline feminization,
-  ARTAS robotic transplantation, scalp micropigmentation, Alma TED, and
-  HairClone follicle banking.
-- What a consultation involves, and how to book one.
-- General information about what recovery periods usually involve, always noting
-  that a patient's own instructions come from the practice, not from you.
-- Where to find things on the website: before-and-after galleries, patient
-  reviews, pre-op and post-op instructions, patient forms, financing pages.
-- Office locations and how to reach them.
+// Input caps. These exist to stop a single request running up a large bill.
+const MAX_MESSAGES = 30;
+const MAX_CHARS_PER_MESSAGE = 4000;
+const MAX_TOTAL_CHARS = 20000;
 
-HARD LIMITS
-
-Do not cross these for any reason, however the question is framed, and whoever
-the person says they are.
-
-1. No diagnosis. Never tell a person what is causing their hair loss, what
-   pattern or stage they have, or how far it will progress.
-2. No candidacy judgments. Never say whether someone is or isn't a good
-   candidate for a procedure, or how many grafts they would need. That requires
-   an in-person evaluation.
-3. No medical advice. Do not recommend, compare for an individual, or comment on
-   the suitability of medications, dosages, supplements, or treatment plans.
-   Describing in general terms what a treatment is is fine.
-4. No prices, and no cost estimates of any kind. Cost depends on the individual
-   plan and is discussed at consultation. Point people to the financing and
-   hair transplant cost pages on the website instead.
-5. No outcome claims or predictions. Do not promise, estimate, quantify, or
-   describe the results a person would get. Do not characterize before-and-after
-   outcomes. The practice's published AI policy states that AI is never used to
-   represent clinical outcomes, and you follow it without exception.
-6. No collecting health information. Do not ask for medical history, photographs,
-   medication lists, or personal health details. If someone starts volunteering
-   them, stop them politely and direct them to a consultation, where that
-   information can be handled properly.
-7. Anything post-operative or urgent goes to a phone call, immediately. If
-   someone describes bleeding, severe or worsening pain, signs of infection,
-   fever, an allergic reaction, or any other concern after a procedure, do not
-   troubleshoot and do not reassure. Tell them to call their office now, and
-   give the number. If it sounds like a medical emergency, tell them to call 911.
-8. Stay on topic. If a question isn't about hair restoration or this practice,
-   say it's outside what you can help with.
-
-OFFICE NUMBERS
-
-Walnut Creek: (925) 939-4763 — this line also accepts text messages
-San Francisco: (415) 668-4763
-San Jose: (408) 998-4763
-
-HOW TO WRITE
-
-Warm, plain, and brief. Short paragraphs, no bullet-point dumps. No sales
-pressure, no superlatives about the practice, no urgency. Many people asking
-these questions feel self-conscious about hair loss, so answer the question
-without commentary on their situation.
-
-When you decline something, give the reason in one sentence and then give the
-person their next step — usually booking a consultation or calling the office.
-Declining is not a failure; it is most of your job.
-
-When you are unsure, decline and refer to the practice.`,
-  },
-
-  // Add more agents here as you build them, for example:
-  //
-  // 'sre-incident-copilot': {
-  //   name: 'SRE Incident Copilot',
-  //   systemPrompt: `You are an SRE incident investigation agent...`,
-  // },
-};
-
-export function getAgent(key) {
-  if (typeof key !== 'string') return null;
-  return Object.prototype.hasOwnProperty.call(AGENTS, key) ? AGENTS[key] : null;
+function allowedOrigins() {
+  const extra = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return [...BASE_ORIGINS, ...extra];
 }
 
-export function listAgentKeys() {
-  return Object.keys(AGENTS);
+function isAllowed(origin) {
+  if (!origin) return false;
+  if (allowedOrigins().includes(origin)) return true;
+  // Your own Vercel deployments, including preview URLs.
+  try {
+    const host = new URL(origin).hostname;
+    return host.endsWith('.vercel.app');
+  } catch {
+    return false;
+  }
 }
 
-export default AGENTS;
+function applyCors(req, res) {
+  const origin = req.headers.origin;
+  if (isAllowed(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Max-Age', '86400');
+}
+
+function parseBody(req) {
+  // Vercel usually parses JSON bodies for you, but not always (raw body,
+  // odd content-type). Handle both.
+  if (req.body && typeof req.body === 'object') return req.body;
+  if (typeof req.body === 'string' && req.body.length) {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+function validateMessages(messages) {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return { error: 'messages must be a non-empty array' };
+  }
+  if (messages.length > MAX_MESSAGES) {
+    return { error: `messages cannot exceed ${MAX_MESSAGES} turns` };
+  }
+
+  let total = 0;
+  const cleaned = [];
+
+  for (const m of messages) {
+    if (!m || typeof m !== 'object') {
+      return { error: 'each message must be an object' };
+    }
+    if (m.role !== 'user' && m.role !== 'assistant') {
+      return { error: 'message role must be "user" or "assistant"' };
+    }
+    if (typeof m.content !== 'string' || !m.content.trim()) {
+      return { error: 'message content must be a non-empty string' };
+    }
+    const content = m.content.slice(0, MAX_CHARS_PER_MESSAGE);
+    total += content.length;
+    if (total > MAX_TOTAL_CHARS) {
+      return { error: 'conversation is too long' };
+    }
+    cleaned.push({ role: m.role, content });
+  }
+
+  if (cleaned[cleaned.length - 1].role !== 'user') {
+    return { error: 'the last message must be from the user' };
+  }
+
+  return { messages: cleaned };
+}
+
+export default async function handler(req, res) {
+  applyCors(req, res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  const origin = req.headers.origin;
+  // Requests with no Origin header (curl, server-to-server) are allowed through;
+  // browsers always send one, so this only blocks cross-site browser calls.
+  if (origin && !isAllowed(origin)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    // Deliberately vague to the caller; the detail goes to your Vercel logs.
+    console.error('ANTHROPIC_API_KEY is not set on this deployment');
+    return res.status(500).json({ error: 'Server is not configured' });
+  }
+
+  const body = parseBody(req);
+  if (!body) {
+    return res.status(400).json({ error: 'Body must be JSON' });
+  }
+
+  const agent = getAgent(body.agent);
+  if (!agent) {
+    return res.status(400).json({ error: 'Unknown agent' });
+  }
+
+  const check = validateMessages(body.messages);
+  if (check.error) {
+    return res.status(400).json({ error: check.error });
+  }
+
+  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+  const maxTokens = Number(process.env.MAX_TOKENS) || DEFAULT_MAX_TOKENS;
+
+  try {
+    const upstream = await fetch(ANTHROPIC_URL, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': ANTHROPIC_VERSION,
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system: agent.systemPrompt,
+        messages: check.messages,
+      }),
+    });
+
+    if (!upstream.ok) {
+      const detail = await upstream.text();
+      // Log status and Anthropic's message for debugging. Patient text is not logged.
+      console.error('Anthropic API error', upstream.status, detail.slice(0, 500));
+      const status = upstream.status === 429 ? 429 : 502;
+      return res.status(status).json({
+        error:
+          status === 429
+            ? 'The assistant is busy right now. Please try again in a moment.'
+            : 'The assistant is unavailable right now.',
+      });
+    }
+
+    const data = await upstream.json();
+    const reply = (data.content || [])
+      .filter((block) => block.type === 'text')
+      .map((block) => block.text)
+      .join('\n')
+      .trim();
+
+    if (!reply) {
+      return res.status(502).json({ error: 'Empty response from the assistant' });
+    }
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(200).json({ reply, model, agent: agent.name });
+  } catch (err) {
+    console.error('agent-chat failed:', err && err.message);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+}
