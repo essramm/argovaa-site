@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — California Hair Surgeon with Patient Assistant</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --navy:#1c2a44;
+  --navy-deep:#141f34;
+  --ink:#1b2230;
+  --muted:#5b6474;
+  --gold:#b08a45;
+  --gold-soft:#f3ecdf;
+  --paper:#ffffff;
+  --mist:#f1f3f6;
+  --line:rgba(27,34,48,0.12);
+  --radius:10px;
+  --serif:'Newsreader',Georgia,serif;
+  --sans:'Figtree',system-ui,-apple-system,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6;font-size:16px}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+
+/* ── DEMO BANNER ── */
+.demo-banner{
+  background:#2b2b2b;color:#f0f0f0;font-size:13px;text-align:center;
+  padding:8px 16px;line-height:1.45;
+}
+.demo-banner strong{color:#fff;font-weight:600}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--navy-deep);color:#d9dee8;font-size:13.5px}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:9px;padding-bottom:9px;flex-wrap:wrap}
+.topbar a{text-decoration:none;color:#fff;font-weight:500}
+.topbar .offices{opacity:0.8}
+
+/* ── HEADER ── */
+header.site{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:16px;padding-bottom:16px}
+.wordmark{text-decoration:none;display:flex;flex-direction:column;line-height:1.15}
+.wordmark .name{font-family:var(--serif);font-size:23px;color:var(--navy);letter-spacing:0.01em}
+.wordmark .md{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:3px;font-weight:600}
+nav.primary{display:flex;gap:26px;font-size:14.5px;font-weight:500}
+nav.primary a{text-decoration:none;color:var(--ink)}
+nav.primary a:hover{color:var(--gold)}
+.btn{
+  display:inline-block;text-decoration:none;font-family:var(--sans);font-weight:600;font-size:14.5px;
+  border-radius:var(--radius);padding:11px 20px;border:1px solid transparent;cursor:pointer;
+}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#9a7738}
+.btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,0.45)}
+.btn-ghost:hover{background:rgba(255,255,255,0.08)}
+@media (max-width:900px){nav.primary{display:none}}
+
+/* ── HERO ── */
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%, rgba(176,138,69,0.18) 0, transparent 42%),
+    linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color:#fff;padding:92px 0 100px;position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;right:-120px;top:-60px;width:520px;height:520px;border-radius:50%;
+  border:1px solid rgba(176,138,69,0.25);
+  box-shadow:0 0 0 60px rgba(176,138,69,0.04),0 0 0 120px rgba(176,138,69,0.03);
+}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;color:#d8bf8c;font-weight:600}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:52px;line-height:1.12;margin-top:18px;max-width:13em}
+.hero p{font-size:18px;color:#cfd6e2;margin-top:20px;max-width:34em}
+.hero .ctas{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+@media (max-width:640px){.hero{padding:64px 0 72px}.hero h1{font-size:36px}}
+
+/* ── CREDENTIALS STRIP ── */
+.creds{background:var(--gold-soft);border-bottom:1px solid var(--line)}
+.creds .wrap{display:flex;flex-wrap:wrap;gap:10px 34px;justify-content:center;padding-top:18px;padding-bottom:18px;font-size:14px;color:#5a4a2c;font-weight:500}
+
+/* ── SECTIONS ── */
+section.block{padding:84px 0}
+section.alt{background:var(--mist)}
+.section-head{max-width:640px;margin-bottom:40px}
+.section-head h2{font-family:var(--serif);font-weight:400;font-size:36px;line-height:1.2;color:var(--navy)}
+.section-head p{color:var(--muted);margin-top:12px;font-size:16.5px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px 22px;text-decoration:none;display:block;transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:rgba(176,138,69,0.6);transform:translateY(-2px)}
+.card h3{font-family:var(--serif);font-weight:500;font-size:21px;color:var(--navy)}
+.card p{color:var(--muted);font-size:14.5px;margin-top:8px}
+.card .more{display:inline-block;margin-top:14px;font-size:13.5px;font-weight:600;color:var(--gold)}
+
+/* ── ASSISTANT PROMO ── */
+.promo{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;
+  background:var(--navy);color:#fff;border-radius:16px;padding:48px;
+}
+.promo h2{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1.22}
+.promo p{color:#cfd6e2;margin-top:12px}
+.promo .note{font-size:13.5px;color:#9fabbf;margin-top:14px}
+.promo-sample{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px;font-size:14px}
+.promo-sample .q{color:#d8bf8c;font-weight:600;margin-bottom:10px}
+.promo-sample .chip{
+  display:block;width:100%;text-align:left;background:transparent;color:#fff;font:inherit;
+  border:1px solid rgba(255,255,255,0.22);border-radius:100px;padding:8px 14px;margin-top:8px;cursor:pointer;
+}
+.promo-sample .chip:hover{background:rgba(255,255,255,0.08)}
+@media (max-width:800px){.promo{grid-template-columns:1fr;padding:32px 24px}}
+
+/* ── OFFICES ── */
+.office h3{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--navy)}
+.office address{font-style:normal;color:var(--muted);font-size:14.5px;margin-top:8px}
+.office a.tel{display:inline-block;margin-top:12px;font-weight:600;color:var(--navy);text-decoration:none}
+.office a.tel:hover{color:var(--gold)}
+
+/* ── FOOTER ── */
+footer.site{background:var(--navy-deep);color:#aeb8c8;font-size:13.5px;padding:40px 0}
+footer.site .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer.site a{color:#dbe1ea;text-decoration:none;margin-right:16px}
+footer.site a:hover{color:#fff}
+
+/* ══════════════ CHAT WIDGET ══════════════ */
+.cw-launcher{
+  position:fixed;right:22px;bottom:22px;z-index:60;
+  display:flex;align-items:center;gap:10px;
+  background:var(--navy);color:#fff;border:none;border-radius:100px;
+  padding:13px 20px 13px 16px;font-family:var(--sans);font-size:14.5px;font-weight:600;cursor:pointer;
+  box-shadow:0 10px 28px rgba(20,31,52,0.32);
+}
+.cw-launcher:hover{background:var(--navy-deep)}
+.cw-launcher .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(176,138,69,0.25)}
+.cw-launcher .sub{font-weight:400;opacity:0.72;font-size:12.5px;margin-left:2px}
+.cw-launcher[hidden]{display:none}
+
+.cw-panel{
+  position:fixed;right:22px;bottom:22px;z-index:61;
+  width:392px;height:min(620px, calc(100dvh - 44px));
+  background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 18px 50px rgba(20,31,52,0.30);
+  display:flex;flex-direction:column;
+  transform-origin:bottom right;animation:cwIn .18s ease-out;
+}
+.cw-panel[hidden]{display:none}
+@keyframes cwIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:520px){
+  .cw-panel{right:0;bottom:0;width:100%;height:100dvh;border-radius:0}
+}
+
+.cw-head{background:var(--navy);color:#fff;padding:16px 16px 14px 18px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.cw-head .t{font-family:var(--serif);font-size:19px;line-height:1.2}
+.cw-head .s{font-size:12.5px;color:#c3ccda;margin-top:4px}
+.cw-close{background:transparent;border:none;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:6px}
+.cw-close:hover{background:rgba(255,255,255,0.1)}
+
+.cw-disclosure{
+  font-size:12.5px;color:#5a4a2c;background:var(--gold-soft);
+  padding:10px 16px;border-bottom:1px solid var(--line);line-height:1.45;
+}
+
+.cw-body{flex:1;overflow-y:auto;padding:16px 14px 8px;background:#fafbfc;display:flex;flex-direction:column;gap:12px}
+
+.cw-msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;overflow-wrap:break-word}
+.cw-msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.cw-msg.me{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.cw-msg.err{background:#fdf3ee;border:1px solid rgba(160,80,40,0.3);color:#8a4b2a;align-self:flex-start}
+.cw-msg a{color:var(--gold);font-weight:600;word-break:break-all}
+.cw-msg.me a{color:#f0d9a8}
+
+.cw-typing{display:flex;gap:4px;padding:14px 13px}
+.cw-typing span{width:6px;height:6px;border-radius:50%;background:#8a93a3;opacity:.4;animation:cwDot 1.2s infinite}
+.cw-typing span:nth-child(2){animation-delay:.15s}
+.cw-typing span:nth-child(3){animation-delay:.3s}
+@keyframes cwDot{0%,60%,100%{opacity:.25;transform:none}30%{opacity:.8;transform:translateY(-3px)}}
+
+.cw-starters{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px}
+.cw-starter{
+  font:inherit;font-size:13px;color:var(--navy);background:#fff;
+  border:1px solid rgba(28,42,68,0.22);border-radius:100px;padding:6px 12px;cursor:pointer;text-align:left;
+}
+.cw-starter:hover{background:var(--mist)}
+
+.cw-foot{border-top:1px solid var(--line);padding:10px 12px 12px;background:#fff}
+.cw-form{display:flex;gap:8px;align-items:flex-end}
+.cw-input{
+  flex:1;font-family:var(--sans);font-size:15px;line-height:1.45;color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:none;min-height:44px;max-height:120px;
+}
+.cw-send{
+  background:var(--gold);color:#fff;border:none;border-radius:10px;font-family:var(--sans);
+  font-weight:600;font-size:14px;padding:0 16px;height:44px;cursor:pointer;flex-shrink:0;
+}
+.cw-send:disabled{background:#c9c2b3;cursor:default}
+.cw-fine{font-size:11.5px;color:#8a93a3;margin-top:8px;line-height:1.4}
+.cw-fine a{color:#6b7484}
+
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <strong>Demo page.</strong> A preview of an AI patient assistant, built by Argovaa for California Hair Surgeon. This is not the practice's live website — visit
+  <a href="https://californiahairsurgeon.com/" target="_blank" rel="noopener" style="color:#fff">californiahairsurgeon.com</a> for that.
+</div>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="offices">Walnut Creek · San Francisco · San Jose</span>
+    <a href="tel:+19259394763">Call or text (925) 939-4763</a>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="wordmark" href="#top">
+      <span class="name">California Hair Surgeon</span>
+      <span class="md">Sara Wasserbauer, MD, FISHRS</span>
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <a href="#procedures">Procedures</a>
+      <a href="#assistant">Ask a question</a>
+      <a href="#offices">Offices</a>
+      <a href="https://californiahairsurgeon.com/patient-financing/" target="_blank" rel="noopener">Financing</a>
+    </nav>
+    <a class="btn btn-gold" href="https://californiahairsurgeon.com/contact-us/" target="_blank" rel="noopener">Book a consultation</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Hair restoration · Bay Area</div>
+      <h1>A surgical practice devoted entirely to hair.</h1>
+      <p>Medical treatment, transplant surgery, eyebrow restoration and scalp micropigmentation, with offices in Walnut Creek, San Francisco and San Jose.</p>
+      <div class="ctas">
+        <a class="btn btn-gold" href="https://californiahairsurgeon.com/contact-us/" target="_blank" rel="noopener">Book a consultation</a>
+        <button class="btn btn-ghost" type="button" data-open-chat>Ask the AI assistant</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="creds">
+    <div class="wrap">
+      <span>Diplomate, American Board of Hair Restoration Surgery</span>
+      <span>Fellow, International Society of Hair Restoration Surgery</span>
+      <span>Past President, ABHRS</span>
+    </div>
+  </div>
+
+  <section class="block" id="procedures">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Procedures offered</h2>
+        <p>Which approach fits, if any, is decided at a consultation. These are short descriptions of what each one is.</p>
+      </div>
+      <div class="grid">
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/follicular-unit-hair-transplant/" target="_blank" rel="noopener">
+          <h3>FUT</h3><p>Follicular units are taken from a thin strip of donor scalp and placed individually.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/follicular-unit-extraction/" target="_blank" rel="noopener">
+          <h3>FUE</h3><p>Follicular units are extracted one at a time from the donor area, without a linear strip.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/limited-shave-fue-procedure/" target="_blank" rel="noopener">
+          <h3>Limited shave FUE</h3><p>An FUE approach that shaves only small sections of the donor area.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/eyebrow-restoration/" target="_blank" rel="noopener">
+          <h3>Eyebrow restoration</h3><p>Transplanting individual hairs to rebuild or reshape the brows.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/transgender-hairline-feminization/" target="_blank" rel="noopener">
+          <h3>Hairline feminization</h3><p>Surgical reshaping of the hairline as part of gender-affirming care.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/scalp-micro-pigmentation/" target="_blank" rel="noopener">
+          <h3>Scalp micropigmentation</h3><p>Fine pigment deposits that add the appearance of density to the scalp.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/robotic-hair-transplant/" target="_blank" rel="noopener">
+          <h3>ARTAS robotic</h3><p>Robot-assisted follicular unit extraction.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hair-procedures/alma-ted-ultrasound-treatment/" target="_blank" rel="noopener">
+          <h3>Alma TED</h3><p>A non-surgical in-office treatment using ultrasound and pressure.</p><span class="more">Read more →</span>
+        </a>
+        <a class="card" href="https://californiahairsurgeon.com/hairclone-hair-follicle-banking/" target="_blank" rel="noopener">
+          <h3>HairClone banking</h3><p>Storing your own hair follicles for possible future use.</p><span class="more">Read more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block alt" id="assistant">
+    <div class="wrap">
+      <div class="promo">
+        <div>
+          <h2>Have a question before you book?</h2>
+          <p>An AI assistant can answer general questions about procedures, consultations and recovery, and point you to the practice's articles.</p>
+          <p class="note">It's an automated tool, not Dr. Wasserbauer or her staff. It can't assess your hair loss, say whether a procedure suits you, or quote prices.</p>
+        </div>
+        <div class="promo-sample">
+          <div class="q">Try asking</div>
+          <button class="chip" type="button" data-ask="What happens at a consultation?">What happens at a consultation?</button>
+          <button class="chip" type="button" data-ask="How is FUE different from FUT?">How is FUE different from FUT?</button>
+          <button class="chip" type="button" data-ask="Is stem cell therapy for hair loss real?">Is stem cell therapy for hair loss real?</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="offices">
+    <div class="wrap">
+      <div class="section-head"><h2>Offices</h2></div>
+      <div class="grid">
+        <div class="office">
+          <h3>Walnut Creek</h3>
+          <address>1299 Newell Hill Pl., Suite 200<br>Walnut Creek, CA 94596</address>
+          <a class="tel" href="tel:+19259394763">(925) 939-4763 · call or text</a>
+        </div>
+        <div class="office">
+          <h3>San Francisco</h3>
+          <address>500 Sutter Street, Suite 430<br>San Francisco, CA 94102</address>
+          <a class="tel" href="tel:+14156684763">(415) 668-4763</a>
+        </div>
+        <div class="office">
+          <h3>San Jose</h3>
+          <address>2400 Samaritan Drive, Suite 103<br>San Jose, CA 95124</address>
+          <a class="tel" href="tel:+14089984763">(408) 998-4763</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Demo page by Argovaa. Not affiliated with the live practice website.</span>
+    <span>
+      <a href="https://californiahairsurgeon.com/privacy-policy/california-hair-surgeon-ai-policy/" target="_blank" rel="noopener">Practice AI Policy</a>
+      <a href="https://californiahairsurgeon.com/hipaa-privacy/" target="_blank" rel="noopener">HIPAA Privacy</a>
+    </span>
+  </div>
+</footer>
+
+<!-- ══════════════ CHAT WIDGET ══════════════ -->
+<button class="cw-launcher" id="cw-launcher" type="button" aria-controls="cw-panel" aria-expanded="false">
+  <span class="dot" aria-hidden="true"></span>
+  Questions? <span class="sub">AI assistant</span>
+</button>
+
+<div class="cw-panel" id="cw-panel" role="dialog" aria-modal="false" aria-labelledby="cw-title" hidden>
+  <div class="cw-head">
+    <div>
+      <div class="t" id="cw-title">Patient questions</div>
+      <div class="s">AI assistant · not Dr. Wasserbauer or her staff</div>
+    </div>
+    <button class="cw-close" id="cw-close" type="button" aria-label="Close chat">×</button>
+  </div>
+  <div class="cw-disclosure">
+    General questions only. Please don't share medical history or health details. If something is wrong after a procedure, call your office.
+  </div>
+  <div class="cw-body" id="cw-body" aria-live="polite"></div>
+  <div class="cw-foot">
+    <form class="cw-form" id="cw-form">
+      <label for="cw-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Your question</label>
+      <textarea class="cw-input" id="cw-input" rows="1" placeholder="Type your question…" autocomplete="off"></textarea>
+      <button class="cw-send" id="cw-send" type="submit">Send</button>
+    </form>
+    <div class="cw-fine">Replies are generated by AI and aren't medical advice. Messages aren't stored by this page.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── SETTINGS ── */
+  const CONFIG = {
+    apiUrl: '/api/agent-chat',
+    agentKey: 'hair-restoration-patient-assistant',
+    greeting: "Hi. I'm an automated assistant for California Hair Surgeon, not Dr. Wasserbauer or a member of her staff. I can answer general questions about the procedures offered here, what a consultation involves, and what recovery usually looks like.",
+    starters: [
+      'What happens at a consultation?',
+      'How is FUE different from FUT?',
+      'What does recovery usually involve?',
+      'Where are your offices?',
+    ],
+    // Only links to these hosts become clickable. Everything else stays plain text.
+    linkHosts: ['californiahairsurgeon.com', 'www.californiahairsurgeon.com'],
+  };
+  const MAX_TURNS = 20;
+  const MAX_CHARS = 1500;
+
+  const launcher = document.getElementById('cw-launcher');
+  const panel    = document.getElementById('cw-panel');
+  const closeBtn = document.getElementById('cw-close');
+  const body     = document.getElementById('cw-body');
+  const form     = document.getElementById('cw-form');
+  const input    = document.getElementById('cw-input');
+  const sendBtn  = document.getElementById('cw-send');
+
+  let history = [];
+  let busy = false;
+  let started = false;
+  let startersEl = null;
+
+  /* ── open / close ── */
+  function openChat(){
+    panel.hidden = false;
+    launcher.hidden = true;
+    launcher.setAttribute('aria-expanded', 'true');
+    if (!started) { start(); started = true; }
+    setTimeout(function(){ input.focus(); }, 30);
+  }
+  function closeChat(){
+    panel.hidden = true;
+    launcher.hidden = false;
+    launcher.setAttribute('aria-expanded', 'false');
+    launcher.focus();
+  }
+  launcher.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !panel.hidden) closeChat();
+  });
+  document.querySelectorAll('[data-open-chat]').forEach(function(el){
+    el.addEventListener('click', openChat);
+  });
+  document.querySelectorAll('[data-ask]').forEach(function(el){
+    el.addEventListener('click', function(){
+      openChat();
+      send(el.getAttribute('data-ask'));
+    });
+  });
+
+  /* ── rendering (no innerHTML: all text goes through text nodes) ── */
+  const URL_RE = /https?:\/\/[^\s<>"')\]]+/g;
+
+  function appendRich(el, text){
+    // Strip markdown bold markers the model sometimes adds.
+    text = text.replace(/\*\*(.+?)\*\*/g, '$1');
+    let last = 0, m;
+    URL_RE.lastIndex = 0;
+    while ((m = URL_RE.exec(text)) !== null) {
+      let url = m[0];
+      // Trailing punctuation belongs to the sentence, not the URL.
+      const trail = url.match(/[.,;:!?]+$/);
+      if (trail) url = url.slice(0, -trail[0].length);
+      if (m.index > last) el.appendChild(document.createTextNode(text.slice(last, m.index)));
+      let host = '';
+      try { host = new URL(url).hostname; } catch (e) {}
+      if (CONFIG.linkHosts.indexOf(host) !== -1) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+        el.appendChild(a);
+      } else {
+        el.appendChild(document.createTextNode(url));
+      }
+      last = m.index + url.length;
+      URL_RE.lastIndex = last;
+    }
+    if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
+  }
+
+  function addMsg(kind, text){
+    const div = document.createElement('div');
+    div.className = 'cw-msg ' + kind;
+    if (kind === 'bot') appendRich(div, text); else div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+    return div;
+  }
+
+  function addTyping(){
+    const div = document.createElement('div');
+    div.className = 'cw-msg bot cw-typing';
+    div.setAttribute('aria-label', 'Assistant is typing');
+    for (let i = 0; i < 3; i++) div.appendChild(document.createElement('span'));
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+    return div;
+  }
+
+  function start(){
+    addMsg('bot', CONFIG.greeting);
+    startersEl = document.createElement('div');
+    startersEl.className = 'cw-starters';
+    CONFIG.starters.forEach(function(q){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cw-starter';
+      b.textContent = q;
+      b.addEventListener('click', function(){ send(q); });
+      startersEl.appendChild(b);
+    });
+    body.appendChild(startersEl);
+  }
+
+  function setBusy(v){
+    busy = v;
+    sendBtn.disabled = v;
+  }
+
+  /* ── send ── */
+  async function send(text){
+    const msg = String(text || '').trim().slice(0, MAX_CHARS);
+    if (!msg || busy) return;
+    if (!started) { start(); started = true; }
+    if (startersEl) { startersEl.remove(); startersEl = null; }
+
+    addMsg('me', msg);
+    history.push({ role: 'user', content: msg });
+    if (history.length > MAX_TURNS) history = history.slice(-MAX_TURNS);
+    input.value = '';
+    input.style.height = 'auto';
+    setBusy(true);
+    const typing = addTyping();
+
+    try {
+      const res = await fetch(CONFIG.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent: CONFIG.agentKey, messages: history }),
+      });
+      let data = null;
+      try { data = await res.json(); } catch (e) {}
+      typing.remove();
+
+      if (!res.ok || !data || !data.reply) {
+        const detail = (data && data.error) ? data.error : 'The assistant is unavailable right now.';
+        addMsg('err', detail + ' Please try again, or call (925) 939-4763.');
+        history.pop();
+        return;
+      }
+      addMsg('bot', data.reply);
+      history.push({ role: 'assistant', content: data.reply });
+    } catch (e) {
+      typing.remove();
+      addMsg('err', "That didn't send. Check your connection and try again.");
+      history.pop();
+    } finally {
+      setBusy(false);
+      input.focus();
+    }
+  }
+
+  form.addEventListener('submit', function(e){ e.preventDefault(); send(input.value); });
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
+  });
+  input.addEventListener('input', function(){
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+})();
+</script>
+
+</body>
+</html>
