@@ -1,0 +1,536 @@
+
+Claude finished the response
+1789963888571_image.png
+That's the warning I expected, and it's harmless.
+
+Vercel is saying your functions use import/export syntax but there's no package.json declaring that, so it converted them to the older CommonJS format automatically. The next three lines show it doing exactly that for agent-chat.js, _agents.js, and blazemeter.js, and then "Build Completed" and "Deployment completed." All three functions built and shipped.
+
+It's worth noting the log confirms something useful: _agents.js was compiled alongside agent-chat.js, so the import between them was picked up correctly.
+
+I'd leave it alone. Adding a package.json with "type": "module" would make the warning go away, but it changes how Vercel treats every JavaScript file in the project, including blazemeter.js, which has been working for months. Silencing a cosmetic warning isn't worth risking something that works.
+
+So the backend is fully live. The only piece left is committing sara-agent.html at the repo root and asking it a question.
+
+what are the next steps
+
+The backend is done: both API files, the key, and the deployment are all live. Three things are left, and only the first is technical.
+
+1. Put the page up. In GitHub, go to Add file → Create new file. Type sara-agent.html as the name at the repo root, with no api/ in front. Paste the contents of the sara-agent card; line 1 should read <!DOCTYPE html>. Commit to main, then wait for Vercel to show Ready.
+
+2. Test it, then try to break it. Open www.argovaa.com/sara-agent.html and click a starter question. A real answer means the whole chain works. Then ask the questions it's supposed to refuse:
+
+"What's causing my hair loss?"
+"How much would a transplant cost me?"
+"How many grafts would I need?"
+"I had surgery last week and it's bleeding."
+Each one should be declined and pointed to a consultation or a phone number. The bleeding one should give the office numbers and mention 911. If any of them gets a real answer, send me the exact question and reply and I'll tighten the prompt.
+
+3. Show Sara before linking it anywhere. She or her practice manager should read the disclosure at the top of the page and the rules in _agents.js. Patient messages go through your Anthropic key, and her site publishes a HIPAA privacy policy, so that arrangement needs her explicit agreement before any real patient uses it. The working page is a good way to start that conversation.
+
+One loose end: if the key in Vercel is the one that showed up in the earlier screenshots, replace it before sharing the page with anyone. Delete it in the Anthropic Console, create a new one, and use Edit on the Vercel variable to paste the new value. A redeploy follows automatically.
+
+show me ]ara-agent
+
+Ran a command, shared files
+Here it is, on its own so there's nothing else to copy by mistake. Two quick checks before you commit:
+
+Line 1 should be <!DOCTYPE html>
+Size should be about 13.8 KB, and the page should mention Dr. Wasserbauer and the three office numbers. If what you paste starts with //, it's one of the JavaScript files instead.
+Type sara-agent.html into GitHub's filename box by hand, at the repo root with no folder in front of it.
+
+
+Sara agent
+Code·HTML 
+
+
+
+Claude is AI and can make mistakes.
+
+
+Sara agent · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hair Restoration Questions — California Hair Surgeon</title>
+<meta name="description" content="An automated assistant that answers general questions about hair restoration procedures, consultations, and recovery.">
+<meta name="robots" content="noindex">
+ 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+ 
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+ 
+:root{
+  --paper:#f3f6f5;
+  --surface:#ffffff;
+  --ink:#16232b;
+  --muted:#5a6a72;
+  --accent:#2e6b5e;
+  --accent-deep:#235348;
+  --accent-soft:#e4efeb;
+  --line:rgba(22,35,43,0.12);
+  --line-soft:rgba(22,35,43,0.07);
+  --warn:#8a4b2a;
+  --radius:10px;
+}
+ 
+html{-webkit-text-size-adjust:100%}
+ 
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+ 
+.wrap{
+  width:100%;
+  max-width:680px;
+  margin:0 auto;
+  padding:0 20px;
+}
+ 
+/* ── HEADER ── */
+header{
+  border-bottom:1px solid var(--line-soft);
+  background:var(--paper);
+  padding:22px 0 20px;
+}
+.practice{
+  font-size:13px;
+  letter-spacing:0.06em;
+  color:var(--muted);
+  text-transform:none;
+}
+.lede{
+  font-family:'Source Serif 4',Georgia,serif;
+  font-size:27px;
+  line-height:1.3;
+  font-weight:400;
+  margin-top:10px;
+  max-width:19em;
+}
+ 
+/* ── DISCLOSURE ── */
+.disclosure{
+  margin-top:16px;
+  padding:13px 15px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--warn);
+  border-radius:var(--radius);
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.55;
+}
+.disclosure strong{color:var(--ink);font-weight:500}
+ 
+/* ── TRANSCRIPT ── */
+main{flex:1;padding:22px 0 8px}
+ 
+#transcript{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+ 
+.turn{max-width:92%}
+.turn .who{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:5px;
+  letter-spacing:0.03em;
+}
+.turn .bubble{
+  padding:13px 16px;
+  border-radius:var(--radius);
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+ 
+.turn.assistant .bubble{
+  background:var(--surface);
+  border:1px solid var(--line);
+}
+.turn.user{align-self:flex-end;text-align:left}
+.turn.user .who{text-align:right}
+.turn.user .bubble{
+  background:var(--accent-soft);
+  border:1px solid rgba(46,107,94,0.22);
+}
+.turn.error .bubble{
+  background:#fdf4ef;
+  border:1px solid rgba(138,75,42,0.3);
+  color:var(--warn);
+}
+ 
+/* thinking indicator */
+.thinking{display:flex;gap:5px;align-items:center;padding:16px}
+.thinking span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--muted);opacity:0.45;
+  animation:pulse 1.3s infinite ease-in-out;
+}
+.thinking span:nth-child(2){animation-delay:0.18s}
+.thinking span:nth-child(3){animation-delay:0.36s}
+@keyframes pulse{0%,60%,100%{opacity:0.25;transform:translateY(0)}30%{opacity:0.75;transform:translateY(-3px)}}
+ 
+/* ── STARTERS ── */
+#starters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:20px;
+}
+.starter{
+  font-family:inherit;
+  font-size:14px;
+  color:var(--accent-deep);
+  background:var(--surface);
+  border:1px solid rgba(46,107,94,0.28);
+  border-radius:100px;
+  padding:8px 15px;
+  cursor:pointer;
+  text-align:left;
+}
+.starter:hover{background:var(--accent-soft)}
+ 
+/* ── COMPOSER ── */
+.composer-shell{
+  position:sticky;
+  bottom:0;
+  background:linear-gradient(to bottom,rgba(243,246,245,0) 0%,var(--paper) 22%);
+  padding:16px 0 14px;
+  margin-top:8px;
+}
+form{display:flex;gap:9px;align-items:flex-end}
+#input{
+  flex:1;
+  font-family:inherit;
+  font-size:16px;
+  line-height:1.5;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  resize:none;
+  max-height:160px;
+  min-height:48px;
+}
+#input::placeholder{color:#93a0a7}
+#send{
+  font-family:inherit;
+  font-size:15px;
+  font-weight:500;
+  color:#fff;
+  background:var(--accent);
+  border:none;
+  border-radius:var(--radius);
+  padding:0 20px;
+  height:48px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+#send:hover{background:var(--accent-deep)}
+#send:disabled{background:#a9b6b3;cursor:default}
+ 
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ 
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--line-soft);
+  padding:18px 0 28px;
+  font-size:13.5px;
+  color:var(--muted);
+  line-height:1.6;
+}
+footer a{color:var(--accent-deep)}
+.contact-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:12px;
+}
+.contact-btn{
+  font-size:14px;
+  font-weight:500;
+  color:var(--accent-deep);
+  background:var(--surface);
+  border:1px solid rgba(46,107,94,0.28);
+  border-radius:var(--radius);
+  padding:9px 16px;
+  text-decoration:none;
+}
+.contact-btn:hover{background:var(--accent-soft)}
+ 
+@media (max-width:560px){
+  .lede{font-size:23px}
+  .turn{max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="wrap">
+    <div class="practice" id="practice-name"></div>
+    <h1 class="lede">Ask a question about hair restoration.</h1>
+    <div class="disclosure">
+      <strong>You're talking to an AI assistant, not Dr. Wasserbauer or her staff.</strong>
+      It answers general questions only. It can't look at your case, tell you what's causing
+      your hair loss, say whether a procedure would suit you, describe results, or quote a
+      price — all of that comes from a consultation. Please don't type medical history or
+      personal health details here. If you've had a procedure and something is wrong, call
+      your office instead.
+    </div>
+  </div>
+</header>
+ 
+<main>
+  <div class="wrap">
+    <div id="transcript" aria-live="polite" aria-atomic="false"></div>
+    <div id="starters"></div>
+  </div>
+</main>
+ 
+<div class="composer-shell">
+  <div class="wrap">
+    <form id="composer">
+      <label for="input" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Your question</label>
+      <textarea id="input" rows="1" placeholder="Type your question…" autocomplete="off"></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </div>
+</div>
+ 
+<footer>
+  <div class="wrap">
+    <div class="contact-row" id="contact-row"></div>
+    <div id="privacy-note">
+      Replies are generated by AI. Messages are sent to an AI service to produce them and
+      aren't stored by this page. Nothing here is medical advice, and no reply describes or
+      predicts a clinical result. For anything about your own health, contact the practice
+      directly — the Walnut Creek line also accepts text messages.
+    </div>
+  </div>
+</footer>
+ 
+<script>
+/* ────────────────────────────────────────────────────────────
+   SETTINGS — fill these in before going live.
+   ──────────────────────────────────────────────────────────── */
+const CONFIG = {
+  // Shown at the top of the page.
+  practiceName: 'California Hair Surgeon · Sara Wasserbauer, MD, FISHRS',
+ 
+  // Where the chat request goes. Keep the relative path if this page is
+  // served from argovaa.com. If you move this page onto the practice's own
+  // domain, change it to the full URL, e.g.
+  //   'https://www.argovaa.com/api/agent-chat'
+  // californiahairsurgeon.com is already in the function's allowed origins.
+  apiUrl: '/api/agent-chat',
+ 
+  // Must match the key in api/_agents.js.
+  agentKey: 'hair-restoration-patient-assistant',
+ 
+  bookingUrl: 'https://californiahairsurgeon.com/contact-us/',
+ 
+  offices: [
+    { name: 'Walnut Creek', phone: '(925) 939-4763' },
+    { name: 'San Francisco', phone: '(415) 668-4763' },
+    { name: 'San Jose', phone: '(408) 998-4763' },
+  ],
+ 
+  greeting: "Hi. I'm an automated assistant for California Hair Surgeon \u2014 not Dr. Wasserbauer or a member of her staff. I can answer general questions about the procedures offered here, what a consultation involves, and what recovery usually looks like. What would you like to know?",
+ 
+  starters: [
+    'What happens at a consultation?',
+    'How is FUE different from FUT?',
+    'What does recovery usually involve?',
+    'What is scalp micropigmentation?',
+    'Where are your offices?',
+  ],
+};
+ 
+const MAX_TURNS = 20;   // conversation turns kept and sent
+const MAX_CHARS = 1500; // per message
+ 
+/* ──────────────────────────────────────────────────────────── */
+ 
+const transcriptEl = document.getElementById('transcript');
+const startersEl   = document.getElementById('starters');
+const formEl       = document.getElementById('composer');
+const inputEl      = document.getElementById('input');
+const sendEl       = document.getElementById('send');
+ 
+let history = [];   // [{role, content}] sent to the server
+let busy = false;
+ 
+/* ── setup ── */
+document.getElementById('practice-name').textContent = CONFIG.practiceName;
+ 
+(function buildContact(){
+  const row = document.getElementById('contact-row');
+ 
+  if (CONFIG.bookingUrl) {
+    const a = document.createElement('a');
+    a.className = 'contact-btn';
+    a.href = CONFIG.bookingUrl;
+    a.rel = 'noopener';
+    a.textContent = 'Book a consultation';
+    row.appendChild(a);
+  }
+ 
+  (CONFIG.offices || []).forEach(function(office){
+    const a = document.createElement('a');
+    a.className = 'contact-btn';
+    a.href = 'tel:+1' + office.phone.replace(/[^\d]/g, '');
+    a.textContent = office.name + ' ' + office.phone;
+    row.appendChild(a);
+  });
+})();
+ 
+(function buildStarters(){
+  CONFIG.starters.forEach(function(text){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'starter';
+    b.textContent = text;          // textContent, never innerHTML
+    b.addEventListener('click', function(){
+      if (busy) return;
+      send(text);
+    });
+    startersEl.appendChild(b);
+  });
+})();
+ 
+addTurn('assistant', CONFIG.greeting);
+ 
+/* ── rendering ── */
+function addTurn(role, text, isError){
+  const turn = document.createElement('div');
+  turn.className = 'turn ' + role + (isError ? ' error' : '');
+ 
+  const who = document.createElement('div');
+  who.className = 'who';
+  who.textContent = role === 'user' ? 'You' : 'Assistant';
+ 
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;       // textContent, never innerHTML
+ 
+  turn.appendChild(who);
+  turn.appendChild(bubble);
+  transcriptEl.appendChild(turn);
+  scrollDown();
+  return turn;
+}
+ 
+function addThinking(){
+  const turn = document.createElement('div');
+  turn.className = 'turn assistant';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble thinking';
+  bubble.setAttribute('aria-label', 'Assistant is typing');
+  for (let i = 0; i < 3; i++) bubble.appendChild(document.createElement('span'));
+  turn.appendChild(bubble);
+  transcriptEl.appendChild(turn);
+  scrollDown();
+  return turn;
+}
+ 
+function scrollDown(){
+  window.requestAnimationFrame(function(){
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  });
+}
+ 
+function setBusy(state){
+  busy = state;
+  sendEl.disabled = state;
+  sendEl.textContent = state ? 'Sending' : 'Send';
+}
+ 
+/* ── sending ── */
+async function send(text){
+  const message = String(text).trim().slice(0, MAX_CHARS);
+  if (!message || busy) return;
+ 
+  startersEl.style.display = 'none';
+  addTurn('user', message);
+  history.push({ role: 'user', content: message });
+  if (history.length > MAX_TURNS) history = history.slice(-MAX_TURNS);
+ 
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  setBusy(true);
+  const thinking = addThinking();
+ 
+  try {
+    const res = await fetch(CONFIG.apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent: CONFIG.agentKey, messages: history }),
+    });
+ 
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON response */ }
+ 
+    thinking.remove();
+ 
+    if (!res.ok || !data || !data.reply) {
+      const detail = (data && data.error) ? data.error : 'The assistant is unavailable right now.';
+      addTurn('assistant', detail + ' Please try again in a moment, or contact the practice directly.', true);
+      history.pop();   // drop the unanswered turn so the next retry is clean
+      return;
+    }
+ 
+    addTurn('assistant', data.reply);
+    history.push({ role: 'assistant', content: data.reply });
+  } catch (err) {
+    thinking.remove();
+    addTurn('assistant', "That didn't send — check your connection and try again.", true);
+    history.pop();
+  } finally {
+    setBusy(false);
+    inputEl.focus();
+  }
+}
+ 
+/* ── input handling ── */
+formEl.addEventListener('submit', function(e){
+  e.preventDefault();
+  send(inputEl.value);
+});
+ 
+inputEl.addEventListener('keydown', function(e){
+  // Enter sends. Shift+Enter makes a new line.
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    send(inputEl.value);
+  }
+});
+ 
+inputEl.addEventListener('input', function(){
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + 'px';
+});
+</script>
+ 
+</body>
+</html>
+ 
+
+
