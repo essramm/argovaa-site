@@ -1,766 +1,1333 @@
+Claude
+Archana’s MacBook Pro, Connected
+i dont want the black ground
+
+What color direction are you thinking? A few options:
+
+What background feel do you want?
+you pick
+My call: deep navy blue — 
+#0a1628 as the base. It’s unmistakably colored, reads as serious infrastructure tech, and lets the electric blue accents sing against it rather than disappear into near-black. Think Bloomberg Terminal meets modern SaaS — dark but clearly intentional.
+
+Going in now:
+
+Every dark surface is now deep navy — no black anywhere. Here’s what changed:
+
+Nav — rgba(10,22,40) frosted glass, clearly blue-tinted
+Hero — directional gradient from 
+#0c1e3a to 
+#0d2244, so the top of the page has depth and direction. The aurora glows and grid overlay stay — they read better against navy than black
+Sidebar — #0a1c35 → #0c1f38, a slightly cooler navy that separates it from the hero
+Bottom strip — #0b1d36 → #0d2244, the richest navy section with the brightest top-edge glow
+Team section — #091828 → #0b1e36, a calmer shade with soft radial glows
+Footer — 
+#081422, the deepest settled navy at the base
+All cards/panels — glassy navy surfaces with blue-tinted borders, consistent across diffs, team, metrics, code blocks
+The blue accent (#3b82f6 → #60a5fa) now pops cleanly rather than disappearing into near-black.
+
+Index
+Code
+·HTML
+make it white
+
+Index
+Code
+·HTML
+Done. The whole page is now white/light:
+
+Nav — white with a clean hairline border, dark logo
+Hero — soft 
+#f0f5ff (barely-there blue tint), dark headline, blue CTAs
+Sidebar — light grey 
+#f1f5f9, dark step labels
+Bottom strip, team section, footer — clean 
+#f8fafc with dark text
+Testimonial strip — very light blue 
+#eff6ff
+Cards everywhere — white with subtle borders and shadow
+Code blocks stay dark (
+#1e293b) — that’s intentional and universally expected for terminal/code readability.
+
+Upload index.html to GitHub to deploy.
+
+Created
+index.html
+changes marcus in the testimony from Marcus to Alan  change the medspa to asethic beautician
+
+Edited a file, shared a file, and 3 more steps
+Done — both testimonials updated:
+
+Slide 1: Marcus T. → Alan T., Dublin Auto Works
+Slide 2: “med spa” → “aesthetic beauty studio”, business renamed to Lumière Beauty Studio
+Index
+Code
+·HTML
+Compacted conversation
+Compacted conversation
+Also keep this page and move it to a new page
+https://www.argovaa.com/
+
+Read argovaa.com
+I can see the live site content. To clarify what you want:
+
+Keep the current live argovaa.com page as-is, but move it to a different URL (like /platform or /product)
+The new index.html we built becomes the new homepage at argovaa.com
+Is that right? And do you know what the current homepage file is called in your GitHub repo (essramm/argovaa-site)? It’s likely index.html — if so, the plan would be:
+
+Rename the existing index.html → platform.html (or whatever you want the new URL to be)
+Upload our new index.html as the homepage
+Should I pull the current live page’s HTML so we can save it, or do you already have it in the repo?
+
+
+
+
+
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Argovaa — Full-Stack Visibility for AI Systems</title>
-<meta name="description" content="Build, benchmark, and operate AI systems with real-time insights into latency, token usage, and infrastructure cost — all in one platform.">
+<title>Argovaa — Build AI Agents with Full Visibility</title>
+<meta name="description" content="Build and deploy AI agents connected to your data. Full visibility into cost, performance, and reliability. 6-step wizard — domain, template, data, model, test, deploy.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#060912;--surface:#0d1117;--surface2:#131a24;--surface3:#1a2336;
-  --white:#f0f4ff;--mid:#8892a4;--faint:#2a3548;
-  --accent:#3b6fff;--accent-bright:#5580ff;--accent-glow:rgba(59,111,255,0.18);
-  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
-  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.04);
-  --shadow:0 0 0 1px var(--bd),0 8px 32px rgba(0,0,0,0.4)
+  --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;--surface3:#e2e8f0;
+  --ink:#0d1420;--ink2:#1e293b;--ink3:#0f172a;
+  --mid:#475569;--faint:#94a3b8;
+  --accent:#2563eb;--accent-bright:#3b82f6;--accent-dim:rgba(37,99,235,0.06);
+  --red:#dc2626;--amber:#d97706;--emerald:#059669;--purple:#7c3aed;
+  --bd:rgba(13,20,32,0.10);--bd2:rgba(13,20,32,0.05);
+  --navy-bd:rgba(37,99,235,0.12)
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--white);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--bd);background:rgba(6,9,18,0.95);backdrop-filter:blur(20px)}
-.logo{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--white);text-decoration:none}
-.logo-dot{color:var(--accent)}
-.nav-links{display:flex;align-items:center;gap:4px;list-style:none}
-.nav-links a{font-size:13px;color:var(--mid);text-decoration:none;padding:6px 12px;transition:color 0.15s}
-.nav-links a:hover{color:var(--white)}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column}
+ 
+/* NAV */
+nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(13,20,32,0.08);background:#ffffff;backdrop-filter:blur(24px) saturate(160%);flex-shrink:0;box-shadow:0 1px 0 rgba(37,99,235,0.06)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#0d1420;text-decoration:none}
+.logo em{color:#2563eb;font-style:normal}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-links a{font-size:11px;color:rgba(13,20,32,0.45);text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.2s;padding:0 12px;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent}
+.nav-links a:hover{color:#0d1420}
+.nav-links a.act{color:#2563eb;border-bottom-color:#2563eb}
 .nav-right{display:flex;align-items:center;gap:10px}
-.nav-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);padding:4px 10px;border:1px solid var(--bd)}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:glow 2s infinite}
-@keyframes glow{0%,100%{opacity:1}50%{opacity:0.4}}
-.btn-signin{background:transparent;color:var(--mid);padding:7px 16px;font-size:13px;border:1px solid var(--bd);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-decoration:none;display:inline-block;font-weight:500}
-.btn-signin:hover{border-color:rgba(255,255,255,0.2);color:var(--white)}
-.btn-cta{background:var(--accent);color:#fff;padding:8px 18px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-block}
-.btn-cta:hover{background:var(--accent-bright);transform:translateY(-1px);box-shadow:0 4px 16px rgba(59,111,255,0.35)}
-
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 48px 80px;position:relative;overflow:hidden}
-.hero-grad{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 40%,rgba(59,111,255,0.07) 0%,transparent 70%);pointer-events:none}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--bd2) 1px,transparent 1px),linear-gradient(90deg,var(--bd2) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
-.hero-topbar{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent) 40%,rgba(139,92,246,0.6) 60%,transparent)}
-.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 500px;gap:72px;align-items:center;position:relative;z-index:1;width:100%}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(59,111,255,0.1);border:1px solid rgba(59,111,255,0.25);padding:5px 12px;margin-bottom:26px;font-family:'DM Mono',monospace;font-size:11px;color:#7eb3f8;letter-spacing:0.5px}
-.hero-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--accent)}
-h1{font-size:clamp(36px,4.2vw,56px);font-weight:700;line-height:1.1;letter-spacing:-1.5px;color:var(--white);margin-bottom:20px}
-h1 em{font-style:normal;background:linear-gradient(135deg,#3b6fff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:17px;color:var(--mid);line-height:1.75;margin-bottom:32px;max-width:480px}
-.hero-btns{display:flex;gap:12px;margin-bottom:48px}
-.btn-primary{background:var(--accent);color:#fff;padding:13px 28px;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{background:var(--accent-bright);transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,111,255,0.4)}
-.btn-outline{background:transparent;color:var(--mid);padding:13px 28px;font-size:14px;border:1px solid var(--bd);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-.btn-outline:hover{border-color:rgba(255,255,255,0.2);color:var(--white)}
-.hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);max-width:400px}
-.hm{background:var(--surface);padding:14px 16px}
-.hm-val{font-size:22px;font-weight:700;letter-spacing:-0.5px;margin-bottom:3px}
-.hm-val.green{color:var(--green)}.hm-val.blue{color:var(--accent)}
-.hm-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.3px}
-
-.hero-dashboard{background:var(--surface);border:1px solid var(--bd);overflow:hidden;box-shadow:var(--shadow)}
-.hd-bar{background:var(--surface2);padding:10px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--bd)}
-.hd-dot{width:10px;height:10px;border-radius:50%}
-.hd-title{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-left:4px;flex:1}
-.hd-live{font-family:'DM Mono',monospace;font-size:9px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);padding:2px 7px}
-.hd-body{padding:14px}
-.hd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.hd-card{background:var(--surface2);border:1px solid var(--bd);padding:11px 13px}
-.hd-card-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
-.hd-card-val{font-size:18px;font-weight:700;letter-spacing:-0.5px}
-.hd-card-val.g{color:var(--green)}.hd-card-val.b{color:var(--accent)}.hd-card-val.a{color:var(--amber)}.hd-card-val.r{color:var(--red)}
-.hd-card-trend{font-size:11px;color:var(--mid);margin-top:2px}
-.hd-chart-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
-.hd-chart{position:relative;height:90px;margin-bottom:12px}
-.hd-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.hd-mini{background:var(--surface2);border:1px solid var(--bd);padding:9px 11px}
-.hd-mini-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;margin-bottom:3px}
-.hd-mini-val{font-size:12px;font-weight:600;color:var(--white)}
-
-.trust-bar{padding:28px 48px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--surface)}
-.trust-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:40px;flex-wrap:wrap}
-.trust-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
-.trust-items{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
-.trust-item{font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.22);font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
-.trust-item:hover{color:rgba(255,255,255,0.45)}
-.trust-item-dot{width:3px;height:3px;border-radius:50%;background:var(--accent);flex-shrink:0}
-.trust-metrics{margin-left:auto;display:flex;gap:28px}
-.trust-metric-val{font-size:20px;font-weight:700;color:var(--white);letter-spacing:-0.5px}
-.trust-metric-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.3px}
-
-.problem-section,.solution-section,.visual-section,.diff-section,.usecases-section,.roi-section,.trust-section,.pricing-section{padding:88px 48px}
-.solution-section,.visual-section,.trust-section,.pricing-section{background:var(--surface)}
-.problem-section,.diff-section,.usecases-section,.roi-section{background:var(--bg)}
-.roi-section{padding:0}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-tag{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.section-tag::before{content:'';width:24px;height:1px;background:var(--accent)}
-.section-title{font-size:clamp(26px,3.2vw,42px);font-weight:700;letter-spacing:-1px;color:var(--white);line-height:1.15;margin-bottom:14px}
-.section-sub{font-size:16px;color:var(--mid);max-width:520px;line-height:1.75;margin-bottom:52px}
-
-.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
-.pain-card{background:var(--surface);padding:32px 26px;position:relative;overflow:hidden;transition:background 0.2s}
-.pain-card:hover{background:var(--surface2)}
-.pain-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s}
-.pain-card:nth-child(1)::after{background:var(--red)}
-.pain-card:nth-child(2)::after{background:var(--amber)}
-.pain-card:nth-child(3)::after{background:var(--purple)}
-.pain-card:hover::after{opacity:1}
-.pain-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px;border:1px solid var(--bd)}
-.pain-icon.red{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2)}
-.pain-icon.amber{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.2)}
-.pain-icon.purple{background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.2)}
-.pain-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:10px;letter-spacing:-0.3px}
-.pain-desc{font-size:14px;color:var(--mid);line-height:1.7}
-
-.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
-.pillar{background:var(--surface);padding:36px 28px;transition:background 0.2s;cursor:pointer;position:relative}
-.pillar:hover{background:var(--surface2)}
-.pillar-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.pillar-num::after{content:'';flex:1;height:1px;background:var(--bd)}
-.pillar-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:20px;border:1px solid var(--bd);background:var(--surface2)}
-.pillar:nth-child(1) .pillar-icon{background:rgba(59,111,255,0.1);border-color:rgba(59,111,255,0.2)}
-.pillar:nth-child(2) .pillar-icon{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2)}
-.pillar:nth-child(3) .pillar-icon{background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.2)}
-.pillar-name{font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:-0.4px}
-.pillar-desc{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:18px}
-.pillar-features{display:flex;flex-direction:column;gap:8px}
-.pf{display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,0.55)}
-.pf::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0}
-.pillar-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:6px;margin-top:22px;transition:gap 0.2s}
-.pillar:hover .pillar-link{gap:10px}
-
-.visual-header{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:40px}
-.big-dashboard{background:var(--bg);border:1px solid var(--bd);overflow:hidden;box-shadow:var(--shadow)}
-.bd-nav{background:var(--surface2);border-bottom:1px solid var(--bd);display:flex}
-.bd-tab{font-family:'DM Mono',monospace;font-size:11px;padding:12px 16px;color:var(--mid);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.5px}
-.bd-tab.on{color:var(--white);border-bottom-color:var(--accent)}
-.bd-content{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.bd-stat{background:var(--surface);border:1px solid var(--bd);padding:13px 15px}
-.bd-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
-.bd-stat-val{font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:3px}
-.bd-stat-trend{font-size:11px;font-weight:500}
-.trend-up{color:var(--green)}.trend-dn{color:var(--red)}
-.bd-charts{display:grid;grid-template-columns:2fr 1fr;gap:10px;padding:0 20px 20px}
-.bd-chart-card{background:var(--surface);border:1px solid var(--bd);padding:14px}
-.bd-chart-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-.bd-chart-area{position:relative;height:130px}
-
-.diff-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.diff-table{border:1px solid var(--bd);overflow:hidden}
-.diff-head{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--surface2);border-bottom:1px solid var(--bd)}
-.diff-col-head{padding:11px 14px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid)}
-.diff-col-head.hl{color:var(--accent);background:rgba(59,111,255,0.06)}
-.diff-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bd2)}
-.diff-row:last-child{border-bottom:none}
-.diff-row:hover{background:var(--surface2)}
-.diff-cell{padding:11px 14px;font-size:13px;color:var(--mid);display:flex;align-items:center;gap:6px}
-.diff-cell.feat{color:var(--white);font-weight:500}
-.diff-cell.hl{background:rgba(59,111,255,0.04)}
-.check{color:var(--green);font-weight:700}
-.cross{color:var(--faint)}
-.diff-bullets{display:flex;flex-direction:column;gap:20px}
-.diff-bullet{display:flex;gap:14px;align-items:flex-start}
-.diff-bullet-icon{width:36px;height:36px;background:var(--accent-glow);border:1px solid rgba(59,111,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
-.diff-bullet-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:4px;letter-spacing:-0.2px}
-.diff-bullet-desc{font-size:13px;color:var(--mid);line-height:1.6}
-
-.usecases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:52px}
-.usecase-card{background:var(--surface);border:1px solid var(--bd);padding:30px 26px;transition:all 0.2s}
-.usecase-card:hover{border-color:rgba(59,111,255,0.3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-.usecase-tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;margin-bottom:16px;display:inline-block;letter-spacing:0.5px;text-transform:uppercase}
-.tag-blue{background:rgba(59,111,255,0.12);border:1px solid rgba(59,111,255,0.25);color:#7eb3f8}
-.tag-green{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)}
-.tag-purple{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:var(--purple)}
-.usecase-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;letter-spacing:-0.3px}
-.usecase-desc{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:20px}
-.usecase-points{display:flex;flex-direction:column;gap:8px}
-.usecase-point{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:rgba(255,255,255,0.5)}
-.up-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:7px}
-
-.roi-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
-.roi-card{background:var(--surface);padding:40px 32px;text-align:center}
-.roi-num{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:10px}
-.roi-label{font-size:15px;color:var(--mid);margin-bottom:5px}
-.roi-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:0.5px}
-
-.trust-section-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-.trust-badges{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:28px}
-.trust-badge{background:var(--bg);border:1px solid var(--bd);padding:18px;display:flex;gap:12px;align-items:flex-start;transition:border-color 0.2s}
-.trust-badge:hover{border-color:rgba(59,111,255,0.3)}
-.tb-icon{font-size:20px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--bd);flex-shrink:0}
-.tb-title{font-weight:600;font-size:13px;color:var(--white);margin-bottom:3px}
-.tb-desc{font-size:12px;color:var(--mid);line-height:1.6}
-.int-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}
-.int-badge{font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;background:var(--bg);border:1px solid var(--bd);color:var(--mid);transition:all 0.15s}
-.int-badge:hover{border-color:rgba(59,111,255,0.3);color:var(--white)}
-
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:52px}
-.plan{background:var(--bg);border:1px solid var(--bd);padding:30px 26px;transition:all 0.2s;position:relative}
-.plan:hover{border-color:rgba(59,111,255,0.3);transform:translateY(-2px)}
-.plan.featured{border:1px solid rgba(59,111,255,0.4);background:linear-gradient(160deg,rgba(59,111,255,0.06),rgba(139,92,246,0.04))}
-.plan-pop{font-family:'DM Mono',monospace;font-size:9px;background:var(--accent);color:#fff;padding:3px 9px;position:absolute;top:18px;right:18px;letter-spacing:0.5px}
-.plan-name{font-size:12px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-family:'DM Mono',monospace}
-.plan-price{font-size:44px;font-weight:800;letter-spacing:-2px;color:var(--white);line-height:1;margin-bottom:4px}
-.plan-price-sub{font-size:12px;color:var(--mid);margin-bottom:8px;font-family:'DM Mono',monospace}
-.plan-for{font-size:13px;color:var(--mid);margin-bottom:22px;padding:9px 12px;background:var(--surface);border:1px solid var(--bd);border-left:2px solid var(--accent);line-height:1.5}
-.plan-features{display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
-.plan-feature{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5}
-.pf-check{color:var(--green);flex-shrink:0;font-weight:700}
-.plan-btn{display:block;width:100%;padding:11px;text-align:center;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;text-decoration:none;border:1px solid var(--bd);color:var(--white);background:transparent;cursor:pointer;transition:all 0.2s}
-.plan.featured .plan-btn{background:var(--accent);border-color:var(--accent);color:#fff}
-.plan-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-.plan-roi{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-top:12px;text-align:center}
-
-.final-cta{padding:120px 48px;background:var(--bg);text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--bd)}
-.final-cta-grad{position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 50% 50%,rgba(59,111,255,0.07) 0%,transparent 70%);pointer-events:none}
-.final-cta-inner{max-width:640px;margin:0 auto;position:relative;z-index:1}
-.final-cta h2{font-size:clamp(30px,3.8vw,50px);font-weight:700;letter-spacing:-1.5px;color:var(--white);line-height:1.1;margin-bottom:16px}
-.final-cta p{font-size:17px;color:var(--mid);margin-bottom:34px;line-height:1.7}
-.final-cta-btns{display:flex;gap:12px;justify-content:center}
-.cta-note{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);margin-top:18px}
-
-footer{background:var(--surface);border-top:1px solid var(--bd);padding:52px 48px 28px}
-.footer-top{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:48px;margin-bottom:44px}
-.footer-logo{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--white);text-decoration:none;display:block;margin-bottom:12px}
-.footer-desc{font-size:13px;color:var(--mid);line-height:1.7;max-width:260px;margin-bottom:14px}
-.footer-contact{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.28)}
-.footer-contact a{color:var(--accent);text-decoration:none}
-.footer-col-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:14px}
-.footer-links{display:flex;flex-direction:column;gap:9px}
-.footer-links a{font-size:13px;color:rgba(255,255,255,0.32);text-decoration:none;transition:color 0.15s}
-.footer-links a:hover{color:var(--white)}
-.footer-bottom{max-width:1200px;margin:0 auto;border-top:1px solid var(--bd);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.footer-copy{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.18)}
-.footer-badges{display:flex;gap:7px}
-.footer-badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid var(--bd);color:rgba(255,255,255,0.2)}
-
-.chat-widget{position:fixed;bottom:24px;right:24px;z-index:900}
-.chat-btn{width:52px;height:52px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(59,111,255,0.4);transition:all 0.2s;border:none;font-size:20px}
-.chat-btn:hover{transform:scale(1.08)}
-.chat-window{position:absolute;bottom:64px;right:0;width:320px;background:var(--surface);border:1px solid var(--bd);box-shadow:var(--shadow);display:none;overflow:hidden}
-.chat-window.open{display:block}
-.chat-head{background:var(--surface2);padding:13px 15px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.chat-head-name{font-size:13px;font-weight:600;color:var(--white)}
-.chat-head-status{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);display:flex;align-items:center;gap:4px;margin-top:2px}
-.chat-close-btn{background:none;border:none;color:var(--mid);cursor:pointer;font-size:16px}
-.chat-msgs{height:220px;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px}
-.cmsg{font-size:13px;line-height:1.6;padding:8px 11px;max-width:90%}
-.cmsg.bot{background:var(--surface2);color:var(--white);border-radius:0 8px 8px 8px}
-.cmsg.user{background:var(--accent);color:#fff;margin-left:auto;border-radius:8px 0 8px 8px}
-.chat-inp-row{display:flex;border-top:1px solid var(--bd)}
-.chat-inp{flex:1;background:transparent;border:none;outline:none;padding:11px 13px;font-size:13px;color:var(--white);font-family:'Inter',sans-serif}
-.chat-inp::placeholder{color:var(--mid)}
-.chat-send-btn{background:var(--accent);color:#fff;border:none;padding:0 16px;cursor:pointer;font-size:14px;transition:background 0.15s}
-.chat-send-btn:hover{background:var(--accent-bright)}
-
-@media(max-width:960px){
-  nav{padding:0 20px}.nav-links{display:none}
-  .hero{padding:80px 20px 60px}.hero-inner{grid-template-columns:1fr;gap:40px}
-  .hero-metrics{max-width:100%}
-  .trust-bar{padding:20px}.trust-metrics{display:none}
-  .problem-section,.solution-section,.visual-section,.diff-section,.usecases-section,.trust-section,.pricing-section,.final-cta{padding:64px 20px}
-  .pain-grid,.pillars,.usecases-grid,.pricing-grid{grid-template-columns:1fr}
-  .diff-inner,.trust-section-inner,.visual-header{grid-template-columns:1fr}
-  .roi-inner{grid-template-columns:1fr}
-  .bd-content{grid-template-columns:1fr 1fr}.bd-charts{grid-template-columns:1fr}
-  footer{padding:40px 20px 24px}.footer-top{grid-template-columns:1fr 1fr;gap:28px}
+.btn-so{background:transparent;color:rgba(13,20,32,0.5);padding:6px 14px;font-size:12px;border:1px solid rgba(13,20,32,0.15);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none}
+.btn-so:hover{border-color:rgba(13,20,32,0.4);color:#0d1420}
+.btn-nav{background:var(--accent);color:#fff;padding:7px 16px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+ 
+/* HERO STRIP */
+.hero-strip{
+  background:#f0f5ff;
+  color:var(--ink);padding:36px 40px 32px;position:relative;overflow:hidden
+}
+.hero-strip::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 100% at 80% 45%, rgba(37,99,235,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 70% at 15% 80%, rgba(99,102,241,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 25% 50% at 50% 5%, rgba(59,130,246,0.04) 0%, transparent 50%)
+}
+.hero-strip::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(59,130,246,0.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(59,130,246,0.04) 40px);
+  background-size:40px 40px
+}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#2563eb;margin-bottom:12px}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);letter-spacing:2px;line-height:1.05;color:#0d1420;margin-bottom:14px}
+.hero-headline .acc{color:#2563eb}
+.hero-sub{font-size:14px;color:#475569;line-height:1.7;max-width:460px;font-weight:300;margin-bottom:20px}
+.hero-ctas{display:flex;gap:10px;align-items:center}
+.btn-hero-primary{background:var(--accent);color:#fff;padding:11px 24px;font-size:13px;font-weight:500;text-decoration:none;display:inline-block;transition:background 0.2s}
+.btn-hero-primary:hover{background:var(--accent-bright)}
+.btn-hero-ghost{color:#475569;font-size:12px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;text-decoration:none;padding:11px 0;transition:color 0.2s}
+.btn-hero-ghost:hover{color:#0d1420}
+.hero-metrics{display:flex;gap:0;background:#ffffff;border:1px solid rgba(13,20,32,0.10);box-shadow:0 2px 8px rgba(13,20,32,0.06)}
+.hm{padding:16px 22px;border-right:1px solid rgba(13,20,32,0.08)}
+.hm:last-child{border-right:none}
+.hm-val{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#2563eb}
+.hm-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-top:2px}
+ 
+/* WIZARD SHELL */
+#wizard{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:calc(100vh - 54px)}
+ 
+/* SIDEBAR */
+.sidebar{
+  background:#f1f5f9;
+  padding:28px 0;border-right:1px solid rgba(13,20,32,0.08);display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;
+  box-shadow:inset -1px 0 0 rgba(37,99,235,0.04)
+}
+.sidebar-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;padding:0 24px;margin-bottom:20px}
+.wizard-steps{display:flex;flex-direction:column;gap:0;flex:1}
+.wstep{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;transition:background 0.15s;position:relative;border-left:3px solid transparent}
+.wstep:hover{background:rgba(37,99,235,0.04)}
+.wstep.active{background:rgba(37,99,235,0.08);border-left-color:var(--accent);box-shadow:inset 0 0 20px rgba(37,99,235,0.04)}
+.wstep.done{border-left-color:var(--emerald)}
+.wstep-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0;transition:all 0.2s}
+.wstep .wstep-num{background:rgba(13,20,32,0.06);border:1px solid rgba(13,20,32,0.12);color:#94a3b8}
+.wstep.active .wstep-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.wstep.done .wstep-num{background:var(--emerald);border-color:var(--emerald);color:#fff}
+.wstep-info{}
+.wstep-name{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;font-weight:500}
+.wstep.active .wstep-name{color:#0d1420}
+.wstep.done .wstep-name{color:#059669}
+.wstep-sub{font-size:11px;color:#b0bec5;margin-top:1px}
+.wstep.active .wstep-sub{color:#475569}
+ 
+/* Agent summary in sidebar */
+.agent-summary{margin:20px 24px 0;background:#ffffff;border:1px solid rgba(13,20,32,0.10);padding:14px}
+.as-title{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:10px}
+.as-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
+.as-label{color:#94a3b8}
+.as-val{color:#475569;font-family:'DM Mono',monospace;font-size:10px;text-align:right;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ 
+/* MAIN CONTENT */
+.wizard-main{padding:40px;overflow-y:auto;background:var(--bg)}
+.step-panel{display:none}.step-panel.active{display:block}
+.step-header{margin-bottom:32px}
+.step-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.step-tag::before{content:'';width:16px;height:1px;background:var(--accent)}
+.step-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,40px);letter-spacing:2px;color:#0d1420;margin-bottom:10px}
+.step-title .acc{color:var(--accent)}
+.step-desc{font-size:14px;color:var(--mid);line-height:1.7;max-width:560px;font-weight:300}
+ 
+/* DOMAIN CARDS */
+.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+.dcard{background:var(--surface);border:1px solid var(--bd);padding:20px;cursor:pointer;transition:all 0.15s;position:relative}
+.dcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.dcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.dcard.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:14px;color:var(--accent);font-weight:700}
+.dcard-icon{font-size:24px;margin-bottom:10px;opacity:0.7}
+.dcard-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#0d1420;margin-bottom:5px}
+.dcard-desc{font-size:12px;color:var(--mid);line-height:1.6}
+ 
+/* TEMPLATE CARDS */
+.template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px}
+.tcard{background:var(--surface);border:1px solid var(--bd);padding:18px;cursor:pointer;transition:all 0.15s;position:relative}
+.tcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.tcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.tcard.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:13px;color:var(--accent);font-weight:700}
+.tcard-name{font-weight:500;font-size:14px;color:#0d1420;margin-bottom:4px}
+.tcard-desc{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:8px}
+.tcard-tags{display:flex;gap:5px;flex-wrap:wrap}
+.ttag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid var(--bd);color:var(--mid)}
+ 
+/* FIELDS */
+.field{margin-bottom:16px}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--bd);padding:10px 13px;color:#0d1420;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:100px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7}
+.field-hint{font-size:11px;color:var(--mid);margin-top:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ 
+/* DATA SOURCE GRID */
+.ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ds-item{background:var(--surface);border:1px solid var(--bd);padding:14px 12px;text-align:center;cursor:pointer;transition:all 0.15s}
+.ds-item:hover{border-color:var(--accent);background:var(--accent-dim)}
+.ds-item.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.ds-icon{font-size:18px;margin-bottom:6px;opacity:0.6}
+.ds-name{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.3px;color:#0d1420}
+.ds-connections{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.ds-conn{background:var(--surface);border:1px solid var(--bd);padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px}
+.ds-conn-icon{font-size:14px;flex-shrink:0}
+.ds-conn-input{flex:1;background:transparent;border:none;outline:none;font-size:12px;font-family:'DM Mono',monospace;color:var(--mid)}
+.ds-conn-input::placeholder{color:var(--faint)}
+.ds-conn-remove{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:0}
+ 
+/* MODEL CARDS */
+.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.mcard{background:var(--surface);border:1px solid var(--bd);padding:16px;cursor:pointer;transition:all 0.15s}
+.mcard:hover{border-color:var(--accent);background:var(--accent-dim)}
+.mcard.selected{border:2px solid var(--accent);background:var(--accent-dim)}
+.mcard-name{font-weight:500;font-size:13px;color:#0d1420;margin-bottom:3px}
+.mcard-provider{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;display:inline-block;margin-bottom:7px}
+.mp-openai{background:rgba(5,150,105,0.08);color:var(--emerald);border:1px solid rgba(5,150,105,0.18)}
+.mp-anthropic{background:rgba(220,38,38,0.06);color:var(--red);border:1px solid rgba(220,38,38,0.16)}
+.mp-azure{background:rgba(37,99,235,0.07);color:var(--accent);border:1px solid rgba(37,99,235,0.16)}
+.mp-oss{background:rgba(124,58,237,0.07);color:var(--purple);border:1px solid rgba(124,58,237,0.16)}
+.mcard-stats{display:flex;flex-direction:column;gap:3px}
+.mcard-stat{display:flex;justify-content:space-between;font-size:11px}
+.ms-label{color:var(--mid)}
+.ms-val{font-family:'DM Mono',monospace;color:#0d1420}
+ 
+/* CHAT TESTER */
+.chat-tester{background:var(--surface);border:1px solid var(--bd);overflow:hidden;margin-bottom:20px;box-shadow:0 1px 4px rgba(13,20,32,0.05)}
+.ct-head{padding:12px 16px;background:#1e293b;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ct-title{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.5px}
+.ct-status{font-family:'DM Mono',monospace;font-size:10px;display:flex;align-items:center;gap:5px}
+.ct-dot{width:5px;height:5px;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.ct-msgs{height:280px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#f8fafc}
+.ct-msg{display:flex;gap:8px;align-items:flex-start}
+.ct-av{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:0.5px}
+.ct-bubble{padding:9px 12px;font-size:13px;line-height:1.6;max-width:88%}
+.msg-agent .ct-av{background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.18);color:var(--accent)}
+.msg-agent .ct-bubble{background:#ffffff;border:1px solid var(--bd);color:#0d1420}
+.msg-user .ct-av{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.18);color:var(--purple)}
+.msg-user .ct-bubble{background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.12);color:#0d1420}
+.msg-user{flex-direction:row-reverse}
+.ct-input-row{display:flex;gap:0;border-top:1px solid var(--bd);background:#ffffff}
+.ct-input{flex:1;border:none;outline:none;padding:12px 14px;font-size:13px;font-family:'DM Sans',sans-serif;background:transparent;color:#0d1420}
+.ct-input::placeholder{color:var(--faint)}
+.ct-send{background:var(--accent);color:#fff;border:none;padding:0 20px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.ct-send:hover{background:var(--accent-bright)}
+.ct-send:disabled{background:var(--faint);cursor:not-allowed}
+.ct-typing{display:flex;gap:4px;align-items:center;padding:8px 12px}
+.ct-typing span{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:typing 1.2s infinite}
+.ct-typing span:nth-child(2){animation-delay:0.2s}
+.ct-typing span:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+ 
+/* DEPLOY PANEL */
+.deploy-card{background:var(--surface);border:1px solid var(--bd);padding:24px;margin-bottom:16px}
+.deploy-endpoint{background:#1e293b;border:1px solid rgba(255,255,255,0.08);padding:12px 16px;font-family:'DM Mono',monospace;font-size:12px;color:#86efac;display:flex;align-items:center;justify-content:space-between;margin:10px 0}
+.copy-btn{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;transition:color 0.2s}
+.copy-btn:hover{color:var(--accent-bright)}
+.code-block{background:#1e293b;border:1px solid rgba(255,255,255,0.06);overflow:hidden;margin-bottom:14px}
+.code-head{padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.35)}
+.code-body{padding:14px;overflow-x:auto}
+.code-body pre{font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
+.kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3)}.fn{color:#fde68a}.var{color:#d8b4fe}
+ 
+/* NAV BUTTONS */
+.wizard-nav{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:24px;border-top:1px solid var(--bd)}
+.btn-back{background:transparent;color:var(--mid);padding:11px 24px;font-size:13px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-back:hover{border-color:#0d1420;color:#0d1420}
+.btn-next{background:var(--accent);color:#fff;padding:11px 28px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:8px}
+.btn-next:hover{background:var(--accent-bright)}
+.btn-next:disabled{background:var(--faint);cursor:not-allowed}
+.btn-deploy{background:var(--emerald);color:#fff;padding:11px 28px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-deploy:hover{background:#047857}
+ 
+/* SPINNER */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+ 
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--bd);margin-bottom:32px}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.4s}
+ 
+/* SUCCESS */
+.success-banner{background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.18);padding:16px 20px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.success-icon{font-size:20px;flex-shrink:0}
+.success-text{font-size:14px;color:var(--emerald);font-weight:500}
+ 
+/* BOTTOM STRIP */
+.bottom-strip{
+  padding:36px 40px;position:relative;overflow:hidden;
+  background:#f8fafc;border-top:1px solid rgba(13,20,32,0.08)
+}
+.bottom-strip::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(59,130,246,0.03) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(59,130,246,0.03) 60px);
+  background-size:60px 60px
+}
+.bottom-strip::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.12) 35%, rgba(99,102,241,0.08) 65%, transparent 100%)
+}
+.bottom-inner{position:relative;z-index:1}
+.bottom-inner{max-width:1200px;margin:0 auto}
+.trust-bar{display:flex;align-items:center;gap:28px;margin-bottom:28px;flex-wrap:wrap}
+.trust-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;white-space:nowrap}
+.trust-logos{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.tlogo{font-family:'DM Mono',monospace;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:4px 10px;border:1px solid #e2e8f0;transition:color 0.2s}
+.tlogo:hover{color:#475569}
+.live-metrics{display:flex;gap:0;border:1px solid rgba(13,20,32,0.10);margin-bottom:28px;width:fit-content;background:#ffffff;box-shadow:0 1px 4px rgba(13,20,32,0.05)}
+.lm{padding:12px 20px;border-right:1px solid rgba(13,20,32,0.08);display:flex;align-items:center;gap:8px}
+.lm:last-child{border-right:none}
+.lm-dot{width:6px;height:6px;border-radius:50%;background:#059669;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.lm-val{font-family:'DM Mono',monospace;font-size:12px;color:#059669}
+.lm-key{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.diff-card{background:#ffffff;border:1px solid rgba(13,20,32,0.08);padding:20px;box-shadow:0 1px 3px rgba(13,20,32,0.04);transition:border-color 0.2s,box-shadow 0.2s}
+.diff-card:hover{border-color:rgba(37,99,235,0.25);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+.diff-icon{font-size:18px;margin-bottom:10px;opacity:0.7}
+.diff-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#0d1420;margin-bottom:6px}
+.diff-desc{font-size:12px;color:#475569;line-height:1.7}
+ 
+footer{
+  background:#f8fafc;
+  border-top:1px solid rgba(13,20,32,0.08);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;flex-shrink:0;
+  position:relative
+}
+footer::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(37,99,235,0.10) 40%, rgba(99,102,241,0.07) 60%, transparent)
+}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;color:#0d1420;text-decoration:none}
+.flogo em{color:#2563eb;font-style:normal}
+.flinks{display:flex;gap:18px}
+.flinks a{font-size:11px;color:#94a3b8;text-decoration:none;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.3px;transition:color 0.2s}
+.flinks a:hover{color:#0d1420}
+/* TESTIMONIAL TICKER */
+.testimonial-strip{
+  background:#eff6ff;
+  border-top:1px solid rgba(37,99,235,0.10);border-bottom:1px solid rgba(37,99,235,0.07);
+  overflow:hidden;padding:0;position:relative
+}
+.testimonial-track{display:flex;gap:0;animation:testimonialScroll 18s ease-in-out infinite}
+.testimonial-slide{min-width:100%;padding:28px 40px;display:flex;gap:32px;align-items:center;flex-shrink:0}
+@keyframes testimonialScroll{0%,38%{transform:translateX(0)}50%,88%{transform:translateX(-100%)}100%{transform:translateX(-200%)}}
+.ttest-quote{font-size:14px;color:#475569;line-height:1.75;font-style:italic;font-weight:300;max-width:560px;flex:1}
+.ttest-quote::before{content:'"';font-family:'Bebas Neue',sans-serif;font-size:32px;color:#2563eb;line-height:0;vertical-align:-12px;margin-right:4px}
+.ttest-quote::after{content:'"';font-family:'Bebas Neue',sans-serif;font-size:32px;color:#2563eb;line-height:0;vertical-align:-12px;margin-left:4px}
+.ttest-meta{flex-shrink:0;text-align:right}
+.ttest-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:#0d1420;margin-bottom:3px}
+.ttest-role{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8}
+.ttest-biz{font-family:'DM Mono',monospace;font-size:9px;color:#2563eb;margin-top:2px}
+.ttest-divider{width:1px;height:60px;background:rgba(13,20,32,0.08);flex-shrink:0}
+.testimonial-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.tdot{width:4px;height:4px;border-radius:50%;background:rgba(13,20,32,0.15);transition:background 0.3s}
+.tdot.active{background:#2563eb}
+ 
+/* TEAM SECTION */
+.team-section{
+  padding:52px 40px 44px;border-top:1px solid rgba(13,20,32,0.08);position:relative;overflow:hidden;
+  background:#f8fafc
+}
+.team-section::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 65% at 5% 55%, rgba(37,99,235,0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 92% 25%, rgba(99,102,241,0.03) 0%, transparent 60%)
+}
+.team-inner{position:relative;z-index:1}
+.team-inner{max-width:1200px;margin:0 auto}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:2.5px;color:#2563eb;margin-bottom:10px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,3vw,36px);letter-spacing:2px;color:#0d1420;margin-bottom:36px}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.team-card{background:#ffffff;border:1px solid rgba(13,20,32,0.08);padding:24px;transition:border-color 0.25s,box-shadow 0.25s;box-shadow:0 1px 3px rgba(13,20,32,0.04)}
+.team-card:hover{border-color:rgba(37,99,235,0.22);box-shadow:0 4px 16px rgba(37,99,235,0.08)}
+.team-avatar{width:48px;height:48px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.18);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#2563eb;margin-bottom:16px}
+.team-avatar.advisor{background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.18);color:#7c3aed}
+.team-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#0d1420;margin-bottom:3px}
+.team-role-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;padding:3px 8px;margin-bottom:10px}
+.tag-founder{background:rgba(37,99,235,0.07);color:#2563eb;border:1px solid rgba(37,99,235,0.16)}
+.tag-advisor{background:rgba(124,58,237,0.07);color:#7c3aed;border:1px solid rgba(124,58,237,0.16)}
+.team-bio{font-size:12px;color:#475569;line-height:1.75;font-weight:300}
+ 
+.fcopy{font-family:'DM Mono',monospace;font-size:10px;color:#94a3b8}
+ 
+@media(max-width:900px){
+  nav{padding:0 16px}.nav-links{display:none}
+  .hero-inner{grid-template-columns:1fr}
+  .hero-metrics{display:none}
+  #wizard{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .wizard-main{padding:24px 16px}
+  .domain-grid,.model-grid{grid-template-columns:1fr 1fr}
+  .template-grid,.ds-grid{grid-template-columns:1fr 1fr}
+  .diff-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr}
+  .testimonial-slide{flex-direction:column;gap:14px;text-align:center}
+  .ttest-meta{text-align:center}
+  .ttest-divider{display:none}
+  .team-section{padding:36px 16px 32px}
+  footer{padding:16px}
 }
 </style>
 </head>
 <body>
-
+ 
+<!-- NAV -->
 <nav>
-  <a href="#" class="logo">argovaa<span class="logo-dot">.</span></a>
+  <a href="index.html" class="logo">ARG<em>O</em>VAA</a>
   <ul class="nav-links">
-    <li><a href="#solution">Platform</a></li>
-    <li><a href="#usecases">Use cases</a></li>
-    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="index.html" class="act">Builder</a></li>
     <li><a href="benchmarks.html">Benchmarks</a></li>
+    <li><a href="golden-signals.html">SRE signals</a></li>
     <li><a href="tco.html">TCO</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="tokenomics.html">Tokenomics</a></li>
+    <li><a href="analyser.html">GC analyser</a></li>
+    <li><a href="perftest.html">Benchmarking</a></li>
   </ul>
   <div class="nav-right">
-    <div class="nav-live"><span class="live-dot"></span>360+ models live</div>
-    <a href="login.html" class="btn-signin">Sign in</a>
-    <a href="login.html" class="btn-cta">Start free &rarr;</a>
+    <span id="nav-user" style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(13,20,32,0.45)"></span>
+    <a href="login.html" class="btn-so">Sign in</a>
   </div>
 </nav>
-
-<section class="hero">
-  <div class="hero-grad"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-topbar"></div>
+ 
+<!-- HERO STRIP -->
+<div class="hero-strip">
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>AI Infrastructure Intelligence</div>
-      <h1>Run AI agents with full visibility into <em>cost, performance,</em> and reliability.</h1>
-      <p class="hero-sub">Benchmark models, track real cost per request, and monitor SRE signals &mdash; in one platform built for every team running AI in production.</p>
-      <div class="hero-btns">
-        <a href="login.html" class="btn-primary">Start free &rarr;</a>
-        <a href="agent-builder.html" class="btn-outline">Build an agent &rarr;</a>
-      </div>
-      <div class="hero-metrics">
-        <div class="hm"><div class="hm-val green">99.94%</div><div class="hm-lbl">Availability</div></div>
-        <div class="hm"><div class="hm-val blue">360+</div><div class="hm-lbl">Models</div></div>
-        <div class="hm"><div class="hm-val">5min</div><div class="hm-lbl">To deploy</div></div>
+      <div class="hero-eyebrow">AI Infrastructure Intelligence Platform</div>
+      <div class="hero-headline">RUN AI AGENTS WITH FULL<br>VISIBILITY INTO <span class="acc">COST, PERFORMANCE</span><br>&amp; RELIABILITY</div>
+      <div class="hero-sub">Build production-ready agents in minutes. Connect your data, pick a model, test live — then deploy with observability baked in from day one.</div>
+      <div class="hero-ctas">
+        <a href="#wizard" class="btn-hero-primary">Build an agent →</a>
+        <a href="benchmarks.html" class="btn-hero-ghost">View benchmarks</a>
       </div>
     </div>
-    <div class="hero-dashboard">
-      <div class="hd-bar">
-        <div class="hd-dot" style="background:#ef4444"></div>
-        <div class="hd-dot" style="background:#f59e0b"></div>
-        <div class="hd-dot" style="background:#10b981"></div>
-        <span class="hd-title">Argovaa &mdash; Production dashboard</span>
-        <span class="hd-live">&#9679; LIVE</span>
+    <div class="hero-metrics">
+      <div class="hm">
+        <div class="hm-val">99.94%</div>
+        <div class="hm-label">Availability</div>
       </div>
-      <div class="hd-body">
-        <div class="hd-cards">
-          <div class="hd-card"><div class="hd-card-lbl">Cost / request</div><div class="hd-card-val b">$0.00087</div><div class="hd-card-trend">&darr; 18% vs last week</div></div>
-          <div class="hd-card"><div class="hd-card-lbl">P95 Latency</div><div class="hd-card-val a">284ms</div><div class="hd-card-trend">Within SLA</div></div>
-          <div class="hd-card"><div class="hd-card-lbl">Throughput</div><div class="hd-card-val g">2,840/min</div><div class="hd-card-trend">&uarr; 12% vs avg</div></div>
-          <div class="hd-card"><div class="hd-card-lbl">Error rate</div><div class="hd-card-val g">0.06%</div><div class="hd-card-trend">Below threshold</div></div>
-        </div>
-        <div class="hd-chart-label">Token cost &middot; 7 days</div>
-        <div class="hd-chart"><canvas id="hero-chart"></canvas></div>
-        <div class="hd-row">
-          <div class="hd-mini"><div class="hd-mini-lbl">Top model cost</div><div class="hd-mini-val">GPT-4o &middot; $5/1M</div></div>
-          <div class="hd-mini"><div class="hd-mini-lbl">Monthly infra</div><div class="hd-mini-val">$2,109 / mo</div></div>
-        </div>
+      <div class="hm">
+        <div class="hm-val">360+</div>
+        <div class="hm-label">Models tracked</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<div class="trust-bar">
-  <div class="trust-inner">
-    <span class="trust-label">Works with</span>
-    <div class="trust-items">
-      <span class="trust-item"><span class="trust-item-dot"></span>OpenAI</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>Anthropic</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>Azure OAI</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>AWS</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>Google Cloud</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>Llama / OSS</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>Datadog</span>
-      <span class="trust-item"><span class="trust-item-dot"></span>PagerDuty</span>
-    </div>
-    <div class="trust-metrics">
-      <div class="trust-metric"><div class="trust-metric-val">360+</div><div class="trust-metric-lbl">Models tracked</div></div>
-      <div class="trust-metric"><div class="trust-metric-val">5</div><div class="trust-metric-lbl">GPU platforms</div></div>
-      <div class="trust-metric"><div class="trust-metric-val">MLPerf v4.1</div><div class="trust-metric-lbl">Benchmark standard</div></div>
+      <div class="hm">
+        <div class="hm-val">5 min</div>
+        <div class="hm-label">To deploy</div>
+      </div>
     </div>
   </div>
 </div>
-
-<section class="problem-section" id="problem">
-  <div class="section-inner">
-    <div class="section-tag">The problem</div>
-    <h2 class="section-title">AI systems are powerful &mdash;<br>but unpredictable and expensive.</h2>
-    <p class="section-sub">Most teams running AI in production can&rsquo;t answer three basic questions: What does each request actually cost? Why is latency spiking? Where is the failure coming from?</p>
-    <div class="pain-grid">
-      <div class="pain-card">
-        <div class="pain-icon red">&#128184;</div>
-        <div class="pain-title">No real cost visibility</div>
-        <div class="pain-desc">You know the token price, but not the true cost per request &mdash; which includes infrastructure, retries, tools, and service overhead. You&rsquo;re flying blind on AI spend.</div>
+ 
+<!-- WIZARD SHELL — dominant element -->
+<div id="wizard">
+ 
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Build your agent</div>
+    <div class="wizard-steps">
+      <div class="wstep active" id="s1" onclick="goStep(1)">
+        <div class="wstep-num">1</div>
+        <div class="wstep-info"><div class="wstep-name">Domain</div><div class="wstep-sub">Choose your industry</div></div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon amber">&#9889;</div>
-        <div class="pain-title">Performance is inconsistent</div>
-        <div class="pain-desc">Latency spikes, rate limits, and model failures break user experience at the worst moment. Without AI-specific signals, you can&rsquo;t detect or prevent them in time.</div>
+      <div class="wstep" id="s2" onclick="goStep(2)">
+        <div class="wstep-num">2</div>
+        <div class="wstep-info"><div class="wstep-name">Template</div><div class="wstep-sub">Pick a use case</div></div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon purple">&#128296;</div>
-        <div class="pain-title">Fragmented tooling</div>
-        <div class="pain-desc">Monitoring AI requires stitching together Datadog, CloudWatch, provider dashboards, and spreadsheets. There&rsquo;s no single source of truth for AI system health.</div>
+      <div class="wstep" id="s3" onclick="goStep(3)">
+        <div class="wstep-num">3</div>
+        <div class="wstep-info"><div class="wstep-name">Data sources</div><div class="wstep-sub">Connect your data</div></div>
       </div>
+      <div class="wstep" id="s4" onclick="goStep(4)">
+        <div class="wstep-num">4</div>
+        <div class="wstep-info"><div class="wstep-name">Model & config</div><div class="wstep-sub">Choose LLM + settings</div></div>
+      </div>
+      <div class="wstep" id="s5" onclick="goStep(5)">
+        <div class="wstep-num">5</div>
+        <div class="wstep-info"><div class="wstep-name">Test agent</div><div class="wstep-sub">Try it live</div></div>
+      </div>
+      <div class="wstep" id="s6" onclick="goStep(6)">
+        <div class="wstep-num">6</div>
+        <div class="wstep-info"><div class="wstep-name">Deploy</div><div class="wstep-sub">Get your endpoint</div></div>
+      </div>
+    </div>
+    <div class="agent-summary">
+      <div class="as-title">Agent config</div>
+      <div class="as-row"><span class="as-label">Domain</span><span class="as-val" id="sum-domain">—</span></div>
+      <div class="as-row"><span class="as-label">Template</span><span class="as-val" id="sum-template">—</span></div>
+      <div class="as-row"><span class="as-label">Model</span><span class="as-val" id="sum-model">—</span></div>
+      <div class="as-row"><span class="as-label">Data sources</span><span class="as-val" id="sum-datasources">0 connected</span></div>
+      <div class="as-row"><span class="as-label">Status</span><span class="as-val" id="sum-status" style="color:#d97706">Draft</span></div>
     </div>
   </div>
-</section>
-
-<section class="solution-section" id="solution">
-  <div class="section-inner">
-    <div class="section-tag">The solution</div>
-    <h2 class="section-title">Argovaa is the intelligence layer<br>for AI systems.</h2>
-    <p class="section-sub">One platform to build, measure, and operate AI workloads at scale &mdash; from agent deployment to production cost tracking and reliability monitoring.</p>
-    <div class="pillars">
-      <div class="pillar" onclick="window.location.href='agent-builder.html'">
-        <div class="pillar-num">01</div>
-        <div class="pillar-icon">&#127959;</div>
-        <div class="pillar-name">Build</div>
-        <div class="pillar-desc">Design and deploy AI agents across any domain in minutes. Templates, data connectors, model selection, and governance &mdash; all in one wizard.</div>
-        <div class="pillar-features">
-          <div class="pf">Domain-specific agent templates</div>
-          <div class="pf">20+ data source connectors</div>
-          <div class="pf">Multi-model routing</div>
-          <div class="pf">Guardrails and governance</div>
-        </div>
-        <a href="agent-builder.html" class="pillar-link">Build an agent &rarr;</a>
+ 
+  <!-- MAIN WIZARD -->
+  <div class="wizard-main">
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:16.6%"></div></div>
+ 
+    <!-- ── STEP 1: DOMAIN ── -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-header">
+        <div class="step-tag">Step 1 of 6</div>
+        <div class="step-title">CHOOSE YOUR <span class="acc">DOMAIN</span></div>
+        <div class="step-desc">Select the industry vertical your agent will operate in. This loads the right templates, guardrails, and compliance defaults for your use case.</div>
       </div>
-      <div class="pillar" onclick="window.location.href='benchmarks.html'">
-        <div class="pillar-num">02</div>
-        <div class="pillar-icon">&#128202;</div>
-        <div class="pillar-name">Measure</div>
-        <div class="pillar-desc">Benchmark 360+ LLMs on real GPU hardware. Track true cost per request &mdash; tokens, infrastructure, retries, and overhead all combined into one number.</div>
-        <div class="pillar-features">
-          <div class="pf">360+ model leaderboard</div>
-          <div class="pf">True cost per request (TCO)</div>
-          <div class="pf">AWS CUR integration</div>
-          <div class="pf">Context window degradation curves</div>
+      <div class="domain-grid">
+        <div class="dcard" onclick="selectDomain(this,'Finance','💼')">
+          <div class="dcard-icon">💼</div>
+          <div class="dcard-name">Finance</div>
+          <div class="dcard-desc">Portfolio analysis, revenue variance, invoice triage, fraud detection, financial Q&amp;A</div>
         </div>
-        <a href="benchmarks.html" class="pillar-link">View benchmarks &rarr;</a>
+        <div class="dcard" onclick="selectDomain(this,'Healthcare','🏥')">
+          <div class="dcard-icon">🏥</div>
+          <div class="dcard-name">Healthcare</div>
+          <div class="dcard-desc">Patient intake, claims review, appointment triage, clinical summarisation</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'Retail','🛒')">
+          <div class="dcard-icon">🛒</div>
+          <div class="dcard-name">Retail</div>
+          <div class="dcard-desc">Personal shopping, inventory forecast, returns assistant, promotions optimizer</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'Technology','⚙')">
+          <div class="dcard-icon">⚙</div>
+          <div class="dcard-name">Technology</div>
+          <div class="dcard-desc">SRE incident copilot, code support, release risk analyst, customer success agent</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'HR & People','👥')">
+          <div class="dcard-icon">👥</div>
+          <div class="dcard-name">HR &amp; People</div>
+          <div class="dcard-desc">HR assistant, onboarding guide, policy Q&amp;A, benefits advisor</div>
+        </div>
+        <div class="dcard" onclick="selectDomain(this,'General Business','◈')">
+          <div class="dcard-icon">◈</div>
+          <div class="dcard-name">General Business</div>
+          <div class="dcard-desc">Sales enablement, knowledge base, contract review, document Q&amp;A</div>
+        </div>
       </div>
-      <div class="pillar" onclick="window.location.href='golden-signals.html'">
-        <div class="pillar-num">03</div>
-        <div class="pillar-icon">&#128301;</div>
-        <div class="pillar-name">Operate</div>
-        <div class="pillar-desc">Monitor AI-specific golden signals in real time. Throughput, availability, latency P95, and error rate &mdash; across every agent and every model call.</div>
-        <div class="pillar-features">
-          <div class="pf">4 golden signals dashboard</div>
-          <div class="pf">Real-time alerting</div>
-          <div class="pf">SLA tracking</div>
-          <div class="pf">Telemetry snippets (JS / Python)</div>
-        </div>
-        <a href="golden-signals.html" class="pillar-link">Monitor signals &rarr;</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="visual-section" id="dashboard">
-  <div class="section-inner">
-    <div class="visual-header">
-      <div>
-        <div class="section-tag">Real-time visibility</div>
-        <h2 class="section-title">See everything.<br>In real time.</h2>
-        <p class="section-sub">From token usage to infrastructure cost, Argovaa gives you a unified view of every layer of your AI stack &mdash; updated continuously, no manual setup.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="background:var(--bg);border:1px solid var(--bd);padding:16px 18px;border-left:3px solid var(--green)">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;margin-bottom:5px">Cost saved this month</div>
-          <div style="font-size:26px;font-weight:700;color:var(--green);letter-spacing:-0.5px">$4,280</div>
-          <div style="font-size:12px;color:var(--mid);margin-top:3px">By routing 68% of requests to Claude 3 Haiku</div>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--bd);padding:16px 18px;border-left:3px solid var(--accent)">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);text-transform:uppercase;margin-bottom:5px">Latency improvement</div>
-          <div style="font-size:26px;font-weight:700;color:var(--accent);letter-spacing:-0.5px">&minus;34%</div>
-          <div style="font-size:12px;color:var(--mid);margin-top:3px">After switching to H100 SXM on provisioned tier</div>
-        </div>
+      <div class="wizard-nav">
+        <div></div>
+        <button class="btn-next" id="next-1" onclick="goStep(2)" disabled>Next: Choose template →</button>
       </div>
     </div>
-    <div class="big-dashboard">
-      <div class="bd-nav">
-        <div class="bd-tab on">Golden signals</div>
-        <div class="bd-tab">Cost per request</div>
-        <div class="bd-tab">Model comparison</div>
-        <div class="bd-tab">Token analytics</div>
+ 
+    <!-- ── STEP 2: TEMPLATE ── -->
+    <div class="step-panel" id="step-2">
+      <div class="step-header">
+        <div class="step-tag">Step 2 of 6</div>
+        <div class="step-title">SELECT A <span class="acc">TEMPLATE</span></div>
+        <div class="step-desc">Pick a pre-built agent template or start from scratch. Templates include system prompts, suggested data sources, and guardrails.</div>
       </div>
-      <div class="bd-content">
-        <div class="bd-stat"><div class="bd-stat-lbl">Throughput</div><div class="bd-stat-val" style="color:var(--accent)">2,840</div><div class="bd-stat-trend trend-up">req/min &middot; &uarr;12%</div></div>
-        <div class="bd-stat"><div class="bd-stat-lbl">Availability</div><div class="bd-stat-val" style="color:var(--green)">99.94%</div><div class="bd-stat-trend trend-up">Above SLA</div></div>
-        <div class="bd-stat"><div class="bd-stat-lbl">P95 Latency</div><div class="bd-stat-val" style="color:var(--amber)">284ms</div><div class="bd-stat-trend" style="color:var(--mid)">TTFT: 94ms</div></div>
-        <div class="bd-stat"><div class="bd-stat-lbl">Error rate</div><div class="bd-stat-val" style="color:var(--green)">0.06%</div><div class="bd-stat-trend trend-up">Below threshold</div></div>
-      </div>
-      <div class="bd-charts">
-        <div class="bd-chart-card">
-          <div class="bd-chart-title">Throughput &middot; 24h window</div>
-          <div class="bd-chart-area"><canvas id="main-chart"></canvas></div>
+      <div class="template-grid" id="template-grid"></div>
+      <div style="margin-top:8px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">Or customise your agent</div>
+        <div class="field">
+          <label>Agent name</label>
+          <input type="text" id="agent-name" placeholder="e.g. Cost Analyst, Support Bot, Document QA..." oninput="updateSummary()">
         </div>
-        <div class="bd-chart-card">
-          <div class="bd-chart-title">Cost breakdown &middot; this month</div>
-          <div class="bd-chart-area"><canvas id="cost-chart"></canvas></div>
+        <div class="field">
+          <label>System prompt</label>
+          <textarea id="system-prompt" placeholder="You are a helpful AI agent that...&#10;&#10;Your job is to...&#10;&#10;Always respond with..."></textarea>
+          <div class="field-hint">Defines how your agent behaves. Templates fill this automatically.</div>
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" id="next-2" onclick="goStep(3)" disabled>Next: Connect data →</button>
+      </div>
+    </div>
+ 
+    <!-- ── STEP 3: DATA SOURCES ── -->
+    <div class="step-panel" id="step-3">
+      <div class="step-header">
+        <div class="step-tag">Step 3 of 6</div>
+        <div class="step-title">CONNECT YOUR <span class="acc">DATA</span></div>
+        <div class="step-desc">Point your agent to any data source. It will index your data and know how to query it in context. You can connect multiple sources.</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:10px">Choose data sources to connect</div>
+      <div class="ds-grid">
+        <div class="ds-item" onclick="toggleDS(this,'s3','☁','AWS S3')"><div class="ds-icon">☁</div><div class="ds-name">AWS S3</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'pg','🗄','PostgreSQL')"><div class="ds-icon">🗄</div><div class="ds-name">PostgreSQL</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'mysql','⚡','MySQL')"><div class="ds-icon">⚡</div><div class="ds-name">MySQL</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'mongo','🍃','MongoDB')"><div class="ds-icon">🍃</div><div class="ds-name">MongoDB</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'pdf','📄','PDF / Docs')"><div class="ds-icon">📄</div><div class="ds-name">PDF / Docs</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'sheets','📋','Google Sheets')"><div class="ds-icon">📋</div><div class="ds-name">Google Sheets</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'api','🔗','REST API')"><div class="ds-icon">🔗</div><div class="ds-name">REST API</div></div>
+        <div class="ds-item" onclick="toggleDS(this,'slack','💬','Slack')"><div class="ds-icon">💬</div><div class="ds-name">Slack</div></div>
+      </div>
+      <div class="ds-connections" id="ds-connections">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>
+      </div>
+      <div style="margin-top:20px;background:rgba(5,150,105,0.04);border:1px solid rgba(5,150,105,0.14);padding:12px 14px;font-size:12px;color:var(--mid)">
+        ✓ You can also skip this step and connect data later — your agent will work with general knowledge until data sources are added.
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" onclick="goStep(4)">Next: Model &amp; config →</button>
+      </div>
+    </div>
+ 
+    <!-- ── STEP 4: MODEL & CONFIG ── -->
+    <div class="step-panel" id="step-4">
+      <div class="step-header">
+        <div class="step-tag">Step 4 of 6</div>
+        <div class="step-title">MODEL &amp; <span class="acc">CONFIGURATION</span></div>
+        <div class="step-desc">Choose the LLM your agent will use, set a fallback model, and configure budget and behaviour policies.</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:10px">Primary model</div>
+      <div class="model-grid">
+        <div class="mcard" onclick="selectModel(this,'claude-3-5-sonnet')">
+          <div class="mcard-name">Claude 3.5 Sonnet</div>
+          <span class="mcard-provider mp-anthropic">Anthropic</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$3/$15 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">200K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Reasoning</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'gpt-4o')">
+          <div class="mcard-name">GPT-4o</div>
+          <span class="mcard-provider mp-openai">OpenAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$5/$15 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Multi-modal</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'claude-3-haiku')">
+          <div class="mcard-name">Claude 3 Haiku</div>
+          <span class="mcard-provider mp-anthropic">Anthropic</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.25/$1.25</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">200K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">High volume</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'gpt-4o-mini')">
+          <div class="mcard-name">GPT-4o mini</div>
+          <span class="mcard-provider mp-openai">OpenAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.15/$0.60</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Scale</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'llama-3-70b')">
+          <div class="mcard-name">Llama 3 70B</div>
+          <span class="mcard-provider mp-oss">Open source</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$0.90/$0.90</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Open source</span></div>
+          </div>
+        </div>
+        <div class="mcard" onclick="selectModel(this,'azure-gpt-4')">
+          <div class="mcard-name">Azure GPT-4 Turbo</div>
+          <span class="mcard-provider mp-azure">Azure OAI</span>
+          <div class="mcard-stats">
+            <div class="mcard-stat"><span class="ms-label">Cost</span><span class="ms-val">$10/$30 /1M</span></div>
+            <div class="mcard-stat"><span class="ms-label">Context</span><span class="ms-val">128K tokens</span></div>
+            <div class="mcard-stat"><span class="ms-label">Best for</span><span class="ms-val">Enterprise</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="field-row" style="margin-top:16px">
+        <div class="field">
+          <label>Monthly token budget ($)</label>
+          <input type="number" id="token-budget" value="100" min="0" step="10">
+          <div class="field-hint">Agent pauses if budget is exceeded</div>
+        </div>
+        <div class="field">
+          <label>Max tokens per response</label>
+          <input type="number" id="max-tokens" value="1000" min="100" max="4000" step="100">
+        </div>
+      </div>
+      <div class="field">
+        <label>Guardrails &amp; safety rules</label>
+        <select id="guardrails">
+          <option value="standard">Standard — block harmful content, PII masking</option>
+          <option value="strict">Strict — add HIPAA/finance compliance layer</option>
+          <option value="minimal">Minimal — basic safety only</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Human approval for actions?</label>
+        <select id="human-approval">
+          <option value="no">No — fully autonomous</option>
+          <option value="high-risk">Yes — for high-risk actions only</option>
+          <option value="all">Yes — approve all actions before execution</option>
+        </select>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-next" id="next-4" onclick="goStep(5)" disabled>Next: Test agent →</button>
+      </div>
+    </div>
+ 
+    <!-- ── STEP 5: TEST ── -->
+    <div class="step-panel" id="step-5">
+      <div class="step-header">
+        <div class="step-tag">Step 5 of 6</div>
+        <div class="step-title">TEST YOUR <span class="acc">AGENT</span></div>
+        <div class="step-desc">Try your agent live before deploying. It's running with your system prompt and model configuration — powered by Claude AI.</div>
+      </div>
+      <div class="chat-tester">
+        <div class="ct-head">
+          <span class="ct-title" id="ct-agent-name">Your agent</span>
+          <span class="ct-status">
+            <span class="ct-dot" style="background:#86efac"></span>
+            <span style="color:#86efac;font-size:10px">LIVE · Powered by Claude</span>
+          </span>
+        </div>
+        <div class="ct-msgs" id="ct-msgs">
+          <div class="ct-msg msg-agent">
+            <div class="ct-av">AI</div>
+            <div class="ct-bubble" id="ct-welcome">Hi! I'm your agent. Ask me anything — I'm running with your configured system prompt and will respond based on your settings.</div>
+          </div>
+        </div>
+        <div class="ct-input-row">
+          <input class="ct-input" id="ct-input" type="text" placeholder="Type a message to test your agent..." onkeydown="if(event.key==='Enter')sendTest()">
+          <button class="ct-send" id="ct-send" onclick="sendTest()">Send →</button>
+        </div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--bd);padding:14px 16px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">Suggested test prompts</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="test-prompts"></div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" onclick="goStep(4)">← Back</button>
+        <button class="btn-next" onclick="goStep(6)">Next: Deploy →</button>
+      </div>
+    </div>
+ 
+    <!-- ── STEP 6: DEPLOY ── -->
+    <div class="step-panel" id="step-6">
+      <div class="step-header">
+        <div class="step-tag">Step 6 of 6</div>
+        <div class="step-title">DEPLOY YOUR <span class="acc">AGENT</span></div>
+        <div class="step-desc">Your agent is ready to deploy. Click Deploy to get a live REST endpoint and embed widget.</div>
+      </div>
+      <div id="pre-deploy">
+        <div class="deploy-card">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#0d1420;margin-bottom:16px">DEPLOYMENT SUMMARY</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px" id="deploy-summary"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-deploy" onclick="deployAgent()" id="deploy-btn" style="display:flex;align-items:center;gap:8px">
+              <span id="deploy-spinner" class="spinner" style="display:none"></span>
+              <span id="deploy-text">🚀 Deploy agent</span>
+            </button>
+            <button class="btn-back" onclick="goStep(5)">← Test more</button>
+          </div>
+        </div>
+      </div>
+      <div id="post-deploy" style="display:none">
+        <div class="success-banner">
+          <div class="success-icon">✅</div>
+          <div><div class="success-text">Agent deployed successfully!</div><div style="font-size:12px;color:var(--mid);margin-top:2px">Your agent is live at the endpoint below</div></div>
+        </div>
+        <div class="deploy-card">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:8px">REST API endpoint</div>
+          <div class="deploy-endpoint">
+            <span id="endpoint-url">https://agents.argovaa.com/v1/—</span>
+            <button class="copy-btn" onclick="copyEndpoint()">Copy</button>
+          </div>
+          <div class="code-block">
+            <div class="code-head"><span class="code-lang">cURL — test your deployed agent</span><button class="copy-btn" style="color:var(--accent)" onclick="copyCurl()">Copy</button></div>
+            <div class="code-body"><pre id="curl-code"><span class="fn">curl</span> -X POST <span class="str">"https://agents.argovaa.com/v1/ask"</span> \
+  -H <span class="str">"Authorization: Bearer arg_live_xxxx"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"agent_id":"<span id="agent-id-curl">agent_xxxx</span>","question":"Hello!"}'</span></pre></div>
+          </div>
+          <div class="code-block">
+            <div class="code-head"><span class="code-lang">Embed widget — one line of HTML</span><button class="copy-btn" style="color:var(--accent)" onclick="copyWidget()">Copy</button></div>
+            <div class="code-body"><pre id="widget-code"><span class="kw">&lt;script</span>
+  src=<span class="str">"https://cdn.argovaa.com/widget.js"</span>
+  data-agent=<span class="str">"<span id="agent-id-widget">agent_xxxx</span>"</span>
+  data-theme=<span class="str">"light"</span>
+  data-title=<span class="str">"<span id="agent-name-widget">My agent</span>"</span>
+<span class="kw">&gt;&lt;/script&gt;</span></pre></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a href="golden-signals.html" style="background:var(--accent);color:#fff;padding:10px 20px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Monitor golden signals →</a>
+            <a href="tco.html" style="background:transparent;color:var(--mid);padding:10px 20px;font-size:13px;border:1px solid var(--bd);font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block">Track TCO →</a>
+            <button onclick="resetWizard()" style="background:transparent;color:var(--mid);padding:10px 20px;font-size:13px;border:1px solid var(--bd);font-family:'DM Sans',sans-serif;cursor:pointer">Build another agent</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="diff-section" id="why">
-  <div class="diff-inner">
-    <div>
-      <div class="section-tag">Why Argovaa</div>
-      <h2 class="section-title">Built for AI.<br>Not retrofitted.</h2>
-      <div class="diff-bullets">
-        <div class="diff-bullet">
-          <div class="diff-bullet-icon">&#128176;</div>
-          <div><div class="diff-bullet-title">True cost per request</div><div class="diff-bullet-desc">Not just LLM tokens &mdash; your real cost includes AWS EC2, ECS, networking, retries, and tool calls. Argovaa blends all layers into one number per request.</div></div>
+ 
+  </div><!-- /wizard-main -->
+</div><!-- /#wizard -->
+ 
+<!-- BOTTOM STRIP: trust + differentiators -->
+<div class="bottom-strip">
+  <div class="bottom-inner">
+    <div class="trust-bar">
+      <span class="trust-label">Connects to</span>
+      <div class="trust-logos">
+        <span class="tlogo">OpenAI</span>
+        <span class="tlogo">Anthropic</span>
+        <span class="tlogo">Azure OAI</span>
+        <span class="tlogo">AWS Bedrock</span>
+        <span class="tlogo">Google Cloud</span>
+        <span class="tlogo">Llama</span>
+        <span class="tlogo">Datadog</span>
+        <span class="tlogo">PagerDuty</span>
+      </div>
+    </div>
+    <div class="live-metrics">
+      <div class="lm">
+        <div class="lm-dot"></div>
+        <div>
+          <div class="lm-val">$0.00087</div>
+          <div class="lm-key">Avg cost/req</div>
         </div>
-        <div class="diff-bullet">
-          <div class="diff-bullet-icon">&#128225;</div>
-          <div><div class="diff-bullet-title">AI-native observability</div><div class="diff-bullet-desc">Golden signals designed for AI workloads &mdash; TTFT, token throughput, model error rate. Not generic APM metrics bolted onto an LLM after the fact.</div></div>
+      </div>
+      <div class="lm">
+        <div class="lm-dot"></div>
+        <div>
+          <div class="lm-val">284ms</div>
+          <div class="lm-key">P95 latency</div>
         </div>
-        <div class="diff-bullet">
-          <div class="diff-bullet-icon">&#128300;</div>
-          <div><div class="diff-bullet-title">Independent benchmarking</div><div class="diff-bullet-desc">360+ models benchmarked across 5 GPU platforms using MLPerf v4.1 methodology. See real performance before committing to a model or infrastructure tier.</div></div>
+      </div>
+      <div class="lm">
+        <div class="lm-dot"></div>
+        <div>
+          <div class="lm-val">0.06%</div>
+          <div class="lm-key">Error rate</div>
         </div>
       </div>
     </div>
-    <div>
-      <div class="diff-table">
-        <div class="diff-head">
-          <div class="diff-col-head">Feature</div>
-          <div class="diff-col-head">Traditional tools</div>
-          <div class="diff-col-head hl">Argovaa</div>
-        </div>
-        <div class="diff-row"><div class="diff-cell feat">True cost per request</div><div class="diff-cell"><span class="cross">&mdash;</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> AWS CUR + tokens + overhead</div></div>
-        <div class="diff-row"><div class="diff-cell feat">AI latency (TTFT)</div><div class="diff-cell"><span class="cross">&mdash;</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> Real-time</div></div>
-        <div class="diff-row"><div class="diff-cell feat">Multi-model benchmarking</div><div class="diff-cell"><span class="cross">&mdash;</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> 360+ models</div></div>
-        <div class="diff-row"><div class="diff-cell feat">Unified AI observability</div><div class="diff-cell"><span class="cross">Patched together</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> One platform</div></div>
-        <div class="diff-row"><div class="diff-cell feat">GPU performance data</div><div class="diff-cell"><span class="cross">&mdash;</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> H200, H100, A100, MI300X</div></div>
-        <div class="diff-row"><div class="diff-cell feat">Agent builder included</div><div class="diff-cell"><span class="cross">&mdash;</span></div><div class="diff-cell hl"><span class="check">&#10003;</span> 20+ domain templates</div></div>
+    <div class="diff-grid">
+      <div class="diff-card">
+        <div class="diff-icon">📊</div>
+        <div class="diff-title">Full cost visibility</div>
+        <div class="diff-desc">Track spend per agent, per model, per user — in real time. Set budgets and get alerts before you blow past them.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">⚡</div>
+        <div class="diff-title">Performance intelligence</div>
+        <div class="diff-desc">P50/P95/P99 latency, error rates, and token throughput across every provider — so you always know which model is actually faster.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🛡</div>
+        <div class="diff-title">Reliability by design</div>
+        <div class="diff-desc">Automatic failover, circuit breakers, and SRE golden signals baked into every deployed agent from day one.</div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="usecases-section" id="usecases">
-  <div class="section-inner">
-    <div class="section-tag">Use cases</div>
-    <h2 class="section-title">Built for teams running<br>AI in production.</h2>
-    <p class="section-sub">Whether you&rsquo;re a startup optimising costs or an enterprise managing multi-tenant AI workloads &mdash; Argovaa gives you the visibility to move fast and stay in control.</p>
-    <div class="usecases-grid">
-      <div class="usecase-card">
-        <span class="usecase-tag tag-blue">AI SaaS companies</span>
-        <div class="usecase-title">Scale AI without runaway costs</div>
-        <div class="usecase-desc">You&rsquo;re embedding LLMs into your product. Argovaa shows you exactly what each feature costs per user, per request &mdash; so you can price and scale with confidence.</div>
-        <div class="usecase-points">
-          <div class="usecase-point"><span class="up-dot" style="background:var(--accent)"></span>Reduce LLM cost 30&ndash;50% by routing to cheaper models</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--accent)"></span>Monitor latency P95 per feature and per endpoint</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--accent)"></span>Attribute cost to customers for accurate billing</div>
-        </div>
-      </div>
-      <div class="usecase-card">
-        <span class="usecase-tag tag-green">Enterprise AI teams</span>
-        <div class="usecase-title">Govern AI at scale</div>
-        <div class="usecase-desc">Running AI across multiple business units or tenants? Argovaa gives you unified visibility with per-tenant cost attribution and SLA tracking out of the box.</div>
-        <div class="usecase-points">
-          <div class="usecase-point"><span class="up-dot" style="background:var(--green)"></span>Multi-tenant observability and chargeback</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--green)"></span>SLA monitoring with real-time alerting</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--green)"></span>Compliance-ready infrastructure cost tracking</div>
-        </div>
-      </div>
-      <div class="usecase-card">
-        <span class="usecase-tag tag-purple">Startups</span>
-        <div class="usecase-title">Move fast, stay lean</div>
-        <div class="usecase-desc">Early stage and watching every dollar? Argovaa helps you benchmark models before committing, avoid unexpected AI bills, and build the right observability from day one.</div>
-        <div class="usecase-points">
-          <div class="usecase-point"><span class="up-dot" style="background:var(--purple)"></span>Benchmark models before production commitment</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--purple)"></span>Avoid surprise AI infrastructure bills</div>
-          <div class="usecase-point"><span class="up-dot" style="background:var(--purple)"></span>Deploy agents in 5 minutes without ML expertise</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="roi-section">
-  <div class="roi-inner">
-    <div class="roi-card"><div class="roi-num" style="color:var(--green)">40%</div><div class="roi-label">Reduction in AI spend</div><div class="roi-sub">by optimising model + infra selection</div></div>
-    <div class="roi-card"><div class="roi-num" style="color:var(--accent)">30%</div><div class="roi-label">Latency improvement</div><div class="roi-sub">by switching to optimal GPU tier</div></div>
-    <div class="roi-card"><div class="roi-num" style="color:var(--purple)">5min</div><div class="roi-label">To first deployed agent</div><div class="roi-sub">using domain templates and wizard</div></div>
   </div>
 </div>
-
-<section class="trust-section" id="trust">
-  <div class="trust-section-inner">
-    <div>
-      <div class="section-tag">Trust and reliability</div>
-      <h2 class="section-title">Built for production<br>AI teams.</h2>
-      <p style="font-size:15px;color:var(--mid);line-height:1.75;margin-bottom:28px">Argovaa is designed from the ground up for AI workloads &mdash; not retrofitted from a generic monitoring tool with AI features bolted on.</p>
-      <div class="trust-badges">
-        <div class="trust-badge"><div class="tb-icon">&#127482;&#127480;</div><div><div class="tb-title">Built in San Ramon, CA</div><div class="tb-desc">Designed and operated in California with enterprise-grade infrastructure.</div></div></div>
-        <div class="trust-badge"><div class="tb-icon">&#128274;</div><div><div class="tb-title">Data privacy first</div><div class="tb-desc">Your data stays yours. No training on customer data. SOC 2 aligned.</div></div></div>
-        <div class="trust-badge"><div class="tb-icon">&#9889;</div><div><div class="tb-title">99.9% uptime SLA</div><div class="tb-desc">Enterprise plans include guaranteed uptime with dedicated support.</div></div></div>
-        <div class="trust-badge"><div class="tb-icon">&#128202;</div><div><div class="tb-title">MLPerf v4.1 standard</div><div class="tb-desc">Benchmark data follows industry-standard MLCommons methodology.</div></div></div>
+ 
+<!-- ROLLING TESTIMONIALS -->
+<div style="background:#f8fafc;border-top:1px solid rgba(13,20,32,0.06);border-bottom:1px solid rgba(13,20,32,0.06)">
+  <div class="testimonial-strip">
+    <div class="testimonial-track" id="testimonial-track">
+      <!-- Slide 1 — Auto mechanic -->
+      <div class="testimonial-slide">
+        <div class="ttest-quote">We run a busy shop and I had no idea AI could actually help us. Argovaa built us an agent in under 10 minutes that handles customer intake questions, estimates wait times, and looks up part availability. Our service advisor spends half as much time on the phone now.</div>
+        <div class="ttest-divider"></div>
+        <div class="ttest-meta">
+          <div class="ttest-name">Alan T.</div>
+          <div class="ttest-role">Owner &amp; Head Mechanic</div>
+          <div class="ttest-biz">▸ Dublin Auto Works · Retail customer</div>
+        </div>
+      </div>
+      <!-- Slide 2 — Cosmetics prospective client -->
+      <div class="testimonial-slide">
+        <div class="ttest-quote">I run an aesthetic beauty studio and we were losing leads because no one could answer calls after hours. We trialled the Argovaa intake agent and within the first week it captured 14 consultation requests we would have missed. The ROI case is obvious — we're onboarding properly next month.</div>
+        <div class="ttest-divider"></div>
+        <div class="ttest-meta">
+          <div class="ttest-name">Priya M.</div>
+          <div class="ttest-role">Founder, Aesthetic Clinic</div>
+          <div class="ttest-biz">▸ Lumière Beauty Studio · Prospective client</div>
+        </div>
+      </div>
+      <!-- Slide 3 — duplicate first to loop smoothly -->
+      <div class="testimonial-slide">
+        <div class="ttest-quote">We run a busy shop and I had no idea AI could actually help us. Argovaa built us an agent in under 10 minutes that handles customer intake questions, estimates wait times, and looks up part availability. Our service advisor spends half as much time on the phone now.</div>
+        <div class="ttest-divider"></div>
+        <div class="ttest-meta">
+          <div class="ttest-name">Alan T.</div>
+          <div class="ttest-role">Owner &amp; Head Mechanic</div>
+          <div class="ttest-biz">▸ Dublin Auto Works · Retail customer</div>
+        </div>
       </div>
     </div>
-    <div>
-      <div class="section-tag">Integrations</div>
-      <h3 style="font-size:21px;font-weight:700;letter-spacing:-0.5px;color:var(--white);margin-bottom:8px">Plugs into your stack</h3>
-      <p style="font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:22px">Add one line of code to start sending data to Argovaa. Connects to your existing tools in minutes.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-        <div class="int-row"><span class="int-badge">OpenAI</span><span class="int-badge">Anthropic</span><span class="int-badge">Azure OAI</span><span class="int-badge">Google Gemini</span></div>
-        <div class="int-row"><span class="int-badge">AWS CUR</span><span class="int-badge">CloudWatch</span><span class="int-badge">GCP</span><span class="int-badge">Kubernetes</span></div>
-        <div class="int-row"><span class="int-badge">Datadog</span><span class="int-badge">PagerDuty</span><span class="int-badge">Slack</span><span class="int-badge">New Relic</span></div>
-        <div class="int-row"><span class="int-badge">Python SDK</span><span class="int-badge">Node.js SDK</span><span class="int-badge">REST API</span><span class="int-badge">OpenTelemetry</span></div>
+    <div class="testimonial-dots">
+      <div class="tdot active" id="tdot-0"></div>
+      <div class="tdot" id="tdot-1"></div>
+    </div>
+  </div>
+</div>
+ 
+<!-- TEAM SECTION -->
+<div class="team-section">
+  <div class="team-inner">
+    <div class="section-eyebrow">The team</div>
+    <div class="section-title">BUILT BY PEOPLE WHO KNOW AI INFRASTRUCTURE</div>
+    <div class="team-grid">
+      <!-- Founder 1 -->
+      <div class="team-card">
+        <div class="team-avatar">AS</div>
+        <div class="team-name">Akshaj Seetharaman</div>
+        <span class="team-role-tag tag-founder">Co-Founder &amp; CEO</span>
+        <div class="team-bio">Builder and systems thinker. Akshaj leads product vision and platform architecture at Argovaa — focused on making AI agent infrastructure legible, cost-efficient, and production-ready for teams of any size.</div>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--bd);padding:12px 15px">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">One-line install</div>
-        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">pip install argovaa-sdk</div>
+      <!-- Founder 2 -->
+      <div class="team-card">
+        <div class="team-avatar">AN</div>
+        <div class="team-name">Ananya Seetharaman</div>
+        <span class="team-role-tag tag-founder">Co-Founder &amp; CTO</span>
+        <div class="team-bio">Ananya leads engineering and model research at Argovaa. Her work spans robotics, generative AI, and LLM-driven systems — she brings deep technical rigour to every layer of the platform stack.</div>
+      </div>
+      <!-- Advisor -->
+      <div class="team-card">
+        <div class="team-avatar advisor">SA</div>
+        <div class="team-name">Senior Advisor</div>
+        <span class="team-role-tag tag-advisor">Strategic Advisor</span>
+        <div class="team-bio">Senior technology leader advising Argovaa on enterprise go-to-market strategy, infrastructure scaling, and AI governance. Background spans multiple decades of senior engineering and product leadership at major technology organisations.</div>
       </div>
     </div>
   </div>
-</section>
-
-<section class="pricing-section" id="pricing">
-  <div class="section-inner">
-    <div class="section-tag">Pricing</div>
-    <h2 class="section-title">Simple, transparent pricing.</h2>
-    <p class="section-sub">Start free. Scale when you&rsquo;re ready. No surprise bills &mdash; ironic for a platform that tracks yours.</p>
-    <div class="pricing-grid">
-      <div class="plan">
-        <div class="plan-name">Starter</div>
-        <div class="plan-price">$0</div>
-        <div class="plan-price-sub">Free forever</div>
-        <div class="plan-for">For developers exploring AI benchmarking and cost tracking</div>
-        <div class="plan-features">
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Public benchmark leaderboard</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>3 agents</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Basic golden signals</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Manual AWS cost entry</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>5 data connectors</div>
-        </div>
-        <a href="login.html" class="plan-btn">Get started free</a>
-      </div>
-      <div class="plan featured">
-        <div class="plan-pop">MOST POPULAR</div>
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">$199</div>
-        <div class="plan-price-sub">per month</div>
-        <div class="plan-for">For growing teams running AI in production</div>
-        <div class="plan-features">
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Everything in Starter</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Full 360+ model leaderboard</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>True TCO dashboard (AWS CUR)</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Unlimited agents</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>All 20+ data connectors</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Full SRE golden signals</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Slack + PagerDuty alerts</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>90-day data retention</div>
-        </div>
-        <a href="login.html" class="plan-btn">Start 14-day trial</a>
-        <div class="plan-roi">&rarr; Avg customer saves $4K/mo on AI costs</div>
-      </div>
-      <div class="plan">
-        <div class="plan-name">Enterprise</div>
-        <div class="plan-price">Custom</div>
-        <div class="plan-price-sub">Contact for pricing</div>
-        <div class="plan-for">For enterprises and white-label resellers</div>
-        <div class="plan-features">
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Everything in Pro</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Multi-tenant observability</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>White-label for resale</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Custom integrations</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>99.9% uptime SLA</div>
-          <div class="plan-feature"><span class="pf-check">&#10003;</span>Dedicated Slack support</div>
-        </div>
-        <a href="mailto:support@argovaa.com" class="plan-btn">Talk to us</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="final-cta" id="contact">
-  <div class="final-cta-grad"></div>
-  <div class="final-cta-inner">
-    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Get started today</div>
-    <h2>Start building reliable<br>AI systems today.</h2>
-    <p>Join engineers who use Argovaa to benchmark models, track true AI cost, and monitor production agents &mdash; before the bill arrives.</p>
-    <div class="final-cta-btns">
-      <a href="login.html" class="btn-primary">Start free &rarr;</a>
-      <a href="mailto:support@argovaa.com" class="btn-outline">Book a demo</a>
-    </div>
-    <div class="cta-note">No credit card required &middot; Free tier available &middot; Setup in 5 minutes</div>
-  </div>
-</section>
-
+</div>
+ 
 <footer>
-  <div class="footer-top">
-    <div>
-      <a href="#" class="footer-logo">argovaa<span style="color:var(--accent)">.</span></a>
-      <p class="footer-desc">The intelligence layer for AI systems. Build, benchmark, and operate AI agents with full visibility into cost, performance, and reliability.</p>
-      <div class="footer-contact">Email: <a href="mailto:support@argovaa.com">support@argovaa.com</a></div>
-      <div class="footer-contact" style="margin-top:4px">San Ramon, California</div>
-    </div>
-    <div>
-      <div class="footer-col-title">Platform</div>
-      <div class="footer-links">
-        <a href="agent-builder.html">Agent builder</a>
-        <a href="benchmarks.html">Benchmark studio</a>
-        <a href="golden-signals.html">SRE signals</a>
-        <a href="tco.html">TCO dashboard</a>
-        <a href="tokenomics.html">Tokenomics</a>
-      </div>
-    </div>
-    <div>
-      <div class="footer-col-title">Resources</div>
-      <div class="footer-links">
-        <a href="analyser.html">GC analyser</a>
-        <a href="perftest.html">Benchmark tools</a>
-        <a href="login.html">Sign in</a>
-      </div>
-    </div>
-    <div>
-      <div class="footer-col-title">Company</div>
-      <div class="footer-links">
-        <a href="#contact">Contact us</a>
-        <a href="mailto:support@argovaa.com">Support</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#trust">Security</a>
-      </div>
-    </div>
+  <a href="index.html" class="flogo">ARG<em>O</em>VAA</a>
+  <div class="flinks">
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="golden-signals.html">SRE signals</a>
+    <a href="tco.html">TCO</a>
+    <a href="tokenomics.html">Tokenomics</a>
+    <a href="analyser.html">GC analyser</a>
   </div>
-  <div class="footer-bottom">
-    <div class="footer-copy">&copy; 2025 Argovaa, Inc. &middot; San Ramon, CA &middot; Built for AI teams</div>
-    <div class="footer-badges">
-      <span class="footer-badge">MLPerf v4.1</span>
-      <span class="footer-badge">SOC 2 aligned</span>
-      <span class="footer-badge">99.9% SLA</span>
-    </div>
-  </div>
+  <div class="fcopy">© 2025 ARGOVAA.COM · seeth.gudetee@gmail.com</div>
 </footer>
-
-<div class="chat-widget">
-  <div class="chat-window" id="chat-win">
-    <div class="chat-head">
-      <div>
-        <div class="chat-head-name">Argovaa assistant</div>
-        <div class="chat-head-status"><span class="live-dot"></span>Online</div>
-      </div>
-      <button class="chat-close-btn" onclick="toggleChat()">&#10005;</button>
-    </div>
-    <div class="chat-msgs" id="chat-msgs">
-      <div class="cmsg bot">Hi! Ask me about benchmarks, pricing, TCO, or how to get started.</div>
-    </div>
-    <div class="chat-inp-row">
-      <input class="chat-inp" id="chat-inp" type="text" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendChat()">
-      <button class="chat-send-btn" onclick="sendChat()">&rarr;</button>
-    </div>
-  </div>
-  <button class="chat-btn" onclick="toggleChat()">&#128172;</button>
-</div>
-
+ 
 <script>
-const hCtx=document.getElementById('hero-chart').getContext('2d');
-new Chart(hCtx,{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{data:[0.00091,0.00088,0.00095,0.00086,0.00082,0.00087,0.00087],borderColor:'#3b6fff',backgroundColor:'rgba(59,111,255,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#3b6fff',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892a4',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#8892a4',font:{size:9},callback:v=>'$'+v.toFixed(5)},grid:{color:'rgba(255,255,255,0.04)'},beginAtZero:false}}}});
-
-const hours=Array.from({length:24},(_,i)=>i+':00');
-new Chart(document.getElementById('main-chart'),{type:'line',data:{labels:hours,datasets:[{data:hours.map(()=>Math.round(2200+Math.random()*1000)),borderColor:'#3b6fff',backgroundColor:'rgba(59,111,255,0.06)',borderWidth:2,pointRadius:0,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892a4',font:{size:9},maxRotation:0,maxTicksLimit:6},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#8892a4',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'},beginAtZero:false}}}});
-
-new Chart(document.getElementById('cost-chart'),{type:'doughnut',data:{labels:['LLM tokens','AWS infra','Overhead'],datasets:[{data:[55,36,9],backgroundColor:['#3b6fff','#8b5cf6','#10b981'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#8892a4',font:{size:10},boxWidth:10,padding:10}}}}});
-
-function toggleChat(){document.getElementById('chat-win').classList.toggle('open')}
-const KB={pricing:'Starter is free. Pro is $199/mo with full benchmark access, TCO dashboard, and golden signals. Enterprise is custom pricing — email support@argovaa.com.',bench:'We track 360+ AI models across 5 GPU platforms (H200, H100, A100, MI300X, RTX 4090) using MLPerf v4.1. See the leaderboard at benchmarks.html.',agent:'Build AI agents for finance, healthcare, retail, tech, HR in 5 minutes. No ML expertise needed. Try agent-builder.html.',tco:'Our TCO dashboard blends AWS CUR with LLM token spend to show your true cost per AI request. Try tco.html.',signal:'We monitor throughput, availability, latency P95, and error rate in real time. See golden-signals.html.',start:'Click Start free in the nav. No credit card needed. You can benchmark models and build agents immediately.',def:'Happy to help! Ask about pricing, benchmarks, the agent builder, TCO, or SRE signals.'};
-function sendChat(){
-  const inp=document.getElementById('chat-inp'),msg=inp.value.trim();if(!msg)return;
-  const m=document.getElementById('chat-msgs');
-  const u=document.createElement('div');u.className='cmsg user';u.textContent=msg;m.appendChild(u);
-  inp.value='';m.scrollTop=m.scrollHeight;
-  setTimeout(()=>{
-    const ml=msg.toLowerCase();
-    let r=KB.def;
-    if(ml.includes('pric'))r=KB.pricing;
-    else if(ml.includes('bench')||ml.includes('model')||ml.includes('gpu'))r=KB.bench;
-    else if(ml.includes('agent')||ml.includes('build'))r=KB.agent;
-    else if(ml.includes('tco')||ml.includes('cost')||ml.includes('infra'))r=KB.tco;
-    else if(ml.includes('signal')||ml.includes('latency')||ml.includes('monitor'))r=KB.signal;
-    else if(ml.includes('start')||ml.includes('how')||ml.includes('begin'))r=KB.start;
-    const b=document.createElement('div');b.className='cmsg bot';b.textContent=r;m.appendChild(b);m.scrollTop=m.scrollHeight;
-  },500);
+// ── State ─────────────────────────────────────────────────────────────────────
+const state = {
+  step: 1,
+  domain: '',
+  domainIcon: '',
+  template: '',
+  templatePrompt: '',
+  agentName: '',
+  systemPrompt: '',
+  model: '',
+  dataSources: [],
+  agentId: '',
+};
+ 
+// ── Templates per domain ──────────────────────────────────────────────────────
+const TEMPLATES = {
+  'Finance': [
+    {name:'Portfolio Assistant',desc:'Answers questions about portfolio performance, allocation, and risk based on your data.',prompt:'You are a financial portfolio assistant. Analyse portfolio data, explain performance metrics, and provide clear investment summaries. Always cite data sources. Never provide investment advice or recommendations — only analysis.',tags:['CSV data','Bloomberg','Postgres']},
+    {name:'Revenue Variance Analyst',desc:'Explains revenue variances vs plan, identifies drivers, and summarises findings.',prompt:'You are a revenue analytics agent. When asked about revenue variances, query the connected data, identify the top 3-5 drivers, and explain them clearly with numbers.',tags:['Snowflake','Salesforce','ERP']},
+    {name:'Invoice Triage Agent',desc:'Reviews and categorises incoming invoices, flags anomalies, and suggests approval routing.',prompt:'You are an invoice processing agent. Review invoice data, flag duplicates or anomalies, and suggest approval workflows based on amount thresholds and vendor history.',tags:['ERP','PostgreSQL','Email']},
+    {name:'Fraud Analyst',desc:'Scans transaction data for unusual patterns and flags potential fraud cases.',prompt:'You are a fraud detection agent. Analyse transactions for anomalies, unusual patterns, or policy violations. Flag suspicious items with reasoning and confidence score.',tags:['Postgres','S3 logs','Real-time stream']},
+  ],
+  'Healthcare': [
+    {name:'Patient Intake Assistant',desc:'Collects patient information, checks eligibility, and prepares intake summaries for clinicians.',prompt:'You are a patient intake assistant. Collect and validate patient information, check insurance eligibility, and create structured intake summaries. Always protect PHI. Never provide medical diagnoses.',tags:['EHR','CRM','Forms']},
+    {name:'Claims Review Agent',desc:'Reviews insurance claims for completeness, flags missing info, and tracks status.',prompt:'You are a healthcare claims agent. Review claims for completeness and accuracy, identify missing documentation, and summarise claim status. Flag anything requiring clinical review.',tags:['Claims system','PostgreSQL','S3']},
+    {name:'Appointment Triage',desc:'Prioritises appointment requests and routes urgent cases appropriately.',prompt:'You are an appointment triage agent. Evaluate appointment requests, assess urgency based on symptoms described, and recommend scheduling priority. Always escalate potential emergencies immediately.',tags:['EHR','Scheduler','SMS']},
+    {name:'Clinical Summarizer',desc:'Generates concise summaries from clinical notes and records for handoffs.',prompt:'You are a clinical documentation agent. Summarise clinical notes clearly and accurately for care team handoffs. Never infer diagnoses not explicitly stated in records.',tags:['EHR','HL7','FHIR']},
+  ],
+  'Retail': [
+    {name:'Personal Shopping Agent',desc:'Recommends products based on customer preferences, history, and inventory.',prompt:'You are a personal shopping assistant. Use customer purchase history and preferences to make relevant product recommendations. Be conversational, helpful, and never pushy.',tags:['Product catalog','Order history','CRM']},
+    {name:'Inventory Forecast',desc:'Analyses sales velocity and recommends reorder quantities and timing.',prompt:'You are an inventory forecasting agent. Analyse sales velocity, seasonal patterns, and lead times to recommend reorder points and quantities. Flag stockout risks proactively.',tags:['ERP','POS system','S3']},
+    {name:'Returns Assistant',desc:'Handles returns requests, checks eligibility, and initiates processes.',prompt:'You are a returns processing agent. Check return eligibility based on purchase date and policy, guide customers through the process, and initiate approved returns automatically.',tags:['Order system','Policy docs','CRM']},
+    {name:'Promotion Optimizer',desc:'Analyses promotion performance and recommends targeting and offer improvements.',prompt:'You are a promotions analytics agent. Analyse campaign performance data, identify what offers drove the best conversion and margin, and suggest optimisations for future campaigns.',tags:['Analytics','Pricing DB','Customer segments']},
+  ],
+  'Technology': [
+    {name:'SRE Incident Copilot',desc:'Investigates incidents using logs and metrics to suggest root cause and next steps.',prompt:'You are an SRE incident investigation agent. When an incident is reported, query the connected log and metrics data, identify anomalies in the timeframe, suggest likely root causes, and recommend immediate mitigation steps. Be concise and technical.',tags:['CloudWatch','Datadog','K8s logs']},
+    {name:'Code Support Agent',desc:'Answers questions about the codebase, explains patterns, and helps debug issues.',prompt:'You are a code support agent connected to the engineering knowledge base. Answer questions about code, explain architectural decisions, suggest debugging approaches, and link to relevant documentation.',tags:['GitHub','Confluence','Jira']},
+    {name:'Release Risk Analyst',desc:'Evaluates deployment plans and flags risk areas before releases.',prompt:'You are a release risk analysis agent. Review deployment plans, recent changes, and service dependencies to identify risks. Flag high-risk areas and suggest mitigation steps or rollback triggers.',tags:['CI/CD','GitHub','Runbooks']},
+    {name:'Customer Success Agent',desc:'Tracks customer health signals and recommends proactive interventions.',prompt:'You are a customer success agent. Monitor usage data, support tickets, and NPS signals to identify at-risk customers. Recommend specific outreach actions and escalation paths.',tags:['Salesforce','Product analytics','Support']},
+  ],
+  'HR & People': [
+    {name:'HR Assistant',desc:'Answers employee questions about policies, benefits, and processes.',prompt:'You are an HR assistant. Answer employee questions accurately using connected HR policy documents and benefit guides. Be empathetic, clear, and always recommend speaking with HR directly for sensitive personal matters.',tags:['Policy docs','HRIS','Benefits portal']},
+    {name:'Onboarding Guide',desc:'Guides new employees through onboarding tasks and answers first-week questions.',prompt:'You are a new employee onboarding assistant. Guide new hires through setup tasks, answer questions about company policies and culture, and help them find the right people and resources.',tags:['HRIS','Docs','Slack']},
+    {name:'Policy Q&A Agent',desc:'Answers questions about company policies from connected HR documents.',prompt:'You are an HR policy agent. Answer questions about company policies by referencing the connected policy documents. Always cite the specific policy and section. Never speculate about policies.',tags:['Policy PDF','SharePoint','Confluence']},
+  ],
+  'General Business': [
+    {name:'Knowledge Base Agent',desc:'Answers questions from your connected knowledge base or document library.',prompt:'You are a knowledge base assistant. Answer questions using the connected documents and knowledge base. Always cite your source. If the answer is not in the knowledge base, say so clearly.',tags:['Confluence','S3 docs','Notion']},
+    {name:'Sales Enablement Agent',desc:'Helps sales reps with competitive positioning, objection handling, and product info.',prompt:'You are a sales enablement agent. Help sales representatives with accurate product information, competitive analysis, objection handling guides, and proposal templates from the connected sales knowledge base.',tags:['CRM','Playbooks','Competitive intel']},
+    {name:'Document Q&A',desc:'Reads and answers questions across large document libraries and PDFs.',prompt:'You are a document analysis agent. Read and answer questions across the connected document library. Quote relevant sections, cite source documents, and summarise complex topics clearly.',tags:['PDF library','S3','SharePoint']},
+    {name:'Contract Review',desc:'Reviews contracts for key terms, risks, and missing clauses.',prompt:'You are a contract review agent. Review contracts for key terms, unusual clauses, missing standard provisions, and potential risks. Provide a structured summary with risk ratings. Always recommend legal review before signing.',tags:['PDF uploads','Contract DB','Legal docs']},
+  ],
+};
+ 
+const TEST_PROMPTS = {
+  'Finance':['What was our revenue last quarter?','Show me the top 5 variances vs budget','Any unusual transactions this week?'],
+  'Healthcare':['Summarise the last 3 patient intake forms','Are there any pending claims over 30 days?','What appointments are scheduled for tomorrow?'],
+  'Retail':['What products should I reorder this week?','Show me our best-performing promotions last month','Which customers are most likely to churn?'],
+  'Technology':['We have an incident on the payments service — what do the logs show?','What changed in the last deployment?','Which customers have high support ticket volume?'],
+  'HR & People':['What is our remote work policy?','How many PTO days do I have?','Walk me through the onboarding checklist'],
+  'General Business':['Summarise our Q3 strategy document','What are our top 3 competitive differentiators?','Find the latest version of the product roadmap'],
+};
+ 
+// ── Navigation ────────────────────────────────────────────────────────────────
+function goStep(n) {
+  if(n > state.step) {
+    if(state.step === 1 && !state.domain) return;
+    if(state.step === 2 && !document.getElementById('agent-name').value.trim()) return;
+    if(state.step === 4 && !state.model) return;
+  }
+  state.step = n;
+  document.querySelectorAll('.wstep').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if(i+1 === n) s.classList.add('active');
+    if(i+1 < n)  s.classList.add('done');
+  });
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('progress').style.width = (n/6*100)+'%';
+  if(n === 2) renderTemplates();
+  if(n === 5) setupTester();
+  if(n === 6) renderDeploySummary();
+  document.getElementById('wizard').scrollIntoView({behavior:'smooth',block:'start'});
 }
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});
-});
+ 
+// ── Step 1: Domain ────────────────────────────────────────────────────────────
+function selectDomain(el, name, icon) {
+  document.querySelectorAll('.dcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.domain = name;
+  state.domainIcon = icon;
+  document.getElementById('sum-domain').textContent = name;
+  document.getElementById('next-1').disabled = false;
+}
+ 
+// ── Step 2: Templates ─────────────────────────────────────────────────────────
+function renderTemplates() {
+  const templates = TEMPLATES[state.domain] || TEMPLATES['General Business'];
+  const grid = document.getElementById('template-grid');
+  grid.innerHTML = templates.map((t,i) => `
+    <div class="tcard" onclick="selectTemplate(this,'${t.name}',${i})">
+      <div class="tcard-name">${t.name}</div>
+      <div class="tcard-desc">${t.desc}</div>
+      <div class="tcard-tags">${t.tags.map(tag=>`<span class="ttag">${tag}</span>`).join('')}</div>
+    </div>`).join('');
+}
+ 
+function selectTemplate(el, name, idx) {
+  document.querySelectorAll('.tcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.template = name;
+  const templates = TEMPLATES[state.domain] || TEMPLATES['General Business'];
+  const t = templates[idx];
+  state.templatePrompt = t.prompt;
+  document.getElementById('agent-name').value = name;
+  document.getElementById('system-prompt').value = t.prompt;
+  document.getElementById('sum-template').textContent = name;
+  document.getElementById('next-2').disabled = false;
+  updateSummary();
+}
+ 
+function updateSummary() {
+  const name = document.getElementById('agent-name').value.trim();
+  state.agentName = name;
+  state.systemPrompt = document.getElementById('system-prompt').value.trim();
+  if(name) document.getElementById('next-2').disabled = false;
+}
+ 
+// ── Step 3: Data sources ──────────────────────────────────────────────────────
+const DS_PLACEHOLDERS = {
+  's3':'s3://your-bucket/data/',
+  'pg':'postgresql://user:pass@host:5432/dbname',
+  'mysql':'mysql://user:pass@host:3306/dbname',
+  'mongo':'mongodb://user:pass@host:27017/dbname',
+  'pdf':'Upload PDF files or paste URL',
+  'sheets':'https://docs.google.com/spreadsheets/d/...',
+  'api':'https://api.yourservice.com/v1/endpoint',
+  'slack':'xoxb-your-slack-bot-token',
+};
+ 
+function toggleDS(el, type, icon, label) {
+  el.classList.toggle('selected');
+  const isSelected = el.classList.contains('selected');
+  const conns = document.getElementById('ds-connections');
+  if(isSelected) {
+    state.dataSources.push(type);
+    const row = document.createElement('div');
+    row.className = 'ds-conn';
+    row.id = 'conn-'+type;
+    row.innerHTML = `<span class="ds-conn-icon">${icon}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:#0d1420;min-width:80px">${label}</span>
+      <input class="ds-conn-input" placeholder="${DS_PLACEHOLDERS[type]||'Connection string...'}">
+      <button class="ds-conn-remove" onclick="removeDS('${type}',this.closest('.ds-conn'),document.querySelector('[onclick*=\\'${type}\\']'))">✕</button>`;
+    const placeholder = conns.querySelector('div[style]');
+    if(placeholder) placeholder.remove();
+    conns.appendChild(row);
+  } else {
+    removeDS(type, document.getElementById('conn-'+type), el);
+  }
+  document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
+}
+ 
+function removeDS(type, row, card) {
+  state.dataSources = state.dataSources.filter(d => d !== type);
+  if(row) row.remove();
+  if(card) card.classList.remove('selected');
+  const conns = document.getElementById('ds-connections');
+  if(conns.children.length === 0) {
+    conns.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>';
+  }
+  document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
+}
+ 
+// ── Step 4: Model ─────────────────────────────────────────────────────────────
+function selectModel(el, name) {
+  document.querySelectorAll('.mcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.model = name;
+  document.getElementById('sum-model').textContent = name;
+  document.getElementById('next-4').disabled = false;
+}
+ 
+// ── Step 5: Test ──────────────────────────────────────────────────────────────
+function setupTester() {
+  const name = state.agentName || 'Your agent';
+  document.getElementById('ct-agent-name').textContent = name;
+  document.getElementById('ct-welcome').textContent = `Hi! I'm ${name}. ${state.template ? 'I\'m configured as a ' + state.template + '.' : ''} Ask me anything to test how I respond.`;
+  const prompts = TEST_PROMPTS[state.domain] || ['Hello, what can you help me with?', 'Give me a summary of recent activity', 'What data do you have access to?'];
+  document.getElementById('test-prompts').innerHTML = prompts.map(p =>
+    `<button onclick="document.getElementById('ct-input').value='${p}';sendTest()" style="background:var(--surface);border:1px solid var(--bd);padding:6px 12px;font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;color:var(--mid);transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--mid)'">${p}</button>`
+  ).join('');
+}
+ 
+async function sendTest() {
+  const inp = document.getElementById('ct-input');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  const msgs = document.getElementById('ct-msgs');
+  inp.value = '';
+  const userDiv = document.createElement('div');
+  userDiv.className = 'ct-msg msg-user';
+  userDiv.innerHTML = `<div class="ct-av">You</div><div class="ct-bubble">${msg}</div>`;
+  msgs.appendChild(userDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ct-msg msg-agent';
+  typingDiv.id = 'ct-typing';
+  typingDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble"><div class="ct-typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  document.getElementById('ct-send').disabled = true;
+  const sysPrompt = state.systemPrompt ||
+    `You are ${state.agentName || 'an AI assistant'} built on Argovaa. Domain: ${state.domain || 'General'}. ${state.template ? 'Role: ' + state.template + '.' : ''} Be helpful, accurate, and concise.`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sysPrompt,
+        messages: [{role:'user', content: msg}]
+      })
+    });
+    const data = await res.json();
+    const answer = data.content?.[0]?.text || 'I couldn\'t process that request.';
+    typingDiv.remove();
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ct-msg msg-agent';
+    botDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble">${answer.replace(/\n/g,'<br>')}</div>`;
+    msgs.appendChild(botDiv);
+  } catch(e) {
+    typingDiv.remove();
+    const fallback = generateFallback(msg, state.domain, state.template, state.agentName);
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ct-msg msg-agent';
+    botDiv.innerHTML = `<div class="ct-av">AI</div><div class="ct-bubble">${fallback}</div>`;
+    msgs.appendChild(botDiv);
+  }
+  document.getElementById('ct-send').disabled = false;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+ 
+function generateFallback(msg, domain, template, name) {
+  const ml = msg.toLowerCase();
+  if(ml.includes('hello') || ml.includes('hi')) return `Hi! I'm ${name || 'your AI agent'} — a ${template || domain} assistant. I'm ready to help. What would you like to know?`;
+  if(ml.includes('what can you') || ml.includes('help')) return `I'm configured as a <strong>${template || domain + ' agent'}</strong>. I can answer questions, analyse data from your connected sources, and help with ${domain}-specific tasks. What would you like to explore?`;
+  if(ml.includes('data') || ml.includes('source')) return `I have access to ${state.dataSources.length > 0 ? state.dataSources.join(', ') : 'the data sources you configured'}. Once connected, I can query them in real time to answer your questions accurately.`;
+  return `As your ${template || domain} agent, I'd typically query your connected data sources to answer that. Once deployed with live data connections, I'll give you accurate, real-time answers based on your actual data.`;
+}
+ 
+// ── Step 6: Deploy ────────────────────────────────────────────────────────────
+function renderDeploySummary() {
+  const items = [
+    {label:'Agent name', val: state.agentName || '—'},
+    {label:'Domain', val: state.domain || '—'},
+    {label:'Template', val: state.template || 'Custom'},
+    {label:'Model', val: state.model || '—'},
+    {label:'Data sources', val: state.dataSources.length + ' connected'},
+    {label:'Budget', val: '$' + (document.getElementById('token-budget')?.value || '100') + '/mo'},
+    {label:'Guardrails', val: document.getElementById('guardrails')?.value || 'standard'},
+    {label:'Human approval', val: document.getElementById('human-approval')?.value || 'no'},
+  ];
+  document.getElementById('deploy-summary').innerHTML = items.map(i =>
+    `<div style="background:var(--surface);padding:12px 16px"><div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px">${i.label}</div><div style="font-size:13px;font-weight:500;color:#0d1420">${i.val}</div></div>`
+  ).join('');
+}
+ 
+async function deployAgent() {
+  const btn = document.getElementById('deploy-btn');
+  const spinner = document.getElementById('deploy-spinner');
+  const text = document.getElementById('deploy-text');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  text.textContent = 'Deploying...';
+  await new Promise(r => setTimeout(r, 2000));
+  state.agentId = 'agent_' + Math.random().toString(36).substr(2,8);
+  document.getElementById('pre-deploy').style.display = 'none';
+  document.getElementById('post-deploy').style.display = 'block';
+  const endpoint = `https://agents.argovaa.com/v1/${state.agentId}`;
+  document.getElementById('endpoint-url').textContent = endpoint;
+  document.getElementById('agent-id-curl').textContent = state.agentId;
+  document.getElementById('agent-id-widget').textContent = state.agentId;
+  document.getElementById('agent-name-widget').textContent = state.agentName || 'My agent';
+  document.getElementById('sum-status').textContent = 'Live ✓';
+  document.getElementById('sum-status').style.color = '#059669';
+  document.querySelectorAll('.wstep').forEach(s => s.classList.add('done'));
+  document.querySelector('#s6').classList.remove('done');
+  document.querySelector('#s6').classList.add('active');
+}
+ 
+function copyEndpoint() {
+  navigator.clipboard.writeText(document.getElementById('endpoint-url').textContent);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+function copyCurl() {
+  navigator.clipboard.writeText(document.getElementById('curl-code').innerText);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+function copyWidget() {
+  navigator.clipboard.writeText(document.getElementById('widget-code').innerText);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy', 2000);
+}
+ 
+function resetWizard() {
+  Object.assign(state, {step:1,domain:'',template:'',agentName:'',systemPrompt:'',model:'',dataSources:[],agentId:''});
+  document.querySelectorAll('.dcard,.tcard,.mcard,.ds-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('sum-domain').textContent = '—';
+  document.getElementById('sum-template').textContent = '—';
+  document.getElementById('sum-model').textContent = '—';
+  document.getElementById('sum-datasources').textContent = '0 connected';
+  document.getElementById('sum-status').textContent = 'Draft';
+  document.getElementById('sum-status').style.color = '#d97706';
+  document.getElementById('pre-deploy').style.display = 'block';
+  document.getElementById('post-deploy').style.display = 'none';
+  document.getElementById('ds-connections').innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>';
+  goStep(1);
+}
+ 
+// ── Testimonial dot sync ──────────────────────────────────────────────────────
+(function(){
+  const dots = [document.getElementById('tdot-0'), document.getElementById('tdot-1')];
+  let current = 0;
+  function updateDots() {
+    dots.forEach((d,i) => d && d.classList.toggle('active', i === current));
+    current = (current + 1) % 2;
+  }
+  setInterval(updateDots, 9000);
+})();
+ 
+// Read domain from URL param
+const urlParams = new URLSearchParams(window.location.search);
+const domainParam = urlParams.get('domain');
+if(domainParam) {
+  const domainMap = {finance:'Finance',healthcare:'Healthcare',retail:'Retail',technology:'Technology',general:'General Business'};
+  const mapped = domainMap[domainParam.toLowerCase()];
+  if(mapped) {
+    setTimeout(() => {
+      const cards = document.querySelectorAll('.dcard');
+      cards.forEach(c => { if(c.querySelector('.dcard-name').textContent===mapped) { c.click(); } });
+    }, 300);
+  }
+}
+ 
+// Session
+try {
+  const s = JSON.parse(localStorage.getItem('argovaa_session')||'{}');
+  if(s.name) document.getElementById('nav-user').textContent = '👤 '+s.name;
+} catch(e){}
 </script>
 </body>
 </html>
+ 
+Claude finished the response
