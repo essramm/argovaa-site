@@ -1,90 +1,3 @@
-Claude
-Archana’s MacBook Pro, Connected
-i dont want the black ground
-
-What color direction are you thinking? A few options:
-
-What background feel do you want?
-you pick
-My call: deep navy blue — 
-#0a1628 as the base. It’s unmistakably colored, reads as serious infrastructure tech, and lets the electric blue accents sing against it rather than disappear into near-black. Think Bloomberg Terminal meets modern SaaS — dark but clearly intentional.
-
-Going in now:
-
-Every dark surface is now deep navy — no black anywhere. Here’s what changed:
-
-Nav — rgba(10,22,40) frosted glass, clearly blue-tinted
-Hero — directional gradient from 
-#0c1e3a to 
-#0d2244, so the top of the page has depth and direction. The aurora glows and grid overlay stay — they read better against navy than black
-Sidebar — #0a1c35 → #0c1f38, a slightly cooler navy that separates it from the hero
-Bottom strip — #0b1d36 → #0d2244, the richest navy section with the brightest top-edge glow
-Team section — #091828 → #0b1e36, a calmer shade with soft radial glows
-Footer — 
-#081422, the deepest settled navy at the base
-All cards/panels — glassy navy surfaces with blue-tinted borders, consistent across diffs, team, metrics, code blocks
-The blue accent (#3b82f6 → #60a5fa) now pops cleanly rather than disappearing into near-black.
-
-Index
-Code
-·HTML
-make it white
-
-Index
-Code
-·HTML
-Done. The whole page is now white/light:
-
-Nav — white with a clean hairline border, dark logo
-Hero — soft 
-#f0f5ff (barely-there blue tint), dark headline, blue CTAs
-Sidebar — light grey 
-#f1f5f9, dark step labels
-Bottom strip, team section, footer — clean 
-#f8fafc with dark text
-Testimonial strip — very light blue 
-#eff6ff
-Cards everywhere — white with subtle borders and shadow
-Code blocks stay dark (
-#1e293b) — that’s intentional and universally expected for terminal/code readability.
-
-Upload index.html to GitHub to deploy.
-
-Created
-index.html
-changes marcus in the testimony from Marcus to Alan  change the medspa to asethic beautician
-
-Edited a file, shared a file, and 3 more steps
-Done — both testimonials updated:
-
-Slide 1: Marcus T. → Alan T., Dublin Auto Works
-Slide 2: “med spa” → “aesthetic beauty studio”, business renamed to Lumière Beauty Studio
-Index
-Code
-·HTML
-Compacted conversation
-Compacted conversation
-Also keep this page and move it to a new page
-https://www.argovaa.com/
-
-Read argovaa.com
-I can see the live site content. To clarify what you want:
-
-Keep the current live argovaa.com page as-is, but move it to a different URL (like /platform or /product)
-The new index.html we built becomes the new homepage at argovaa.com
-Is that right? And do you know what the current homepage file is called in your GitHub repo (essramm/argovaa-site)? It’s likely index.html — if so, the plan would be:
-
-Rename the existing index.html → platform.html (or whatever you want the new URL to be)
-Upload our new index.html as the homepage
-Should I pull the current live page’s HTML so we can save it, or do you already have it in the repo?
-
-
-
-
-
-
-
-Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,7 +21,7 @@ Index · HTML
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column}
- 
+
 /* NAV */
 nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(13,20,32,0.08);background:#ffffff;backdrop-filter:blur(24px) saturate(160%);flex-shrink:0;box-shadow:0 1px 0 rgba(37,99,235,0.06)}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#0d1420;text-decoration:none}
@@ -121,7 +34,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .btn-so{background:transparent;color:rgba(13,20,32,0.5);padding:6px 14px;font-size:12px;border:1px solid rgba(13,20,32,0.15);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-decoration:none}
 .btn-so:hover{border-color:rgba(13,20,32,0.4);color:#0d1420}
 .btn-nav{background:var(--accent);color:#fff;padding:7px 16px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
- 
+
 /* HERO STRIP */
 .hero-strip{
   background:#f0f5ff;
@@ -156,10 +69,10 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .hm:last-child{border-right:none}
 .hm-val{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#2563eb}
 .hm-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-top:2px}
- 
+
 /* WIZARD SHELL */
 #wizard{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:calc(100vh - 54px)}
- 
+
 /* SIDEBAR */
 .sidebar{
   background:#f1f5f9;
@@ -182,14 +95,14 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .wstep.done .wstep-name{color:#059669}
 .wstep-sub{font-size:11px;color:#b0bec5;margin-top:1px}
 .wstep.active .wstep-sub{color:#475569}
- 
+
 /* Agent summary in sidebar */
 .agent-summary{margin:20px 24px 0;background:#ffffff;border:1px solid rgba(13,20,32,0.10);padding:14px}
 .as-title{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:10px}
 .as-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
 .as-label{color:#94a3b8}
 .as-val{color:#475569;font-family:'DM Mono',monospace;font-size:10px;text-align:right;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
- 
+
 /* MAIN CONTENT */
 .wizard-main{padding:40px;overflow-y:auto;background:var(--bg)}
 .step-panel{display:none}.step-panel.active{display:block}
@@ -199,7 +112,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .step-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,40px);letter-spacing:2px;color:#0d1420;margin-bottom:10px}
 .step-title .acc{color:var(--accent)}
 .step-desc{font-size:14px;color:var(--mid);line-height:1.7;max-width:560px;font-weight:300}
- 
+
 /* DOMAIN CARDS */
 .domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
 .dcard{background:var(--surface);border:1px solid var(--bd);padding:20px;cursor:pointer;transition:all 0.15s;position:relative}
@@ -209,7 +122,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .dcard-icon{font-size:24px;margin-bottom:10px;opacity:0.7}
 .dcard-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#0d1420;margin-bottom:5px}
 .dcard-desc{font-size:12px;color:var(--mid);line-height:1.6}
- 
+
 /* TEMPLATE CARDS */
 .template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px}
 .tcard{background:var(--surface);border:1px solid var(--bd);padding:18px;cursor:pointer;transition:all 0.15s;position:relative}
@@ -220,7 +133,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .tcard-desc{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:8px}
 .tcard-tags{display:flex;gap:5px;flex-wrap:wrap}
 .ttag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border:1px solid var(--bd);color:var(--mid)}
- 
+
 /* FIELDS */
 .field{margin-bottom:16px}
 .field label{display:block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mid);margin-bottom:7px}
@@ -229,7 +142,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .field textarea{resize:vertical;min-height:100px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7}
 .field-hint{font-size:11px;color:var(--mid);margin-top:4px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
- 
+
 /* DATA SOURCE GRID */
 .ds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .ds-item{background:var(--surface);border:1px solid var(--bd);padding:14px 12px;text-align:center;cursor:pointer;transition:all 0.15s}
@@ -243,7 +156,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .ds-conn-input{flex:1;background:transparent;border:none;outline:none;font-size:12px;font-family:'DM Mono',monospace;color:var(--mid)}
 .ds-conn-input::placeholder{color:var(--faint)}
 .ds-conn-remove{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:0}
- 
+
 /* MODEL CARDS */
 .model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .mcard{background:var(--surface);border:1px solid var(--bd);padding:16px;cursor:pointer;transition:all 0.15s}
@@ -259,7 +172,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .mcard-stat{display:flex;justify-content:space-between;font-size:11px}
 .ms-label{color:var(--mid)}
 .ms-val{font-family:'DM Mono',monospace;color:#0d1420}
- 
+
 /* CHAT TESTER */
 .chat-tester{background:var(--surface);border:1px solid var(--bd);overflow:hidden;margin-bottom:20px;box-shadow:0 1px 4px rgba(13,20,32,0.05)}
 .ct-head{padding:12px 16px;background:#1e293b;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06)}
@@ -287,7 +200,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .ct-typing span:nth-child(2){animation-delay:0.2s}
 .ct-typing span:nth-child(3){animation-delay:0.4s}
 @keyframes typing{0%,80%,100%{opacity:0.3}40%{opacity:1}}
- 
+
 /* DEPLOY PANEL */
 .deploy-card{background:var(--surface);border:1px solid var(--bd);padding:24px;margin-bottom:16px}
 .deploy-endpoint{background:#1e293b;border:1px solid rgba(255,255,255,0.08);padding:12px 16px;font-family:'DM Mono',monospace;font-size:12px;color:#86efac;display:flex;align-items:center;justify-content:space-between;margin:10px 0}
@@ -299,7 +212,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .code-body{padding:14px;overflow-x:auto}
 .code-body pre{font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.75);white-space:pre}
 .kw{color:#93c5fd}.str{color:#86efac}.cm{color:rgba(255,255,255,0.3)}.fn{color:#fde68a}.var{color:#d8b4fe}
- 
+
 /* NAV BUTTONS */
 .wizard-nav{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:24px;border-top:1px solid var(--bd)}
 .btn-back{background:transparent;color:var(--mid);padding:11px 24px;font-size:13px;border:1px solid var(--bd);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
@@ -309,20 +222,20 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .btn-next:disabled{background:var(--faint);cursor:not-allowed}
 .btn-deploy{background:var(--emerald);color:#fff;padding:11px 28px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
 .btn-deploy:hover{background:#047857}
- 
+
 /* SPINNER */
 .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
- 
+
 /* PROGRESS */
 .progress-bar{height:3px;background:var(--bd);margin-bottom:32px}
 .progress-fill{height:100%;background:var(--accent);transition:width 0.4s}
- 
+
 /* SUCCESS */
 .success-banner{background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.18);padding:16px 20px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .success-icon{font-size:20px;flex-shrink:0}
 .success-text{font-size:14px;color:var(--emerald);font-weight:500}
- 
+
 /* BOTTOM STRIP */
 .bottom-strip{
   padding:36px 40px;position:relative;overflow:hidden;
@@ -359,7 +272,7 @@ nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:cente
 .diff-icon{font-size:18px;margin-bottom:10px;opacity:0.7}
 .diff-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#0d1420;margin-bottom:6px}
 .diff-desc{font-size:12px;color:#475569;line-height:1.7}
- 
+
 footer{
   background:#f8fafc;
   border-top:1px solid rgba(13,20,32,0.08);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;flex-shrink:0;
@@ -394,7 +307,7 @@ footer::before{
 .testimonial-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
 .tdot{width:4px;height:4px;border-radius:50%;background:rgba(13,20,32,0.15);transition:background 0.3s}
 .tdot.active{background:#2563eb}
- 
+
 /* TEAM SECTION */
 .team-section{
   padding:52px 40px 44px;border-top:1px solid rgba(13,20,32,0.08);position:relative;overflow:hidden;
@@ -420,9 +333,9 @@ footer::before{
 .tag-founder{background:rgba(37,99,235,0.07);color:#2563eb;border:1px solid rgba(37,99,235,0.16)}
 .tag-advisor{background:rgba(124,58,237,0.07);color:#7c3aed;border:1px solid rgba(124,58,237,0.16)}
 .team-bio{font-size:12px;color:#475569;line-height:1.75;font-weight:300}
- 
+
 .fcopy{font-family:'DM Mono',monospace;font-size:10px;color:#94a3b8}
- 
+
 @media(max-width:900px){
   nav{padding:0 16px}.nav-links{display:none}
   .hero-inner{grid-template-columns:1fr}
@@ -443,7 +356,7 @@ footer::before{
 </style>
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav>
   <a href="index.html" class="logo">ARG<em>O</em>VAA</a>
@@ -461,7 +374,7 @@ footer::before{
     <a href="login.html" class="btn-so">Sign in</a>
   </div>
 </nav>
- 
+
 <!-- HERO STRIP -->
 <div class="hero-strip">
   <div class="hero-inner">
@@ -490,10 +403,10 @@ footer::before{
     </div>
   </div>
 </div>
- 
+
 <!-- WIZARD SHELL — dominant element -->
 <div id="wizard">
- 
+
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-title">Build your agent</div>
@@ -532,11 +445,11 @@ footer::before{
       <div class="as-row"><span class="as-label">Status</span><span class="as-val" id="sum-status" style="color:#d97706">Draft</span></div>
     </div>
   </div>
- 
+
   <!-- MAIN WIZARD -->
   <div class="wizard-main">
     <div class="progress-bar"><div class="progress-fill" id="progress" style="width:16.6%"></div></div>
- 
+
     <!-- ── STEP 1: DOMAIN ── -->
     <div class="step-panel active" id="step-1">
       <div class="step-header">
@@ -581,7 +494,7 @@ footer::before{
         <button class="btn-next" id="next-1" onclick="goStep(2)" disabled>Next: Choose template →</button>
       </div>
     </div>
- 
+
     <!-- ── STEP 2: TEMPLATE ── -->
     <div class="step-panel" id="step-2">
       <div class="step-header">
@@ -607,7 +520,7 @@ footer::before{
         <button class="btn-next" id="next-2" onclick="goStep(3)" disabled>Next: Connect data →</button>
       </div>
     </div>
- 
+
     <!-- ── STEP 3: DATA SOURCES ── -->
     <div class="step-panel" id="step-3">
       <div class="step-header">
@@ -637,7 +550,7 @@ footer::before{
         <button class="btn-next" onclick="goStep(4)">Next: Model &amp; config →</button>
       </div>
     </div>
- 
+
     <!-- ── STEP 4: MODEL & CONFIG ── -->
     <div class="step-panel" id="step-4">
       <div class="step-header">
@@ -734,7 +647,7 @@ footer::before{
         <button class="btn-next" id="next-4" onclick="goStep(5)" disabled>Next: Test agent →</button>
       </div>
     </div>
- 
+
     <!-- ── STEP 5: TEST ── -->
     <div class="step-panel" id="step-5">
       <div class="step-header">
@@ -770,7 +683,7 @@ footer::before{
         <button class="btn-next" onclick="goStep(6)">Next: Deploy →</button>
       </div>
     </div>
- 
+
     <!-- ── STEP 6: DEPLOY ── -->
     <div class="step-panel" id="step-6">
       <div class="step-header">
@@ -826,10 +739,10 @@ footer::before{
         </div>
       </div>
     </div>
- 
+
   </div><!-- /wizard-main -->
 </div><!-- /#wizard -->
- 
+
 <!-- BOTTOM STRIP: trust + differentiators -->
 <div class="bottom-strip">
   <div class="bottom-inner">
@@ -888,7 +801,7 @@ footer::before{
     </div>
   </div>
 </div>
- 
+
 <!-- ROLLING TESTIMONIALS -->
 <div style="background:#f8fafc;border-top:1px solid rgba(13,20,32,0.06);border-bottom:1px solid rgba(13,20,32,0.06)">
   <div class="testimonial-strip">
@@ -930,7 +843,7 @@ footer::before{
     </div>
   </div>
 </div>
- 
+
 <!-- TEAM SECTION -->
 <div class="team-section">
   <div class="team-inner">
@@ -961,7 +874,7 @@ footer::before{
     </div>
   </div>
 </div>
- 
+
 <footer>
   <a href="index.html" class="flogo">ARG<em>O</em>VAA</a>
   <div class="flinks">
@@ -973,7 +886,7 @@ footer::before{
   </div>
   <div class="fcopy">© 2025 ARGOVAA.COM · seeth.gudetee@gmail.com</div>
 </footer>
- 
+
 <script>
 // ── State ─────────────────────────────────────────────────────────────────────
 const state = {
@@ -988,7 +901,7 @@ const state = {
   dataSources: [],
   agentId: '',
 };
- 
+
 // ── Templates per domain ──────────────────────────────────────────────────────
 const TEMPLATES = {
   'Finance': [
@@ -1027,7 +940,7 @@ const TEMPLATES = {
     {name:'Contract Review',desc:'Reviews contracts for key terms, risks, and missing clauses.',prompt:'You are a contract review agent. Review contracts for key terms, unusual clauses, missing standard provisions, and potential risks. Provide a structured summary with risk ratings. Always recommend legal review before signing.',tags:['PDF uploads','Contract DB','Legal docs']},
   ],
 };
- 
+
 const TEST_PROMPTS = {
   'Finance':['What was our revenue last quarter?','Show me the top 5 variances vs budget','Any unusual transactions this week?'],
   'Healthcare':['Summarise the last 3 patient intake forms','Are there any pending claims over 30 days?','What appointments are scheduled for tomorrow?'],
@@ -1036,7 +949,7 @@ const TEST_PROMPTS = {
   'HR & People':['What is our remote work policy?','How many PTO days do I have?','Walk me through the onboarding checklist'],
   'General Business':['Summarise our Q3 strategy document','What are our top 3 competitive differentiators?','Find the latest version of the product roadmap'],
 };
- 
+
 // ── Navigation ────────────────────────────────────────────────────────────────
 function goStep(n) {
   if(n > state.step) {
@@ -1058,7 +971,7 @@ function goStep(n) {
   if(n === 6) renderDeploySummary();
   document.getElementById('wizard').scrollIntoView({behavior:'smooth',block:'start'});
 }
- 
+
 // ── Step 1: Domain ────────────────────────────────────────────────────────────
 function selectDomain(el, name, icon) {
   document.querySelectorAll('.dcard').forEach(c => c.classList.remove('selected'));
@@ -1068,7 +981,7 @@ function selectDomain(el, name, icon) {
   document.getElementById('sum-domain').textContent = name;
   document.getElementById('next-1').disabled = false;
 }
- 
+
 // ── Step 2: Templates ─────────────────────────────────────────────────────────
 function renderTemplates() {
   const templates = TEMPLATES[state.domain] || TEMPLATES['General Business'];
@@ -1080,7 +993,7 @@ function renderTemplates() {
       <div class="tcard-tags">${t.tags.map(tag=>`<span class="ttag">${tag}</span>`).join('')}</div>
     </div>`).join('');
 }
- 
+
 function selectTemplate(el, name, idx) {
   document.querySelectorAll('.tcard').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -1094,14 +1007,14 @@ function selectTemplate(el, name, idx) {
   document.getElementById('next-2').disabled = false;
   updateSummary();
 }
- 
+
 function updateSummary() {
   const name = document.getElementById('agent-name').value.trim();
   state.agentName = name;
   state.systemPrompt = document.getElementById('system-prompt').value.trim();
   if(name) document.getElementById('next-2').disabled = false;
 }
- 
+
 // ── Step 3: Data sources ──────────────────────────────────────────────────────
 const DS_PLACEHOLDERS = {
   's3':'s3://your-bucket/data/',
@@ -1113,7 +1026,7 @@ const DS_PLACEHOLDERS = {
   'api':'https://api.yourservice.com/v1/endpoint',
   'slack':'xoxb-your-slack-bot-token',
 };
- 
+
 function toggleDS(el, type, icon, label) {
   el.classList.toggle('selected');
   const isSelected = el.classList.contains('selected');
@@ -1135,7 +1048,7 @@ function toggleDS(el, type, icon, label) {
   }
   document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
 }
- 
+
 function removeDS(type, row, card) {
   state.dataSources = state.dataSources.filter(d => d !== type);
   if(row) row.remove();
@@ -1146,7 +1059,7 @@ function removeDS(type, row, card) {
   }
   document.getElementById('sum-datasources').textContent = state.dataSources.length + ' connected';
 }
- 
+
 // ── Step 4: Model ─────────────────────────────────────────────────────────────
 function selectModel(el, name) {
   document.querySelectorAll('.mcard').forEach(c => c.classList.remove('selected'));
@@ -1155,7 +1068,7 @@ function selectModel(el, name) {
   document.getElementById('sum-model').textContent = name;
   document.getElementById('next-4').disabled = false;
 }
- 
+
 // ── Step 5: Test ──────────────────────────────────────────────────────────────
 function setupTester() {
   const name = state.agentName || 'Your agent';
@@ -1166,7 +1079,7 @@ function setupTester() {
     `<button onclick="document.getElementById('ct-input').value='${p}';sendTest()" style="background:var(--surface);border:1px solid var(--bd);padding:6px 12px;font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;color:var(--mid);transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--mid)'">${p}</button>`
   ).join('');
 }
- 
+
 async function sendTest() {
   const inp = document.getElementById('ct-input');
   const msg = inp.value.trim();
@@ -1216,7 +1129,7 @@ async function sendTest() {
   document.getElementById('ct-send').disabled = false;
   msgs.scrollTop = msgs.scrollHeight;
 }
- 
+
 function generateFallback(msg, domain, template, name) {
   const ml = msg.toLowerCase();
   if(ml.includes('hello') || ml.includes('hi')) return `Hi! I'm ${name || 'your AI agent'} — a ${template || domain} assistant. I'm ready to help. What would you like to know?`;
@@ -1224,7 +1137,7 @@ function generateFallback(msg, domain, template, name) {
   if(ml.includes('data') || ml.includes('source')) return `I have access to ${state.dataSources.length > 0 ? state.dataSources.join(', ') : 'the data sources you configured'}. Once connected, I can query them in real time to answer your questions accurately.`;
   return `As your ${template || domain} agent, I'd typically query your connected data sources to answer that. Once deployed with live data connections, I'll give you accurate, real-time answers based on your actual data.`;
 }
- 
+
 // ── Step 6: Deploy ────────────────────────────────────────────────────────────
 function renderDeploySummary() {
   const items = [
@@ -1241,7 +1154,7 @@ function renderDeploySummary() {
     `<div style="background:var(--surface);padding:12px 16px"><div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px">${i.label}</div><div style="font-size:13px;font-weight:500;color:#0d1420">${i.val}</div></div>`
   ).join('');
 }
- 
+
 async function deployAgent() {
   const btn = document.getElementById('deploy-btn');
   const spinner = document.getElementById('deploy-spinner');
@@ -1264,7 +1177,7 @@ async function deployAgent() {
   document.querySelector('#s6').classList.remove('done');
   document.querySelector('#s6').classList.add('active');
 }
- 
+
 function copyEndpoint() {
   navigator.clipboard.writeText(document.getElementById('endpoint-url').textContent);
   event.target.textContent = 'Copied!';
@@ -1280,7 +1193,7 @@ function copyWidget() {
   event.target.textContent = 'Copied!';
   setTimeout(() => event.target.textContent = 'Copy', 2000);
 }
- 
+
 function resetWizard() {
   Object.assign(state, {step:1,domain:'',template:'',agentName:'',systemPrompt:'',model:'',dataSources:[],agentId:''});
   document.querySelectorAll('.dcard,.tcard,.mcard,.ds-item').forEach(el => el.classList.remove('selected'));
@@ -1295,7 +1208,7 @@ function resetWizard() {
   document.getElementById('ds-connections').innerHTML = '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--faint);text-align:center;padding:16px">Select data sources above to configure connection strings</div>';
   goStep(1);
 }
- 
+
 // ── Testimonial dot sync ──────────────────────────────────────────────────────
 (function(){
   const dots = [document.getElementById('tdot-0'), document.getElementById('tdot-1')];
@@ -1306,7 +1219,7 @@ function resetWizard() {
   }
   setInterval(updateDots, 9000);
 })();
- 
+
 // Read domain from URL param
 const urlParams = new URLSearchParams(window.location.search);
 const domainParam = urlParams.get('domain');
@@ -1320,7 +1233,7 @@ if(domainParam) {
     }, 300);
   }
 }
- 
+
 // Session
 try {
   const s = JSON.parse(localStorage.getItem('argovaa_session')||'{}');
@@ -1329,5 +1242,3 @@ try {
 </script>
 </body>
 </html>
- 
-Claude finished the response
